@@ -1,0 +1,6 @@
+rootProject.name = "pdftag"
+include("pdftag-service-api")
+include("pdftag-service-impl")
+include("pdftag-controller")
+include("pdftag-app")
+include("pdftag-client")
