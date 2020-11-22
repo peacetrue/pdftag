@@ -75,21 +75,4 @@ public class PdfTagApplication {
         }
     }
 
-    @ConditionalOnProperty(name = "spring.security.user.name")
-    @EnableWebFluxSecurity
-    public static class SecurityConfig {
-        @Bean
-        public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-            http
-                    .authorizeExchange(exchanges ->
-                            exchanges
-                                    .pathMatchers("/pdf-tags/**").hasAuthority("SCOPE_pdf-tag")
-                                    .anyExchange().authenticated()
-                    )
-                    .oauth2ResourceServer(oauth2ResourceServer ->
-                            oauth2ResourceServer.jwt(withDefaults())
-                    );
-            return http.build();
-        }
-    }
 }

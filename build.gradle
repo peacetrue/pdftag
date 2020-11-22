@@ -4,37 +4,19 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://repo.spring.io/plugins-release' }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
-        classpath('com.github.peacetrue.generator:peacetrue-generator-plugin:1.1.0-SNAPSHOT')
-        classpath 'com.github.peacetrue.template:peacetrue-template-model-content:3.0.0-SNAPSHOT', {
-            exclude group: 'ch.qos.logback'
-        }
-        classpath('com.h2database:h2:1.4.196')
-        classpath "io.spring.gradle:dependency-management-plugin:1+"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.3.3.RELEASE"
+        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:2.5.0"
     }
 }
 
-//apply plugin: 'com.github.peacetrue.generator'
-//peacetrueGenerate {
-//    properties = [
-//            'peacetrue.generator.target-path': "$rootDir",
-//            'spring.datasource.schema'       : "file:$rootDir/pdftag-service-impl/src/main/resources/schema-h2.sql",
-//    ]
-//    propertiesPath = "file:$rootDir/pdftag-service-impl/src/test/resources/application-pdf-tag-service-test.yml"
-//    context = [
-//            'project-name'     : "pdftag",
-//            'basePackageName'  : "com.mi.pdftag",
-//            'DomainName'       : 'PdfTag',
-//            'domainDescription': 'pdf 标签',
-//    ]
-//}
-
-
 allprojects { project ->
 
-    group "com.github.peacetrue.pdftag"
+    group "com.mi.pdftag"
     version "1.0.0-SNAPSHOT"
     description "pdf 标签"
 
@@ -44,16 +26,15 @@ allprojects { project ->
 
     repositories {
         mavenLocal()
+        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://repo.spring.io/plugins-release' }
-        mavenCentral()
-        jcenter()
     }
 
     apply plugin: "io.spring.dependency-management"
     dependencyManagement {
         imports {
-            mavenBom "com.github.peacetrue:peacetrue-dependencies:2+"
+            mavenBom "com.github.peacetrue:peacetrue-dependencies:2.0.0-SNAPSHOT"
         }
     }
 

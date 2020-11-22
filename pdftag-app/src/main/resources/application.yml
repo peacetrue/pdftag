@@ -1,0 +1,46 @@
+server:
+  port: 8110
+
+db:
+  hostname: localhost
+  username: ${MICROSERVICE_DB_USERNAME:peacetrue}
+  password: ${MICROSERVICE_DB_PASSWORD:password}
+  schema: pdftag
+
+spring:
+  application:
+    name: pdftag
+  r2dbc:
+    url: r2dbc:mysql://${db.hostname}:3306/${db.schema}?autoreconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${db.username}
+    password: ${db.password}
+  security:
+    user:
+      name: xiaomi
+      password: xiaomi
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
+logging:
+  level:
+    root: debug
+  file:
+    max-history: 2
+peacetrue:
+  spring:
+    security:
+      ignored-urls: ['/users/register','/users/exists']
+
+---
+spring.profiles: dockerMac
+db.hostname: host.docker.internal
+
+---
+spring.profiles: prod
+db.hostname: 101.200.133.86
