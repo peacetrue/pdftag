@@ -67,4 +67,6 @@ $ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/
 $ cd dita-ot-2.3-english/docsrc/samples/ant_sample
 
 $ ../../../bin/ant -f build-chm-pdf.xml
+
+$ /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/bin/ant -f /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/Mi_giftBox_label_Cn_test.xml
 ----

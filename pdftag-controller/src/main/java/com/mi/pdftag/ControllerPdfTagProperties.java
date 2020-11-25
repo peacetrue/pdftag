@@ -15,7 +15,7 @@ import java.util.Map;
  */
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "com.xiaomi.pdf-tag")
+@ConfigurationProperties(prefix = "com.mi.pdf-tag")
 public class ControllerPdfTagProperties {
 
     private Map<DitaStyle, String> ditaBaseDir = new HashMap<>(3);

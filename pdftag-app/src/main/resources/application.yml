@@ -36,20 +36,12 @@ logging:
 peacetrue:
   spring:
     security:
-      ignored-urls: ['/users/register','/users/exists',"/","/public/**", "/resources/**","/resources/public/**","/index.html"]
+      ignored-urls: ['/users/register','/users/exists','/index.html','/manifest.json','/logo192.png','/static/**']
   #  file:
   #    base-path: /Users/xiayx/Documents/Projects/pdftag/01-upload
   enum:
     base-package-paths: com.mi.pdftag
+  operator:
+    pointcut:
+      expression: 'execution(* com.mi.pdftag..*ServiceImpl.*(*,..))||execution(* com.github.peacetrue..*ServiceImpl.*(*,..))'
 
-
-peacetrue.operator.pointcut.expression: 'execution(* com.mi.pdftag..*ServiceImpl.*(*,..))||execution(* com.github.peacetrue..*ServiceImpl.*(*,..))'
-
-
----
-spring.profiles: dockerMac
-db.hostname: host.docker.internal
-
----
-spring.profiles: prod
-db.hostname: 101.200.133.86

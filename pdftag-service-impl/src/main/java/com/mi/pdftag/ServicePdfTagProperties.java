@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author xiayx
  */
 @Data
-@ConfigurationProperties(prefix = "com.xiaomi.pdf-tag")
+@ConfigurationProperties(prefix = "com.mi.pdf-tag")
 public class ServicePdfTagProperties {
 
 }
