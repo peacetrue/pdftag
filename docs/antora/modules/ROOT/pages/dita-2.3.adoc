@@ -1,0 +1,70 @@
+= dita-2.3 试验文档
+
+* dita-ot-2.3-chinese
+* dita-ot-2.3-english
+
+.dita-ot-2.3
+[source%nowrap]
+----
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3/docsrc/samples
+
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-/docsrc/samples
+
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/docsrc/samples
+
+#常规导出
+$ ../../bin/dita -input sequence.ditamap -format pdf
+
+#常规导出
+$ ../../bin/dita -input sequence.ditamap -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
+
+#常规导出
+$ ../../bin/dita -input Mi_giftBox_label_En/mi_giftbox_label_en.ditamap -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/礼盒标签中英文dita20201125/Mi_giftBox_label_En -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
+
+#常规导出
+$ ../../bin/dita -input Mi_giftBox_label_Cn/mi_giftbox_label_cn.ditamap -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/礼盒标签中英文dita20201125/Mi_giftBox_label_Cn -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
+
+#设置水印
+$ ../../bin/dita -input sequence.ditamap -format pdf -Dcustomization.dir=/Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark
+----
+
+.dita-ot-2.3-chinese
+[source%nowrap]
+----
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/docsrc/samples
+$ cd dita-ot-2.3-chinese/docsrc/samples
+
+#常规导出
+$ ../../bin/dita -input sequence.ditamap -format pdf
+
+#设置水印
+$ ../../bin/dita -input sequence.ditamap -format pdf -Dcustomization.dir=/Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark
+----
+
+.dita-ot-2.3-english
+[source%nowrap]
+----
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-english/docsrc/samples
+
+#常规导出
+$ ../../bin/dita -input sequence.ditamap -format pdf
+
+#设置水印
+$ ../../bin/dita -input sequence.ditamap -format pdf -Dcustomization.dir=/Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark
+----
+
+.Ant 简单示例
+[source%nowrap,shell]
+----
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3/docsrc/samples/ant_sample
+
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-/docsrc/samples/ant_sample
+
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-english/docsrc/samples/ant_sample
+
+$ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/docsrc/samples/ant_sample
+
+$ cd dita-ot-2.3-english/docsrc/samples/ant_sample
+
+$ ../../../bin/ant -f build-chm-pdf.xml
+----

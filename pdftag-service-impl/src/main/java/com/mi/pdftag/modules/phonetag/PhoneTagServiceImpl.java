@@ -43,14 +43,11 @@ public class PhoneTagServiceImpl implements PhoneTagService {
     public static Criteria buildCriteria(PhoneTagQuery params) {
         return CriteriaUtils.and(
                 CriteriaUtils.nullableCriteria(CriteriaUtils.smartIn("id"), params::getId),
+                CriteriaUtils.nullableCriteria(Criteria.where("styleCode")::is, params::getStyleCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("templateId")::is, params::getTemplateId),
-                CriteriaUtils.nullableCriteria(Criteria.where("name")::like, value -> "%" + value + "%", params::getName),
+                CriteriaUtils.nullableCriteria(Criteria.where("goodsName")::like, value -> "%" + value + "%", params::getGoodsName),
                 CriteriaUtils.nullableCriteria(Criteria.where("modelCode")::like, value -> "%" + value + "%", params::getModelCode),
-                CriteriaUtils.nullableCriteria(Criteria.where("packageContent")::like, value -> "%" + value + "%", params::getPackageContent),
                 CriteriaUtils.nullableCriteria(Criteria.where("standard")::like, value -> "%" + value + "%", params::getStandard),
-                CriteriaUtils.nullableCriteria(Criteria.where("networkPermissionUrl")::like, value -> "%" + value + "%", params::getNetworkPermissionUrl),
-                CriteriaUtils.nullableCriteria(Criteria.where("networkLicense")::like, value -> "%" + value + "%", params::getNetworkLicense),
-                CriteriaUtils.nullableCriteria(Criteria.where("remark")::like, value -> "%" + value + "%", params::getRemark),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getCreatedTime()::getUpperBound),

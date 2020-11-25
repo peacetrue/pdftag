@@ -1,21 +1,55 @@
 import React from 'react';
-import {Datagrid, DateField, DateInput, EditButton, Filter, List, TextField, TextInput} from 'react-admin';
+import {
+    Button,
+    Datagrid,
+    DateField,
+    DateInput,
+    Filter,
+    List,
+    ReferenceField,
+    ReferenceInput,
+    SelectInput,
+    TextField,
+    TextInput
+} from 'react-admin';
+
 
 const Filters = (props) => (
     <Filter {...props}>
-        <TextInput label={'名称'} source="name" allowEmpty alwaysOn/>
-        <TextInput label={'认证型号'} source="modelCode" allowEmpty alwaysOn/>
-        <TextInput label={'包装内容'} source="packageContent" allowEmpty alwaysOn/>
-        <TextInput label={'执行标准'} source="standard" allowEmpty alwaysOn/>
-        <TextInput label={'进网许可标志验证网址'} source="networkPermissionUrl" allowEmpty alwaysOn/>
-        <TextInput label={'进网许可证'} source="networkLicense" allowEmpty alwaysOn/>
-        <TextInput label={'备注'} source="remark" allowEmpty alwaysOn/>
-        <DateInput label={'创建时间起始值'} source="createdTime.lowerBound" allowEmpty alwaysOn/>
-        <DateInput label={'创建时间结束值'} source="createdTime.upperBound" allowEmpty alwaysOn/>
-        <DateInput label={'修改时间起始值'} source="modifiedTime.lowerBound" allowEmpty alwaysOn/>
-        <DateInput label={'修改时间结束值'} source="modifiedTime.upperBound" allowEmpty alwaysOn/>
+        <SelectInput label={'样式'} source="styleCode" resettable allowEmpty alwaysOn choices={[
+            {id: 'chinese', name: '中文样式表'},
+            {id: 'english', name: '英文样式表'},
+        ]}/>
+        <ReferenceInput label={'模版'} reference="templates" source="templateId" resettable allowEmpty alwaysOn>
+            <SelectInput optionText="name"/>
+        </ReferenceInput>
+        <TextInput label={'商品名称'} source="goodsName" resettable allowEmpty alwaysOn/>
+        <DateInput label={'创建时间起始值'} source="createdTime.lowerBound" allowEmpty/>
+        <DateInput label={'创建时间结束值'} source="createdTime.upperBound" allowEmpty/>
     </Filter>
 );
+
+const ExportButton = (props) => {
+    console.info("PdfButton.props:", props);
+    const {
+        record,
+        versionType = 'reproduction',
+        ...rest
+    } = props;
+    let label = '演示导出';
+    if (versionType === 'production') label = '正式导出';
+    return (
+        <Button
+            label={label}
+            onClick={e => {
+                e.stopPropagation();
+                window.open(`${process.env.REACT_APP_BASE_URL}/phone-tags/${record.id}/export?versionType=${versionType}`);
+            }}
+            {...rest}
+        >
+        </Button>
+    )
+};
 
 export const PhoneTagList = props => {
     console.info('PhoneTagList:', props);
@@ -23,21 +57,19 @@ export const PhoneTagList = props => {
         <List {...props} title={`${props.options.label}列表`} filters={<Filters/>}
               sort={{field: 'createdTime', order: 'desc'}}>
             <Datagrid rowClick="show">
-                <TextField label={'模版主键'} source="templateId"/>
-                <TextField label={'名称'} source="name"/>
+                <TextField label={'样式'} source="styleCode"/>
+                <ReferenceField label={'模版'} reference="templates" source="templateId" link={'view'}>
+                    <TextField source="name"/>
+                </ReferenceField>
+                <TextField label={'商品名称'} source="goodsName"/>
                 <TextField label={'认证型号'} source="modelCode"/>
-                <TextField label={'包装内容'} source="packageContent"/>
-                <TextField label={'执行标准'} source="standard"/>
-                <TextField label={'进网许可标志验证网址'} source="networkPermissionUrl"/>
-                <TextField label={'进网许可证'} source="networkLicense"/>
-                <TextField label={'内存大小，单位 G，支持保留1位小数'} source="memorySize"/>
-                <TextField label={'硬盘大小，单位 G，支持保留1位小数'} source="diskSize"/>
-                <TextField label={'备注'} source="remark"/>
-                <TextField label={'创建者主键'} source="creatorId"/>
+                <TextField label={'包装内含'} source="packageContent"/>
+                {/*<TextField label={'执行标准'} source="standard"/>*/}
+                {/*<TextField label={'存储空间'} source="storage"/>*/}
                 <DateField label={'创建时间'} source="createdTime" showTime/>
-                <TextField label={'修改者主键'} source="modifierId"/>
-                <DateField label={'修改时间'} source="modifiedTime" showTime/>
-                <EditButton/>
+                {/*<EditButton/>*/}
+                <ExportButton/>
+                <ExportButton versionType="production"/>
             </Datagrid>
         </List>
     )

@@ -19,6 +19,7 @@ dependencies {
     api 'org.slf4j:slf4j-api'
     implementation 'com.github.peacetrue:peacetrue-spring'
     implementation 'org.apache.commons:commons-lang3'
+    implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation "org.springframework.boot:spring-boot-autoconfigure"
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"

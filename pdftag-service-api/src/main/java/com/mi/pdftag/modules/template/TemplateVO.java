@@ -17,8 +17,8 @@ public class TemplateVO implements Serializable {
     private Long id;
     /** 编号 */
     private String code;
-    /** 类型：1、phone，不同的模版类型对应标签的字段不同 */
-    private Integer typeId;
+    /** 类型. 1、phone，不同的模版类型对应标签的字段不同 */
+    private String typeCode;
     /** 名称 */
     private String name;
     /** 内容 */

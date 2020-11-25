@@ -4,6 +4,8 @@ import com.github.peacetrue.core.OperatorCapableImpl;
 import com.github.peacetrue.core.Range;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 
@@ -23,13 +25,16 @@ public class PhoneTagQuery extends OperatorCapableImpl<Long> {
 
     /** 主键 */
     private Long[] id;
+    /** 样式编码 */
+    @Size(min = 1, max = 32)
+    private String styleCode;
     /** 模版主键 */
     private Long templateId;
-    /** 名称 */
-    private String name;
+    /** 商品名称 */
+    private String goodsName;
     /** 认证型号 */
     private String modelCode;
-    /** 包装内容 */
+    /** 包装内含 */
     private String packageContent;
     /** 执行标准 */
     private String standard;
@@ -37,12 +42,8 @@ public class PhoneTagQuery extends OperatorCapableImpl<Long> {
     private String networkPermissionUrl;
     /** 进网许可证 */
     private String networkLicense;
-    /** 内存大小，单位 G，支持保留1位小数 */
-    private BigDecimal memorySize;
-    /** 硬盘大小，单位 G，支持保留1位小数 */
-    private BigDecimal diskSize;
-    /** 备注 */
-    private String remark;
+    /** 存储空间 */
+    private String storage;
     /** 创建者主键 */
     private Long creatorId;
     /** 创建时间 */

@@ -5,6 +5,8 @@ dependencies {
     implementation "com.github.peacetrue:peacetrue-spring"
     implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.data:spring-data-commons"
+    implementation 'com.github.peacetrue.file:peacetrue-file-controller:1.0.1-SNAPSHOT'
+//    implementation 'com.github.peacetrue.file:peacetrue-file-service-impl:1.0.1-SNAPSHOT'
 
     testImplementation project(':pdftag-service-impl')
     testImplementation project(path: ':pdftag-service-impl', configuration: 'testArtifacts')

@@ -1,14 +1,18 @@
 package com.mi.pdftag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.peacetrue.core.IdCapable;
 import com.github.peacetrue.spring.formatter.date.AutomaticDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateTimeFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticTimeFormatter;
+import com.github.peacetrue.user.UserGet;
+import com.github.peacetrue.user.UserService;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
@@ -17,15 +21,22 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
+import reactor.core.publisher.Mono;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 /**
  * @author xiayx
@@ -75,4 +86,44 @@ public class PdfTagApplication {
         }
     }
 
+    @Getter
+    @Setter
+    public static class IdUser extends User implements IdCapable<Long> {
+
+        private Long id;
+
+        public IdUser(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+            super(username, password, authorities);
+            this.id = id;
+        }
+
+        public IdUser(Long id, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+            super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+            this.id = id;
+        }
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public ReactiveUserDetailsService userDetailsService() {
+        return new ReactiveUserDetailsService() {
+            @Autowired
+            private UserService userService;
+
+            @Override
+            public Mono<UserDetails> findByUsername(String username) {
+                UserGet userGet = new UserGet(null, username);
+                userGet.setOperatorId(0L);
+                return userService.get(userGet)
+                        .map(user -> {
+                            Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+                            return new IdUser(user.getId(), user.getUsername(), user.getPassword(), authorities);
+                        });
+            }
+        };
+    }
 }

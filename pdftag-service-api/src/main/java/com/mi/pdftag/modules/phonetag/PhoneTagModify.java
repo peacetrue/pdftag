@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.math.BigDecimal;
 
 
 /**
@@ -23,18 +22,22 @@ public class PhoneTagModify extends OperatorCapableImpl<Long> {
     /** 主键 */
     @NotNull
     private Long id;
+    /** 样式编码 */
+    @NotNull
+    @Size(min = 1, max = 32)
+    private String styleCode;
     /** 模版主键 */
     @NotNull
     private Long templateId;
-    /** 名称 */
+    /** 商品名称 */
     @NotNull
-    @Size(min = 1, max = 32)
-    private String name;
+    @Size(min = 1, max = 255)
+    private String goodsName;
     /** 认证型号 */
     @NotNull
-    @Size(min = 1, max = 32)
+    @Size(min = 1, max = 255)
     private String modelCode;
-    /** 包装内容 */
+    /** 包装内含 */
     @NotNull
     @Size(min = 1, max = 255)
     private String packageContent;
@@ -42,22 +45,27 @@ public class PhoneTagModify extends OperatorCapableImpl<Long> {
     @NotNull
     @Size(min = 1, max = 255)
     private String standard;
-    /** 进网许可标志验证网址 */
+    /** CMIIT ID */
     @NotNull
     @Size(min = 1, max = 255)
-    private String networkPermissionUrl;
+    private String cmiitId;
     /** 进网许可证 */
     @NotNull
     @Size(min = 1, max = 255)
     private String networkLicense;
-    /** 内存大小，单位 G，支持保留1位小数 */
+    /** 产品名称 */
     @NotNull
-    private BigDecimal memorySize;
-    /** 硬盘大小，单位 G，支持保留1位小数 */
+    @Size(min = 1, max = 255)
+    private String productName;
+    /** 颜色 */
     @NotNull
-    private BigDecimal diskSize;
+    @Size(min = 1, max = 255)
+    private String colour;
+    /** 存储空间 */
+    @NotNull
+    @Size(min = 1, max = 255)
+    private String storage;
     /** 备注 */
-    @NotNull
     @Size(min = 1, max = 255)
     private String remark;
 

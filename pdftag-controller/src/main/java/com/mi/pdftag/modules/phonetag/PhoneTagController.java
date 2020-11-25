@@ -1,14 +1,24 @@
 package com.mi.pdftag.modules.phonetag;
 
+import com.github.peacetrue.file.FileController;
+import com.mi.pdftag.ControllerPdfTagProperties;
+import com.mi.pdftag.VersionType;
+import com.mi.pdftag.modules.DitaStyle;
+import com.mi.pdftag.modules.template.TemplateGet;
+import com.mi.pdftag.modules.template.TemplateService;
+import com.mi.pdftag.utils.PdfTagUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 /**
  * 标签控制器
@@ -87,6 +97,37 @@ public class PhoneTagController {
     public Mono<Integer> deleteByPath(PhoneTagDelete params) {
         log.info("删除标签信息(请求路径+URL参数变量)[{}]", params);
         return phoneTagService.delete(params);
+    }
+
+    @Autowired
+    private TemplateService templateService;
+    @Autowired
+    private ControllerPdfTagProperties properties;
+
+    @GetMapping("/export")
+    public Mono<Void> export(ServerHttpResponse response, String versionType, PhoneTagVO vo) {
+        log.info("导出[{}]", vo);
+        boolean isReproduction = VersionType.REPRODUCTION.getCode().equals(versionType);
+        return templateService.get(new TemplateGet(vo.getTemplateId()))
+                .map(templateVO -> PdfTagUtils.parse(templateVO.getContent(), vo))
+                .flatMap(content -> PdfTagUtils.saveToTempFile(content, "dita"))
+                .flatMap(path -> {
+                    String basedir = properties.getDitaBaseDir().get(DitaStyle.DEFAULT);
+                    if (isReproduction) {
+                        return PdfTagUtils.executeDita(basedir, path, "pdf", properties.getOutputDir(),
+                                "-Dcustomization.dir=" + properties.getReproductionCustomizationDir())
+                                .flatMap(pdfPath -> FileController.previewLocalFile(response, pdfPath));
+                    } else {
+                        return PdfTagUtils.executeDita(basedir, path, "pdf", properties.getOutputDir())
+                                .flatMap(pdfPath -> FileController.downloadLocalFile(response, pdfPath));
+                    }
+                });
+    }
+
+    @GetMapping(value = "/{id}/export")
+    public Mono<Void> export(ServerHttpResponse response, @PathVariable Long id, String versionType) {
+        return phoneTagService.get(new PhoneTagGet(id))
+                .flatMap(vo -> this.export(response, Objects.toString(versionType, VersionType.REPRODUCTION.getCode()), vo));
     }
 
 
