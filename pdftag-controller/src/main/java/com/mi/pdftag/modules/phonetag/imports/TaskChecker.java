@@ -23,6 +23,10 @@ public class TaskChecker implements ImportsChecker<PhoneTagAdd> {
         if (records.isEmpty()) return;
 
         ImportsResult<PhoneTagAdd> importsResult = importsContext.getImportsResult();
+//        records.forEach(record -> {
+//
+//        });
+        //importsResult.
         importsResult.getCheckedRecords().addAll(records);
     }
 }

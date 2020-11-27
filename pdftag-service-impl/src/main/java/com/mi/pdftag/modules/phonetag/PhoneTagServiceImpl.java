@@ -62,6 +62,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
     public Mono<PhoneTagVO> add(PhoneTagAdd params) {
         log.info("新增标签信息[{}]", params);
         PhoneTag entity = BeanUtils.map(params, PhoneTag.class);
+        if (entity.getRemark() == null) entity.setRemark("");
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());

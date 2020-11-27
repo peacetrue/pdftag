@@ -5,6 +5,7 @@ import {
     FileField,
     FileInput,
     required,
+    SaveButton,
     SimpleForm,
     Toolbar,
     useDataProvider,
@@ -41,22 +42,46 @@ const PostCreateToolbar = props => {
     const notify = useNotify();
     const redirect = useRedirect();
     const dataProvider = useDataProvider();
+    const handleSuccess = (props) => {
+        console.info("handleSuccess.props:", props);
+        let errorMessages = props.data.errorMessages;
+        if (errorMessages && errorMessages.length > 0) {
+            notify(`导入失败！${errorMessages.map(item => item.errorMessage).join(',')}`);
+            return;
+        }
+
+        let records = props.data.checkedRecords;
+        Promise.all(records.map(record => dataProvider.create('phone-tags', {data: record.row})))
+            .then(response => {
+                // success side effects go here
+                redirect('/phone-tags');
+                notify(`导入成功！`);
+            })
+            .catch(error => {
+                // failure side effects go here
+                notify(`导入失败: ${error.message}`, 'warning');
+            });
+    }
     return (
         <Toolbar {...props} >
-            <ImportsButton/>
+            {/*<ImportsButton/>*/}
+            <SaveButton label={'导入'} onSuccess={handleSuccess}/>
         </Toolbar>
     );
 };
 
-function toFormData(file) {
+const toFormData = file => {
     let formData = new FormData();
     formData.append("file", file, file.name)
     return formData;
 }
 
 const transform = data => {
-    console.info("data:", data);
-    return toFormData(data.file.rawFile);
+    console.info("transform data:", data);
+    let formData = toFormData(data.file.rawFile);
+    data.remark && formData.append("remark", data.remark);
+    formData.append("_query", JSON.stringify({type: 'imports'}));
+    return formData;
 }
 
 export const PhoneTagImports = (props) => {

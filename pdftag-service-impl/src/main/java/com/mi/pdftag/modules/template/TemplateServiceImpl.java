@@ -45,8 +45,6 @@ public class TemplateServiceImpl implements TemplateService {
                 CriteriaUtils.nullableCriteria(CriteriaUtils.smartIn("id"), params::getId),
                 CriteriaUtils.nullableCriteria(Criteria.where("code")::like, value -> "%" + value + "%", params::getCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("name")::like, value -> "%" + value + "%", params::getName),
-                CriteriaUtils.nullableCriteria(Criteria.where("content")::like, value -> "%" + value + "%", params::getContent),
-                CriteriaUtils.nullableCriteria(Criteria.where("remark")::like, value -> "%" + value + "%", params::getRemark),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getCreatedTime()::getUpperBound),
@@ -61,6 +59,7 @@ public class TemplateServiceImpl implements TemplateService {
     public Mono<TemplateVO> add(TemplateAdd params) {
         log.info("新增模版信息[{}]", params);
         Template entity = BeanUtils.map(params, Template.class);
+        entity.setContent("");
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());
@@ -128,6 +127,7 @@ public class TemplateServiceImpl implements TemplateService {
                 .map(item -> BeanUtils.map(item, TemplateVO.class))
                 .zipWhen(entity -> {
                     Template modify = BeanUtils.map(params, Template.class);
+                    entity.setContent("");
                     modify.setModifierId(params.getOperatorId());
                     modify.setModifiedTime(LocalDateTime.now());
                     Update update = UpdateUtils.selectiveUpdateFromExample(modify);

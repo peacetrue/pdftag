@@ -33,10 +33,10 @@ public class TemplateModify extends OperatorCapableImpl<Long> {
     @NotNull
     @Size(min = 1, max = 32)
     private String name;
-    /** 内容 */
-    @NotNull
-    @Size(min = 1, max = 1023)
-    private String content;
+//    /** 内容 */
+//    @NotNull
+//    @Size(min = 1, max = 1023)
+//    private String content;
     /** 附件 */
     private Long attachmentId;
     /** 备注 */

@@ -1,20 +1,6 @@
-import React, {useCallback} from 'react';
+import React from 'react';
 import {Create, ReferenceInput, required, SaveButton, SelectInput, SimpleForm, TextInput, Toolbar,} from 'react-admin';
-import qs from "qs";
-
-const ReproductionExportButton = props => {
-    const handleSave = useCallback(
-        (values, redirect) => {
-            let params = qs.stringify(values, {
-                arrayFormat: 'repeat',
-                serializeDate: (d) => d.getTime().toString(),
-                allowDots: true,
-            })
-            window.open(`${process.env.REACT_APP_BASE_URL}/phone-tags/export?versionType=reproduction&${params}`);
-        }, []
-    );
-    return <SaveButton {...props} label={'演示导出'} onSave={handleSave}/>;
-};
+import {ReproductionViewExportButton} from "./ReproductionViewExportButton";
 
 const PhoneTagToolbar = props => {
     console.info("PhoneTagToolbar.props:", props);
@@ -25,7 +11,7 @@ const PhoneTagToolbar = props => {
                 redirect="show"
                 submitOnEnter={true}
             />
-            <ReproductionExportButton variant="text"/>
+            <ReproductionViewExportButton variant="text"/>
             <SaveButton
                 label="正式导出"
                 submitOnEnter={false}

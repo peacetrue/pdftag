@@ -5,6 +5,7 @@ import {
     Datagrid,
     DateField,
     DateInput,
+    EditButton,
     ExportButton,
     Filter,
     List,
@@ -18,8 +19,7 @@ import {
     useListContext
 } from 'react-admin';
 import {Link} from 'react-router-dom';
-import {linkToRecord} from 'ra-core';
-
+import {RecordExportButton} from './RecordExportButton'
 
 const ListActions = (props) => {
     const {
@@ -34,9 +34,7 @@ const ListActions = (props) => {
         resource,
         displayedFilters,
         filterValues,
-        hasCreate,
         basePath,
-        selectedIds,
         showFilter,
         total,
     } = useListContext();
@@ -57,8 +55,6 @@ const ListActions = (props) => {
                 filterValues={filterValues}
                 maxResults={maxResults}
             />
-            {/* Add your custom actions */}
-            {/*<CreateButton label={'导入'} basePath={'/phone-tags/imports'}/>*/}
             <Button
                 component={Link}
                 to={`/phone-tags/imports`}
@@ -86,27 +82,6 @@ const Filters = (props) => (
     </Filter>
 );
 
-const PhoneTagExportButton = (props) => {
-    console.info("PdfButton.props:", props);
-    const {
-        record,
-        versionType = 'reproduction',
-        ...rest
-    } = props;
-    let label = '演示导出';
-    if (versionType === 'production') label = '正式导出';
-    return (
-        <Button
-            label={label}
-            onClick={e => {
-                e.stopPropagation();
-                window.open(`${process.env.REACT_APP_BASE_URL}/phone-tags/${record.id}/export?versionType=${versionType}`);
-            }}
-            {...rest}
-        >
-        </Button>
-    )
-};
 
 export const PhoneTagList = props => {
     console.info('PhoneTagList:', props);
@@ -119,14 +94,14 @@ export const PhoneTagList = props => {
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
-                <TextField label={'认证型号'} source="modelCode"/>
-                <TextField label={'包装内含'} source="packageContent"/>
+                <TextField label={'产品名称'} source="productName"/>
+                {/*<TextField label={'包装内含'} source="packageContent"/>*/}
                 {/*<TextField label={'执行标准'} source="standard"/>*/}
                 {/*<TextField label={'存储空间'} source="storage"/>*/}
                 <DateField label={'创建时间'} source="createdTime" showTime/>
-                {/*<EditButton/>*/}
-                <PhoneTagExportButton/>
-                <PhoneTagExportButton versionType="production"/>
+                <EditButton/>
+                <RecordExportButton/>
+                <RecordExportButton versionType="production"/>
             </Datagrid>
         </List>
     )

@@ -28,7 +28,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.SequenceInputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -51,6 +50,15 @@ public class PhoneTagController {
 
     @Autowired
     private PhoneTagService phoneTagService;
+    @Autowired
+    private TemplateService templateService;
+    @Autowired
+    private AttachmentService attachmentService;
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private ControllerPdfTagProperties properties;
+    public static final AtomicLong ATOMIC_LONG = new AtomicLong(0);
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Mono<PhoneTagVO> addByForm(PhoneTagAdd params) {
@@ -121,7 +129,7 @@ public class PhoneTagController {
     @Autowired
     private ImportsService importsService;
 
-    @PostMapping
+    @PostMapping(params = "type=imports")
     public Mono<ImportsResult> imports(@RequestPart("file") FilePart file) {
         log.info("导入CSV文件[{}]", file.filename());
         CsvImportsSetting importsSetting = new CsvImportsSetting();
@@ -135,16 +143,6 @@ public class PhoneTagController {
                 ;
     }
 
-
-    @Autowired
-    private TemplateService templateService;
-    @Autowired
-    private AttachmentService attachmentService;
-    @Autowired
-    private ControllerPdfTagProperties properties;
-    @Autowired
-    private FileService fileService;
-    public static final AtomicLong ATOMIC_LONG = new AtomicLong(0);
 
     @GetMapping("/export")
     public Mono<Void> export(ServerHttpResponse response, String versionType, PhoneTagVO vo) {
@@ -176,13 +174,13 @@ public class PhoneTagController {
                     if (isReproduction)
                         params.add("-Dcustomization.dir=" + properties.getReproductionCustomizationDir());
                     return DitaUtils.executeDita(basedir, ditaFileName, "pdf", properties.getOutputDir(), params.toArray(new String[0]))
-                            .doOnNext((pdfPath) -> {
-                                try {
-                                    Files.delete(ditaFilePath);
-                                } catch (IOException e) {
-                                    log.error("删除临时 dita 文件[{}]异常", ditaFilePath, e);
-                                }
-                            })
+//                            .doOnNext((pdfPath) -> {
+//                                try {
+//                                    Files.delete(ditaFilePath);
+//                                } catch (IOException e) {
+//                                    log.error("删除临时 dita 文件[{}]异常", ditaFilePath, e);
+//                                }
+//                            })
                             .flatMap(pdfPath -> isReproduction
                                     ? FileController.previewLocalFile(response, pdfPath)
                                     : FileController.downloadLocalFile(response, pdfPath)

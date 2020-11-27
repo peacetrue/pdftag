@@ -1,5 +1,5 @@
 import React from 'react';
-import {DateField, ReferenceField, Show, SimpleForm, SimpleShowLayout, TextField} from 'react-admin';
+import {DateField, ReferenceField, Show, SimpleShowLayout, TextField} from 'react-admin';
 
 export const TemplateShow = (props) => {
     console.info('TemplateShow:', props);
@@ -7,7 +7,7 @@ export const TemplateShow = (props) => {
         <Show {...props} title={`${props.options.label}#${props.id}`}>
             <SimpleShowLayout>
                 <TextField label={'编号'} source="code"/>
-                <TextField label={'类型'} source="typeCode"/>
+                {/*<TextField label={'类型'} source="typeCode"/>*/}
                 <TextField label={'名称'} source="name"/>
                 <TextField label={'内容'} source="content"/>
                 <TextField label={'备注'} source="remark"/>
