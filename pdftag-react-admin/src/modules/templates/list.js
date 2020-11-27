@@ -1,5 +1,15 @@
 import React from 'react';
-import {Datagrid, DateField, DateInput, EditButton, Filter, List, TextField, TextInput} from 'react-admin';
+import {
+    Datagrid,
+    DateField,
+    DateInput,
+    EditButton,
+    Filter,
+    List,
+    ReferenceField,
+    TextField,
+    TextInput
+} from 'react-admin';
 import { makeStyles } from '@material-ui/core/styles';
 
 const Filters = (props) => (
@@ -30,9 +40,16 @@ export const TemplateList = props => {
                 <TextField label={'编号'} source="code"/>
                 {/*<TextField label={'类型'} source="typeCode"/>*/}
                 <TextField label={'名称'} source="name"/>
-                <TextField label={'内容'} source="content" cellClassName={classes.comment}/>
+                {/*<TextField label={'内容'} source="content" cellClassName={classes.comment}/>*/}
                 {/*<TextField label={'备注'} source="remark"/>*/}
                 {/*<TextField label={'创建者主键'} source="creatorId"/>*/}
+
+                <ReferenceField label={'附件'} reference="attachments" source="attachmentId" link="show">
+                    <TextField source="name"/>
+                </ReferenceField>
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
+                    <TextField source="username"/>
+                </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
                 {/*<TextField label={'修改者主键'} source="modifierId"/>*/}
                 {/*<DateField label={'修改时间'} source="modifiedTime" showTime/>*/}

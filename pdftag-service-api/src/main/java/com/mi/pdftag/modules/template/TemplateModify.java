@@ -37,6 +37,8 @@ public class TemplateModify extends OperatorCapableImpl<Long> {
     @NotNull
     @Size(min = 1, max = 1023)
     private String content;
+    /** 附件 */
+    private Long attachmentId;
     /** 备注 */
     @Size(max = 255)
     private String remark;

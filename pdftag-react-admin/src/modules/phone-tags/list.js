@@ -1,18 +1,75 @@
-import React from 'react';
+import React, {cloneElement} from 'react';
 import {
     Button,
+    CreateButton,
     Datagrid,
     DateField,
     DateInput,
+    ExportButton,
     Filter,
     List,
     ReferenceField,
     ReferenceInput,
+    sanitizeListRestProps,
     SelectInput,
     TextField,
-    TextInput
+    TextInput,
+    TopToolbar,
+    useListContext
 } from 'react-admin';
+import {Link} from 'react-router-dom';
+import {linkToRecord} from 'ra-core';
 
+
+const ListActions = (props) => {
+    const {
+        className,
+        exporter,
+        filters,
+        maxResults,
+        ...rest
+    } = props;
+    const {
+        currentSort,
+        resource,
+        displayedFilters,
+        filterValues,
+        hasCreate,
+        basePath,
+        selectedIds,
+        showFilter,
+        total,
+    } = useListContext();
+    return (
+        <TopToolbar className={className} {...sanitizeListRestProps(rest)}>
+            {filters && cloneElement(filters, {
+                resource,
+                showFilter,
+                displayedFilters,
+                filterValues,
+                context: 'button',
+            })}
+            <CreateButton basePath={basePath}/>
+            <ExportButton
+                disabled={total === 0}
+                resource={resource}
+                sort={currentSort}
+                filterValues={filterValues}
+                maxResults={maxResults}
+            />
+            {/* Add your custom actions */}
+            {/*<CreateButton label={'导入'} basePath={'/phone-tags/imports'}/>*/}
+            <Button
+                component={Link}
+                to={`/phone-tags/imports`}
+                label={'导入'}
+                onClick={(e) => e.stopPropagation()}
+                {...rest}
+            >
+            </Button>
+        </TopToolbar>
+    );
+};
 
 const Filters = (props) => (
     <Filter {...props}>
@@ -29,7 +86,7 @@ const Filters = (props) => (
     </Filter>
 );
 
-const ExportButton = (props) => {
+const PhoneTagExportButton = (props) => {
     console.info("PdfButton.props:", props);
     const {
         record,
@@ -54,7 +111,7 @@ const ExportButton = (props) => {
 export const PhoneTagList = props => {
     console.info('PhoneTagList:', props);
     return (
-        <List {...props} title={`${props.options.label}列表`} filters={<Filters/>}
+        <List {...props} title={`${props.options.label}列表`} actions={<ListActions/>} filters={<Filters/>}
               sort={{field: 'createdTime', order: 'desc'}}>
             <Datagrid rowClick="show">
                 <TextField label={'样式'} source="styleCode"/>
@@ -68,8 +125,8 @@ export const PhoneTagList = props => {
                 {/*<TextField label={'存储空间'} source="storage"/>*/}
                 <DateField label={'创建时间'} source="createdTime" showTime/>
                 {/*<EditButton/>*/}
-                <ExportButton/>
-                <ExportButton versionType="production"/>
+                <PhoneTagExportButton/>
+                <PhoneTagExportButton versionType="production"/>
             </Datagrid>
         </List>
     )

@@ -31,6 +31,8 @@ public class Template implements Serializable {
     private String name;
     /** 内容 */
     private String content;
+    /** 附件 */
+    private Long attachmentId;
     /** 备注 */
     private String remark;
     /** 创建者主键 */

@@ -7,7 +7,7 @@ export const PhoneTagShow = (props) => {
         <Show {...props} title={`${props.options.label}#${props.id}`}>
             <SimpleShowLayout>
                 <TextField label={'样式'} source="styleCode"/>
-                <ReferenceField label={'模版'} reference="templates" source="templateId" link="view">
+                <ReferenceField label={'模版'} reference="templates" source="templateId" link="show">
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
@@ -23,11 +23,11 @@ export const PhoneTagShow = (props) => {
                 <TextField label={'颜色'} source="colour"/>
                 <TextField label={'存储空间'} source="storage"/>
                 <TextField label={'备注'} source="remark"/>
-                <ReferenceField label={'创建者'} reference="users" source="creatorId" link="view">
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
-                <ReferenceField label={'修改者'} reference="users" source="modifierId" link="view">
+                <ReferenceField label={'修改者'} reference="users" source="modifierId" link="show">
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'最近修改时间'} source="modifiedTime" showTime/>

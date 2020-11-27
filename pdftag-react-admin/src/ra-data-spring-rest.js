@@ -59,38 +59,51 @@ export default (apiUrl, httpClient = fetch) => {
             case GET_LIST:
                 options.method = 'GET';
                 options.params = pageParams(params);
+                options.params = {...options.params, ...params.query};
                 format = pageFormat;
                 break;
             case GET_ONE:
                 options.method = 'GET';
+                options.params = params.query;
                 url += `/${params.id}`;
                 break;
             case GET_MANY:
                 options.method = 'GET';
-                options.params = {id: params.ids};
+                options.params = {id: params.ids, ...params.query};
                 break;
             case GET_MANY_REFERENCE:
                 options.method = 'GET';
                 options.params = pageParams(params);
                 options.params[params.target] = params.id;
+                options.params = {...options.params, ...params.query};
                 format = pageFormat;
                 break;
             case CREATE:
                 options.method = 'POST';
+                options.params = params.query;
                 options.body = params.data;
+                //support non-standard response
+                format = response => {
+                    let data = response.json;
+                    if (!data.id) data.id = 0;
+                    return {data: data};
+                };
                 break;
             case UPDATE:
                 url += `/${params.id}`;
                 options.method = 'PUT';
+                options.params = params.query;
                 options.body = params.data;
+                //support non-standard response
                 format = writeFormatFactory(params.data);
                 break;
             case UPDATE_MANY:
                 //multiple call UPDATE
-                return Promise.all(params.ids.map(id => dataProvider(UPDATE, resource, {id, data: params.data})))
+                return Promise.all(params.ids.map(id => dataProvider(UPDATE, resource, {id, ...params})))
                     .then(response => ({data: response.map(item => item.data)}));
             case DELETE:
                 url += `/${params.id}`;
+                options.params = params.query;
                 options.method = 'DELETE';
                 break;
             case DELETE_MANY:
@@ -100,6 +113,13 @@ export default (apiUrl, httpClient = fetch) => {
             default:
                 throw new Error(`unknown type [${type}]`);
         }
+
+        if (options.body instanceof FormData) {
+            let query = options.body.get("_query");
+            query && (options.params = JSON.parse(query));
+            options.body.delete("_query");
+        }
+
         return httpClient(url, options).then(format);
     };
     return dataProvider;

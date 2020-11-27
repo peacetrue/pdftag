@@ -1,16 +1,29 @@
 import React from 'react';
-import {Create, required, SimpleForm, DateTimeInput, TextInput,} from 'react-admin';
+import {Create, FileField, FileInput, required, SimpleForm, TextInput,} from 'react-admin';
+
+const toFormData = file => {
+    let formData = new FormData();
+    formData.append("file", file, file.name)
+    return formData;
+}
+
+const transform = data => {
+    console.info("transform data:", data);
+    let formData = toFormData(data.file.rawFile);
+    data.remark && formData.append("remark", data.remark);
+    formData.append("_query", JSON.stringify({fileCount: '1'}));
+    return formData;
+}
 
 export const AttachmentCreate = (props) => {
     console.info('AttachmentCreate:', props);
     return (
-        <Create {...props} title={`新建${props.options.label}`}>
+        <Create {...props} title={`上传${props.options.label}`} transform={transform}>
             <SimpleForm>
-                        <TextInput label={'名称'} source="name" validate={[ required(), ]}/>
-                        <TextInput label={'路径'} source="path" validate={[ required(), ]}/>
-                        <TextInput label={'大小（字节）'} source="sizes" validate={[ required(), ]}/>
-                        <TextInput label={'状态编码'} source="stateId" validate={[ required(), ]}/>
-                        <TextInput label={'备注'} source="remark" validate={[  ]}/>
+                <FileInput label="附件" source="file" accept={'.zip'} validate={[required(),]}>
+                    <FileField source="src" title="title"/>
+                </FileInput>
+                <TextInput label={'备注'} source="remark" fullWidth multiline validate={[]}/>
             </SimpleForm>
         </Create>
     );

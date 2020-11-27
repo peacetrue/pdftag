@@ -1,11 +1,12 @@
-package com.mi.pdftag.utils;
+package com.github.peacetrue.dita;
 
-import com.mi.pdftag.modules.phonetag.PhoneTagVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.expression.MapAccessor;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ParserContext;
 import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -23,17 +25,25 @@ import java.util.concurrent.atomic.AtomicLong;
  * @since : 2020-11-24 21:58
  **/
 @Slf4j
-public abstract class PdfTagUtils {
+public abstract class DitaUtils {
 
-    protected PdfTagUtils() {
+    protected DitaUtils() {
     }
 
     private static final SpelExpressionParser PARSER = new SpelExpressionParser();
     private static final ParserContext PARSER_CONTEXT = new TemplateParserContext();
 
-    public static String parse(String expressionString, PhoneTagVO vo) {
+    public static String resolveTemplateFile(String templateFolder, String templateFile) {
+        if (!templateFolder.endsWith(".zip")) return templateFolder;
+        return templateFolder.substring(0, templateFolder.length() - 4) + File.separatorChar + templateFile;
+    }
+
+    public static String parse(String expressionString, Map<String, Object> params) {
         Expression expression = PARSER.parseExpression(expressionString, PARSER_CONTEXT);
-        return expression.getValue(vo, String.class);
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.addPropertyAccessor(new MapAccessor());
+        context.setRootObject(params);
+        return expression.getValue(context, String.class);
     }
 
     public static final AtomicLong ATOMIC_LONG = new AtomicLong(0);
@@ -66,7 +76,15 @@ public abstract class PdfTagUtils {
                 );
     }
 
-    public static void main(String[] args) {
-        System.out.println(File.separator);
+    public static Mono<Integer> execute(List<String> commands) {
+        log.info("execute commands: {}", commands);
+        ProcessBuilder builder = new ProcessBuilder(commands);
+        builder.inheritIO();
+        return Mono.fromCallable(() -> builder.start().waitFor())
+                .flatMap(exitValue -> exitValue == 0
+                        ? Mono.just(exitValue)
+                        : Mono.error(new IllegalStateException("exec dita command abnormal return " + exitValue))
+                );
     }
+
 }

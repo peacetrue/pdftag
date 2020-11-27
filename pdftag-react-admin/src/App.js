@@ -11,45 +11,21 @@ import TemplateResource from "./modules/templates";
 import PhoneTagResource from './modules/phone-tags';
 import AttachmentResource from './modules/attachments';
 import {authProvider,dataProvider} from "./instances";
-
-// const apiProxy = httpClient => {
-//     return (url, options) => {
-//         if (!url.startsWith("http")) url = process.env.REACT_APP_BASE_URL + url;
-//         return httpClient(url, options);
-//     };
-// };
-//
-// const resultConverter = httpClient => {
-//     return (url, options) => {
-//         return httpClient(url, options)
-//             .then(response => response.json);
-//     };
-// };
-//
-// export const debugHttpClient = (httpClient) => {
-//     return (url, options = {}) => {
-//         console.info("url:", url);
-//         console.info("options:", options);
-//         return httpClient(url, options);
-//     };
-// };
-//
-// let httpClient = defaultHttpClientJoiner(fetchUtils.fetchJson, apiProxy, httpClientProxies.cors, httpClientProxies.springRest, debugHttpClient);
-//
-// const dataProvider = springDataProvider(process.env.REACT_APP_BASE_URL, httpClient);
-// const authProvider = FormAuthProvider(process.env.REACT_APP_BASE_URL, defaultHttpClientJoiner(httpClient, resultConverter));
+import customRoutes from './routes';
 
 const i18nProvider = polyglotI18nProvider(() => chineseMessages, 'cn');
 
 const App = () => (
-    <Admin title="黄金管家"
+    <Admin title="小米PDF标签"
            dataProvider={dataProvider}
            i18nProvider={i18nProvider}
-           authProvider={authProvider}>
+           authProvider={authProvider}
+           customRoutes={customRoutes}
+    >
         {UserResource}
+        {AttachmentResource}
         {TemplateResource}
         {PhoneTagResource}
-        {/*{AttachmentResource}*/}
         <Resource name="profile"/>
     </Admin>
 );

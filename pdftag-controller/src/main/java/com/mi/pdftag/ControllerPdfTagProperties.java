@@ -27,5 +27,6 @@ public class ControllerPdfTagProperties {
     }
 
     private String outputDir = "/Users/xiayx/Documents/Projects/pdftag/02-output";
+    private String templateFileName = "template.dita";
     private String reproductionCustomizationDir = "/Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark";
 }

@@ -44,4 +44,6 @@ peacetrue:
   operator:
     pointcut:
       expression: 'execution(* com.mi.pdftag..*ServiceImpl.*(*,..))||execution(* com.github.peacetrue..*ServiceImpl.*(*,..))'
+  file:
+    base-path: /Users/xiayx/Documents/Projects/pdftag/02-output
 

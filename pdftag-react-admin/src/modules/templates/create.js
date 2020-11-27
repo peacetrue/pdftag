@@ -1,16 +1,5 @@
 import React from 'react';
-import {CREATE, Create, ReferenceInput, required, SelectInput, SimpleForm, TextInput} from 'react-admin';
-import {dataProvider} from "../../instances";
-
-function toFormData(files) {
-    let formData = new FormData();
-    files.forEach(file => formData.append("files", file, file.name));
-    return formData;
-}
-
-function onDropAccepted(files, event) {
-    dataProvider(CREATE, "files", {data: toFormData(files)});
-}
+import {Create, ReferenceInput, required, SelectInput, SimpleForm, TextInput} from 'react-admin';
 
 export const TemplateCreate = (props) => {
     console.info('TemplateCreate:', props);
@@ -26,13 +15,11 @@ export const TemplateCreate = (props) => {
                 {/*    <SelectInput optionText="name" source={'code'}/>*/}
                 {/*</ReferenceInput>*/}
                 <TextInput label={'名称'} source="name" validate={[required(),]}/>
-                {/*<FileInput label="模版文件" source="content" accept="application/pdf" options={{onDropAccepted}}*/}
-                {/*           validate={[required(),]}>*/}
-                {/*    <FileField source="src" title="title"/>*/}
-                {/*</FileInput>*/}
-                <TextInput label={'内容'} source="content" type={'textarea'} fullWidth multiline
-                           validate={[required(),]}/>
-                <TextInput label={'备注'} source="remark" validate={[]} fullWidth multiline/>
+                <TextInput label={'内容'} source="content" fullWidth multiline validate={[required(),]}/>
+                <ReferenceInput label={'附件'} reference="attachments" source="attachmentId" validate={[required(),]}>
+                    <SelectInput optionText="name"/>
+                </ReferenceInput>
+                <TextInput label={'备注'} source="remark" fullWidth multiline validate={[]}/>
             </SimpleForm>
         </Create>
     );

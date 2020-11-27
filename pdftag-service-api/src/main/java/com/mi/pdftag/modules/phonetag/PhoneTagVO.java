@@ -1,6 +1,7 @@
 package com.mi.pdftag.modules.phonetag;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * @author xiayx
  */
 @Data
+@NoArgsConstructor
 public class PhoneTagVO implements Serializable {
 
     private static final long serialVersionUID = 0L;
@@ -55,5 +57,7 @@ public class PhoneTagVO implements Serializable {
     /** 修改时间 */
     private LocalDateTime modifiedTime;
 
-
+    public PhoneTagVO(Long id) {
+        this.id = id;
+    }
 }

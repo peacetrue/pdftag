@@ -23,6 +23,8 @@ dependencies {
     implementation 'com.github.peacetrue.user:peacetrue-user-service-impl:1.0.0-SNAPSHOT'
     implementation 'com.github.peacetrue.attachment:peacetrue-attachment-controller:1.0.0-SNAPSHOT'
     implementation 'com.github.peacetrue.attachment:peacetrue-attachment-service-impl:1.0.0-SNAPSHOT'
+    implementation 'com.github.peacetrue.file:peacetrue-file-controller:1.0.0-SNAPSHOT'
+    implementation 'com.github.peacetrue.file:peacetrue-file-service-impl:1.0.0-SNAPSHOT'
     implementation project(":pdftag-controller")
     implementation project(":pdftag-service-impl")
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
