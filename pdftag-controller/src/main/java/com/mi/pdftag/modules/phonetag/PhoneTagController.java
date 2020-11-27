@@ -167,7 +167,7 @@ public class PhoneTagController {
                             }));
                 })
                 .flatMap(ditaFilePath -> {
-                    String basedir = properties.getDitaBaseDir().get(DitaStyle.DEFAULT);
+                    String basedir = properties.getDitaBaseDir().get(vo.getStyleCode());
                     String ditaFileName = ditaFilePath.getParent().getFileName().toString()
                             + File.separatorChar + ditaFilePath.getFileName().toString();
                     List<String> params = new ArrayList<>(2);
