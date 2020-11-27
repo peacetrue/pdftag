@@ -28,6 +28,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.SequenceInputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -174,13 +175,13 @@ public class PhoneTagController {
                     if (isReproduction)
                         params.add("-Dcustomization.dir=" + properties.getReproductionCustomizationDir());
                     return DitaUtils.executeDita(basedir, ditaFileName, "pdf", properties.getOutputDir(), params.toArray(new String[0]))
-//                            .doOnNext((pdfPath) -> {
-//                                try {
-//                                    Files.delete(ditaFilePath);
-//                                } catch (IOException e) {
-//                                    log.error("删除临时 dita 文件[{}]异常", ditaFilePath, e);
-//                                }
-//                            })
+                            .doOnNext((pdfPath) -> {
+                                try {
+                                    Files.delete(ditaFilePath);
+                                } catch (IOException e) {
+                                    log.error("删除临时 dita 文件[{}]异常", ditaFilePath, e);
+                                }
+                            })
                             .flatMap(pdfPath -> isReproduction
                                     ? FileController.previewLocalFile(response, pdfPath)
                                     : FileController.downloadLocalFile(response, pdfPath)
