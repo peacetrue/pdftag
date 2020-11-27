@@ -69,11 +69,10 @@ public abstract class DitaUtils {
         log.debug("exec dita command: {} ", String.join(" ", commands));
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.inheritIO();
-        return Mono.fromCallable(() -> builder.start().waitFor())
-                .flatMap(exitValue -> exitValue == 0
-                        ? Mono.just(outputFolder.concat("/" + Paths.get(inputFile).getFileName().toString().replaceFirst("(.*\\.).*", "$1" + format)))
-                        : Mono.error(new IllegalStateException("exec dita command abnormal return " + exitValue))
-                );
+        return execute(commands).flatMap(exitValue -> exitValue == 0
+                ? Mono.just(outputFolder.concat("/" + Paths.get(inputFile).getFileName().toString().replaceFirst("(.*\\.).*", "$1" + format)))
+                : Mono.error(new IllegalStateException("exec dita command abnormal return " + exitValue))
+        );
     }
 
     public static Mono<Integer> execute(List<String> commands) {

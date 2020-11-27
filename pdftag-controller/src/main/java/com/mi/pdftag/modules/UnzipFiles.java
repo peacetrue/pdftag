@@ -11,12 +11,6 @@ import java.util.zip.ZipInputStream;
 
 public class UnzipFiles {
 
-    public static void main(String[] args) throws IOException {
-        String zipFilePath = "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/Mi_giftBox_label_Cn.zip";
-        String destDir = "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment";
-        unzip(zipFilePath, new File(destDir));
-    }
-
     public static void unzip(String fileZip) throws IOException {
         unzip(fileZip, Paths.get(fileZip).getParent().toFile());
     }
