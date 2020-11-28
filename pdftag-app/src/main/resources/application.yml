@@ -37,8 +37,6 @@ peacetrue:
   spring:
     security:
       ignored-urls: ['/users/register','/users/exists','/index.html','/manifest.json','/logo192.png','/static/**']
-  #  file:
-  #    base-path: /Users/xiayx/Documents/Projects/pdftag/01-upload
   enum:
     base-package-paths: com.mi.pdftag
   operator:

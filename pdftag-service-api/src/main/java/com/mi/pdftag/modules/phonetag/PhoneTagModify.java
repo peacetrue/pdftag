@@ -68,5 +68,17 @@ public class PhoneTagModify extends OperatorCapableImpl<Long> {
     /** 备注 */
     @Size(min = 1, max = 255)
     private String remark;
+    /** 演示附件 */
+    private String reproductionPath;
+    /** 正式附件 */
+    private String productionPath;
+
+    public static PhoneTagModify forPdf(Long id, String reproductionPath, String productionPath) {
+        PhoneTagModify modify = new PhoneTagModify();
+        modify.setId(id);
+        modify.setReproductionPath(reproductionPath);
+        modify.setProductionPath(productionPath);
+        return modify;
+    }
 
 }

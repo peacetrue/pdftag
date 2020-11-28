@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "pdf-viewer-reactjs": "^2.1.2",
     "peacetrue-httpclient": "^0.0.6",
     "qs": "^6.9.4",
     "ra-data-spring-rest": "^1.0.0",
@@ -16,6 +17,7 @@
     "react-admin": "^3.6.1",
     "react-dom": "^16.13.1",
     "react-final-form": "^6.5.2",
+    "react-iframe": "^1.8.0",
     "react-scripts": "3.4.1"
   },
   "scripts": {

@@ -1,10 +1,10 @@
 package com.mi.pdftag.modules.phonetag;
 
+import com.mi.pdftag.modules.tag.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @NoArgsConstructor
-public class PhoneTagVO implements Serializable {
+public class PhoneTagVO implements Serializable, Tag {
 
     private static final long serialVersionUID = 0L;
 
@@ -48,6 +48,10 @@ public class PhoneTagVO implements Serializable {
     private String storage;
     /** 备注 */
     private String remark;
+    /** 演示附件 */
+    private String reproductionPath;
+    /** 正式附件 */
+    private String productionPath;
     /** 创建者主键 */
     private Long creatorId;
     /** 创建时间 */
@@ -56,6 +60,7 @@ public class PhoneTagVO implements Serializable {
     private Long modifierId;
     /** 修改时间 */
     private LocalDateTime modifiedTime;
+
 
     public PhoneTagVO(Long id) {
         this.id = id;

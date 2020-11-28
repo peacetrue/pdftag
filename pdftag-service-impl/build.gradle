@@ -17,6 +17,9 @@ dependencies {
 
     api project(":pdftag-service-api")
     api 'org.slf4j:slf4j-api'
+    implementation 'com.github.peacetrue.attachment:peacetrue-attachment-service-impl:1.0.0-SNAPSHOT'
+    implementation 'com.github.peacetrue.file:peacetrue-file-service-api:1.0.0-SNAPSHOT'
+//    implementation 'com.github.peacetrue.file:peacetrue-file-service-impl:1.0.0-SNAPSHOT'
     implementation 'com.github.peacetrue:peacetrue-spring'
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.flywaydb:flyway-core'

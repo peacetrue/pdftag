@@ -15,8 +15,8 @@ public enum VersionType implements CodeCapable, NameCapable {
     PRODUCTION("production", "正式"),
     ;
 
-    private String code;
-    private String name;
+    private final String code;
+    private final String name;
 
     VersionType(String code, String name) {
         this.code = code;

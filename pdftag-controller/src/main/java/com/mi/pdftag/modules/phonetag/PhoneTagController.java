@@ -1,19 +1,12 @@
 package com.mi.pdftag.modules.phonetag;
 
-import com.github.peacetrue.attachment.AttachmentGet;
-import com.github.peacetrue.attachment.AttachmentService;
-import com.github.peacetrue.dita.DitaUtils;
 import com.github.peacetrue.file.FileController;
-import com.github.peacetrue.file.FileService;
 import com.github.peacetrue.imports.ImportsResult;
 import com.github.peacetrue.imports.ImportsService;
 import com.github.peacetrue.imports.csv.CsvImportsSetting;
-import com.github.peacetrue.spring.util.BeanUtils;
-import com.mi.pdftag.ControllerPdfTagProperties;
 import com.mi.pdftag.VersionType;
-import com.mi.pdftag.modules.DitaStyle;
-import com.mi.pdftag.modules.template.TemplateGet;
-import com.mi.pdftag.modules.template.TemplateService;
+import com.mi.pdftag.modules.tag.TagGeneratePdf;
+import com.mi.pdftag.modules.tag.TagService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -27,17 +20,12 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.SequenceInputStream;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+
+import static com.github.peacetrue.file.FileController.*;
+import static com.github.peacetrue.file.FileController.DISPOSITION_TYPE_INLINE;
 
 /**
  * 标签控制器
@@ -51,15 +39,6 @@ public class PhoneTagController {
 
     @Autowired
     private PhoneTagService phoneTagService;
-    @Autowired
-    private TemplateService templateService;
-    @Autowired
-    private AttachmentService attachmentService;
-    @Autowired
-    private FileService fileService;
-    @Autowired
-    private ControllerPdfTagProperties properties;
-    public static final AtomicLong ATOMIC_LONG = new AtomicLong(0);
 
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public Mono<PhoneTagVO> addByForm(PhoneTagAdd params) {
@@ -144,49 +123,23 @@ public class PhoneTagController {
                 ;
     }
 
+    @Autowired
+    private TagService tagService;
 
-    @GetMapping("/export")
+    @RequestMapping(params = "_type=generatePdf")
+    public Mono<String> generatePdf(@RequestParam String versionType, PhoneTagAdd params) {
+        log.info("生成 PDF 文件[{}]", params);
+        return tagService.generatePdf(new TagGeneratePdf(versionType, params));
+    }
+
+    @GetMapping(params = "_type=export")
     public Mono<Void> export(ServerHttpResponse response, String versionType, PhoneTagVO vo) {
         log.info("导出[{}]", vo);
-        boolean isReproduction = VersionType.REPRODUCTION.getCode().equals(versionType);
-        return templateService.get(new TemplateGet(vo.getTemplateId()))
-                .flatMap(templateVO -> attachmentService.get(new AttachmentGet(templateVO.getAttachmentId())))
-                .flatMap(attachmentVO -> {
-                    String absoluteFilePath = fileService.getAbsoluteFilePath(attachmentVO.getPath());
-                    String folderPath = absoluteFilePath.substring(0, absoluteFilePath.length() - ".zip".length());
-                    String templateFile = folderPath + File.separatorChar + properties.getTemplateFileName();
-                    return Mono.fromCallable(() -> new String(Files.readAllBytes(Paths.get(templateFile)), StandardCharsets.UTF_8))
-                            .map(content -> DitaUtils.parse(content, BeanUtils.map(vo)))
-                            .flatMap(content -> Mono.fromCallable(() -> {
-                                //TODO handle long overflow
-                                String tempFileName = "template-" + ATOMIC_LONG.getAndIncrement() + ".dita";
-                                Path tempFilePath = Paths.get(folderPath, tempFileName);
-                                Path path = Files.createFile(tempFilePath);
-                                Files.write(path, content.getBytes(StandardCharsets.UTF_8));
-                                return tempFilePath;
-                            }));
-                })
-                .flatMap(ditaFilePath -> {
-                    String basedir = properties.getDitaBaseDir().get(vo.getStyleCode());
-                    String ditaFileName = ditaFilePath.getParent().getFileName().toString()
-                            + File.separatorChar + ditaFilePath.getFileName().toString();
-                    List<String> params = new ArrayList<>(2);
-                    params.add("-Dargs.input.dir=" + ditaFilePath.getParent().toString());
-                    if (isReproduction)
-                        params.add("-Dcustomization.dir=" + properties.getReproductionCustomizationDir());
-                    return DitaUtils.executeDita(basedir, ditaFileName, "pdf", properties.getOutputDir(), params.toArray(new String[0]))
-                            .doOnNext((pdfPath) -> {
-                                try {
-                                    Files.delete(ditaFilePath);
-                                } catch (IOException e) {
-                                    log.error("删除临时 dita 文件[{}]异常", ditaFilePath, e);
-                                }
-                            })
-                            .flatMap(pdfPath -> isReproduction
-                                    ? FileController.previewLocalFile(response, pdfPath)
-                                    : FileController.downloadLocalFile(response, pdfPath)
-                            )
-                            ;
+        return tagService.generatePdf(new TagGeneratePdf(versionType, vo))
+                .flatMap(pdfPath -> {
+                    boolean isReproduction = VersionType.REPRODUCTION.getCode().equals(versionType);
+                    String dispositionType = isReproduction ? DISPOSITION_TYPE_INLINE : DISPOSITION_TYPE_ATTACHMENT;
+                    return writeLocalFile(response, dispositionType, pdfPath);
                 });
     }
 

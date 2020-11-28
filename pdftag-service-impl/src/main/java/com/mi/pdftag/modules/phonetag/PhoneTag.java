@@ -53,6 +53,10 @@ public class PhoneTag implements Serializable {
     private String storage;
     /** 备注 */
     private String remark;
+    /** 演示附件 */
+    private String reproductionPath;
+    /** 正式附件 */
+    private String productionPath;
     /** 创建者主键 */
     private Long creatorId;
     /** 创建时间 */

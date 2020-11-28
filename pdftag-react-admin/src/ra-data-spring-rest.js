@@ -36,6 +36,16 @@ function writeFormatFactory(params) {
     }
 }
 
+const pickQuery = params => {
+    let query = {};
+    if (params.query) query = {...params.query};
+    if (params.data && params.data._query) {
+        query = {...query, ...params.data._query};
+        delete params.data._query;
+    }
+    return Object.keys(query).length === 0 ? null : query;
+}
+
 /**
  * Maps react-admin queries to a REST API implemented using Spring Rest
  *
@@ -80,11 +90,14 @@ export default (apiUrl, httpClient = fetch) => {
                 break;
             case CREATE:
                 options.method = 'POST';
-                options.params = params.query;
+                options.params = pickQuery(params);
                 options.body = params.data;
                 //support non-standard response
                 format = response => {
-                    let data = response.json;
+                    let data = response.json || response.body;
+                    console.info("create.data:", response);
+                    //TODO 完善代码，后台没有返回对象的场景
+                    if (typeof data === 'string') data = {data: data};
                     if (!data.id) data.id = 0;
                     return {data: data};
                 };
@@ -92,7 +105,7 @@ export default (apiUrl, httpClient = fetch) => {
             case UPDATE:
                 url += `/${params.id}`;
                 options.method = 'PUT';
-                options.params = params.query;
+                options.params = pickQuery(params);
                 options.body = params.data;
                 //support non-standard response
                 format = writeFormatFactory(params.data);

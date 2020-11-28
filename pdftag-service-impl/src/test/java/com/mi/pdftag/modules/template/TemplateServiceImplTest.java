@@ -1,6 +1,7 @@
 package com.mi.pdftag.modules.template;
 
 import com.github.peacetrue.spring.util.BeanUtils;
+import com.mi.pdftag.TestServicePdfTagAutoConfiguration;
 import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

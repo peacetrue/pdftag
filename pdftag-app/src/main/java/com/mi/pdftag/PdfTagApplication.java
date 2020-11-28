@@ -6,6 +6,7 @@ import com.github.peacetrue.spring.formatter.date.AutomaticDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateTimeFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticTimeFormatter;
+import com.github.peacetrue.spring.security.ServerHttpSecurityConfigurer;
 import com.github.peacetrue.user.UserGet;
 import com.github.peacetrue.user.UserService;
 import lombok.Getter;
@@ -23,6 +24,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
@@ -107,6 +109,13 @@ public class PdfTagApplication {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public ServerHttpSecurityConfigurer serverHttpSecurityConfigurer() {
+        return http -> http.headers(headers -> headers
+                .frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable)
+        );
     }
 
     @Bean

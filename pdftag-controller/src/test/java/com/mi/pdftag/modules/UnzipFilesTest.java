@@ -1,5 +1,6 @@
 package com.mi.pdftag.modules;
 
+import com.github.peacetrue.io.UnzipFiles;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

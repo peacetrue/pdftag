@@ -1,6 +1,7 @@
 package com.mi.pdftag.modules.phonetag;
 
 import com.github.peacetrue.core.OperatorCapableImpl;
+import com.mi.pdftag.modules.tag.Tag;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
-public class PhoneTagAdd extends OperatorCapableImpl<Long> {
+public class PhoneTagAdd extends OperatorCapableImpl<Long> implements Tag {
 
     private static final long serialVersionUID = 0L;
 
@@ -65,5 +66,11 @@ public class PhoneTagAdd extends OperatorCapableImpl<Long> {
     /** 备注 */
     @Size(min = 1, max = 255)
     private String remark = "";
-
+// default
+    /** 进网许可标志验证网址 */
+    private String networkPermissionUrl = "jwxk.miit.gov.cn";
+    /** 制造商 */
+    private String manufacturer = "小米通讯技术有限公司";
+    /** 制造商地址 */
+    private String manufacturerAddress = "北京市海淀区西二旗中路33号院6号楼9层019号";
 }
