@@ -20,9 +20,9 @@ const App = () => (
            customRoutes={customRoutes}
     >
         {UserResource}
-        {AttachmentResource}
         {TemplateResource}
         {PhoneTagResource}
+        {AttachmentResource}
         <Resource name="profile"/>
     </Admin>
 );

@@ -3,7 +3,7 @@ import {Create, FileField, FileInput, required, SimpleForm, TextInput,} from 're
 
 const toFormData = file => {
     let formData = new FormData();
-    formData.append("file", file, file.name)
+    formData.append("file", file, file.name);
     return formData;
 }
 

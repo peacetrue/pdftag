@@ -44,7 +44,7 @@ export const TemplateList = props => {
                 {/*<TextField label={'备注'} source="remark"/>*/}
                 {/*<TextField label={'创建者主键'} source="creatorId"/>*/}
 
-                <ReferenceField label={'附件'} reference="attachments" source="attachmentId" link="show">
+                <ReferenceField label={'模版附件'} reference="attachments" source="attachmentId" link="show">
                     <TextField source="name"/>
                 </ReferenceField>
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">

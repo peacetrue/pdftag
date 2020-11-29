@@ -1,27 +1,34 @@
 import React from 'react';
 import {
     DateField,
-    Edit,
+    Edit, FileField, FileInput,
     ReferenceField,
     ReferenceInput,
     required,
     SelectInput,
     SimpleForm,
     TextField,
-    TextInput
+    TextInput, useDataProvider
 } from 'react-admin';
+import UploadInput from "../attachments/Upload";
+import transformFactory from "../attachments/Upload";
 
 export const TemplateEdit = (props) => {
     console.info('TemplateEdit:', props);
+    let dataProvider = useDataProvider();
     return (
-        <Edit {...props} title={`${props.options.label}#${props.id}`}>
+        <Edit {...props} title={`${props.options.label}#${props.id}`}
+              transform={transformFactory(dataProvider, 'attachmentId')}>
             <SimpleForm>
                 <TextInput label={'编号'} source="code" validate={required()}/>
                 {/*<TextInput label={'类型'} source="typeCode" validate={required()}/>*/}
                 <TextInput label={'名称'} source="name" validate={required()}/>
-                <ReferenceInput label={'附件'} reference="attachments" source="attachmentId" validate={[required(),]}>
-                    <SelectInput optionText="name"/>
-                </ReferenceInput>
+                <ReferenceField label={'模版附件'} reference="attachments" source="attachmentId" link="show">
+                    <TextField source="name"/>
+                </ReferenceField>
+                <FileInput label="模版附件" source="attachmentId" accept={'.zip'} validate={required()}>
+                    <FileField source="src" title="title"/>
+                </FileInput>
                 {/*<TextInput label={'内容'} source="content" fullWidth multiline validate={required()}/>*/}
                 <TextInput label={'备注'} source="remark" fullWidth multiline validate={[]}/>
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">

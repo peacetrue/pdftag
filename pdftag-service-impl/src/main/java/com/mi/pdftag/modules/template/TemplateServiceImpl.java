@@ -60,6 +60,7 @@ public class TemplateServiceImpl implements TemplateService {
         log.info("新增模版信息[{}]", params);
         Template entity = BeanUtils.map(params, Template.class);
         entity.setContent("");
+        if (entity.getRemark() == null) entity.setRemark("");
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());

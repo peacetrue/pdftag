@@ -17,7 +17,7 @@ import {
     TopToolbar,
     useListContext
 } from 'react-admin';
-import {ImportsButton} from "./ImportButton";
+import {ImportsButton} from "./ImportsButton";
 import {DownloadButton} from "../attachments/DownloadButton";
 
 const ListActions = (props) => {
@@ -80,7 +80,7 @@ export const PhoneTagList = props => {
     console.info('PhoneTagList:', props);
     return (
         <List {...props} title={`${props.options.label}列表`} actions={<ListActions/>} filters={<Filters/>}
-              sort={{field: 'createdTime', order: 'desc'}}>
+              sort={{field: 'createdTime', order: 'desc'}} empty={false}>
             <Datagrid rowClick="show">
                 <TextField label={'样式'} source="styleName"/>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link={'view'}>
