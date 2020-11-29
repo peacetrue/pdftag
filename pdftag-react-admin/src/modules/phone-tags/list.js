@@ -83,7 +83,7 @@ export const PhoneTagList = props => {
               sort={{field: 'createdTime', order: 'desc'}} empty={false}>
             <Datagrid rowClick="show">
                 <TextField label={'样式'} source="styleName"/>
-                <ReferenceField label={'模版'} reference="templates" source="templateId" link={'view'}>
+                <ReferenceField label={'模版'} reference="templates" source="templateId" link={'show'}>
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
