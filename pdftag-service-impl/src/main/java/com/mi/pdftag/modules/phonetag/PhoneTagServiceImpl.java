@@ -1,10 +1,8 @@
 package com.mi.pdftag.modules.phonetag;
 
-import com.github.peacetrue.attachment.AttachmentService;
 import com.github.peacetrue.core.IdCapable;
 import com.github.peacetrue.core.OperatorCapable;
 import com.github.peacetrue.core.Range;
-import com.github.peacetrue.file.FileService;
 import com.github.peacetrue.spring.data.relational.core.query.CriteriaUtils;
 import com.github.peacetrue.spring.data.relational.core.query.UpdateUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
@@ -12,9 +10,6 @@ import com.github.peacetrue.util.DateUtils;
 import com.github.peacetrue.util.StreamUtils;
 import com.github.peacetrue.util.StructureUtils;
 import com.mi.pdftag.DitaStyle;
-import com.mi.pdftag.ServicePdfTagProperties;
-import com.mi.pdftag.modules.tag.TagServiceImpl;
-import com.mi.pdftag.modules.template.TemplateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -65,28 +60,14 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         );
     }
 
-
-    @Autowired
-    private ServicePdfTagProperties properties;
-    @Autowired
-    private FileService fileService;
-    @Autowired
-    private AttachmentService attachmentService;
-    @Autowired
-    private TemplateService templateService;
-
     @Override
     @Transactional
     public Mono<PhoneTagVO> add(PhoneTagAdd params) {
         log.info("新增标签信息[{}]", params);
-        TagServiceImpl tagService = new TagServiceImpl();
-        tagService.setProperties(properties);
-        tagService.setFileService(fileService);
-        tagService.setAttachmentService(attachmentService);
-        tagService.setTemplateService(templateService);
-
         PhoneTag entity = BeanUtils.map(params, PhoneTag.class);
         if (entity.getRemark() == null) entity.setRemark("");
+        if (entity.getReproductionPath() == null) entity.setReproductionPath("");
+        if (entity.getProductionPath() == null) entity.setProductionPath("");
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());
@@ -96,7 +77,6 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                 .doOnNext(item -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(item, params)))
                 ;
     }
-
 
     @Override
     @Transactional(readOnly = true)

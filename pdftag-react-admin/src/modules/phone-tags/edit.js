@@ -1,5 +1,5 @@
 import React from 'react';
-import {Edit, ReferenceInput, required, SelectInput, SimpleForm, TextInput} from 'react-admin';
+import {Edit} from 'react-admin';
 import {PhoneTagForm} from "./form";
 
 export const PhoneTagEdit = (props) => {

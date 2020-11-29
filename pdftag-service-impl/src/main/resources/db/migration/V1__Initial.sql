@@ -1,67 +1,107 @@
-DROP TABLE IF EXISTS `user`;
+create table attachment
+(
+    id           bigint auto_increment primary key comment '主键',
+    name         varchar(32)  not null comment '名称',
+    path         varchar(255) not null comment '路径',
+    sizes        bigint       not null comment '大小（字节）',
+    state_id     tinyint      not null comment '状态编码. 1、临时，2、生效、3、删除',
+    remark       varchar(255) not null comment '备注',
+    creator_id   bigint       not null comment '创建者主键',
+    created_time datetime     not null comment '创建时间'
+) comment '附件';
+
+create index attachment_name_index on attachment (name);
+
+create index attachment_state_id_index on attachment (state_id);
+
+create table dictionary_type
+(
+    id            bigint auto_increment primary key comment '主键',
+    code          varchar(32)  not null comment '编码',
+    name          varchar(32)  not null comment '名称',
+    remark        varchar(255) not null comment '备注',
+    creator_id    bigint       not null comment '创建者主键',
+    created_time  datetime     not null comment '创建时间',
+    modifier_id   bigint       not null comment '修改者主键',
+    modified_time datetime     not null comment '最近修改时间',
+    constraint dictionary_type_code_uindex unique (code)
+) comment '字典类型';
+
+create index dictionary_type_name_index on dictionary_type (name);
+
+create table dictionary_value
+(
+    id                   bigint auto_increment primary key comment '主键',
+    dictionary_type_id   bigint       not null comment '字典类型. 主键',
+    dictionary_type_code varchar(32)  not null comment '字典类型. 冗余编码方便查询',
+    code                 varchar(32)  not null comment '编码',
+    name                 varchar(255) not null comment '名称',
+    remark               varchar(255) not null comment '备注',
+    creator_id           bigint       not null comment '创建者主键',
+    created_time         datetime     not null comment '创建时间',
+    modifier_id          bigint       not null comment '修改者主键',
+    modified_time        datetime     not null comment '最近修改时间',
+    constraint dictionary_value_dictionary_type_id_code_uindex unique (dictionary_type_id, code)
+) comment '字典项值';
+
+create index dictionary_value_dictionary_type_code_index on dictionary_value (dictionary_type_code);
+
+create table phone_tag
+(
+    id                bigint auto_increment primary key comment '主键',
+    style_code        varchar(32)  not null comment '样式',
+    template_id       bigint       not null comment '模版. 关联模版主键',
+    goods_name        varchar(32)  not null comment '商品名称',
+    model_code        varchar(32)  not null comment '认证型号',
+    package_content   varchar(32)  not null comment '包装内含',
+    standard          varchar(32)  not null comment '执行标准',
+    cmiit_id          varchar(32)  not null comment 'CMIIT ID',
+    network_license   varchar(32)  not null comment '进网许可证',
+    product_name      varchar(32)  not null comment '产品名称',
+    colour            varchar(32)  not null comment '颜色',
+    storage           varchar(32)  not null comment '存储空间',
+    remark            varchar(255) not null comment '备注',
+    reproduction_path varchar(255) not null comment '演示附件',
+    production_path   varchar(255) not null comment '正式附件',
+    creator_id        bigint       not null comment '创建者主键',
+    created_time      datetime     not null comment '创建时间',
+    modifier_id       bigint       not null comment '修改者主键',
+    modified_time     datetime     not null comment '修改时间'
+) comment '手机标签';
+
+create index phone_tag_goods_name_index on phone_tag (goods_name);
+
+create index phone_tag_product_name_index on phone_tag (product_name);
+
+create table template
+(
+    id            bigint auto_increment primary key comment '主键',
+    code          varchar(32)  not null comment '编号',
+    type_code     varchar(32)  not null comment '类型. 1、phone，不同的模版类型对应标签的字段不同',
+    name          varchar(32)  not null comment '名称',
+    content       varchar(255) not null comment '内容',
+    attachment_id bigint       not null comment '附件',
+    remark        varchar(255) not null comment '备注',
+    creator_id    bigint       not null comment '创建者主键',
+    created_time  datetime     not null comment '创建时间',
+    modifier_id   bigint       not null comment '修改者主键',
+    modified_time datetime     not null comment '修改时间',
+    constraint template_code_uindex unique (code)
+);
+
+create index template_name_index on template (name);
+
 create table user
 (
-    id            bigint primary key auto_increment comment '主键',
+    id            bigint auto_increment primary key comment '主键',
     username      varchar(32)  not null comment '用户名',
     password      varchar(255) not null comment '密码',
     creator_id    bigint       not null comment '创建者主键',
     created_time  datetime     not null comment '创建时间',
     modifier_id   bigint       not null comment '修改者主键',
     modified_time timestamp    not null comment '最近修改时间',
-    constraint username unique (username)
+    constraint unique_username unique (username)
 );
 
 INSERT INTO user (id, username, password, creator_id, created_time, modifier_id, modified_time)
 VALUES (1, 'admin', '{noop}admin', 1, '2020-11-22 02:29:13', 1, '2020-11-23 08:25:01');
-
-DROP TABLE IF EXISTS `template`;
-CREATE TABLE `template`
-(
-    id            BIGINT AUTO_INCREMENT,
-    code          VARCHAR(32)    NOT NULL COMMENT '编号',
-    type_code     VARCHAR(16)    NOT NULL COMMENT '类型. 1、phone，不同的模版类型对应标签的字段不同',
-    name          VARCHAR(32)    NOT NULL COMMENT '名称',
-    content       VARCHAR(10240) NOT NULL COMMENT '内容',
-    remark        VARCHAR(255)   NOT NULL COMMENT '备注',
-    creator_id    BIGINT         NOT NULL COMMENT '创建者主键',
-    created_time  DATETIME       NOT NULL COMMENT '创建时间',
-    modifier_id   BIGINT         NOT NULL COMMENT '修改者主键',
-    modified_time DATETIME       NOT NULL COMMENT '修改时间',
-    primary key (id)
-);
-
-COMMENT ON TABLE `template` IS '模版';
-COMMENT ON COLUMN `template`.id IS '主键';
-
-DROP TABLE IF EXISTS `phone_tag`;
-CREATE TABLE `phone_tag`
-(
-    id              BIGINT AUTO_INCREMENT,
-    style_code      VARCHAR(16)  NOT NULL COMMENT '样式',
-    template_id     BIGINT       NOT NULL COMMENT '模版. 关联模版主键',
-    goods_name      VARCHAR(32)  NOT NULL COMMENT '商品名称',
-    model_code      VARCHAR(32)  NOT NULL COMMENT '认证型号',
-    package_content VARCHAR(255) NOT NULL COMMENT '包装内含',
-    standard        VARCHAR(255) NOT NULL COMMENT '执行标准',
-#     network_permission_url VARCHAR(255)  NOT NULL COMMENT '进网许可标志验证网址',
-#     manufacturer VARCHAR(255)  NOT NULL COMMENT '制造商',
-#     manufacturer_address VARCHAR(255)  NOT NULL COMMENT '制造商地址',
-    cmiit_id        VARCHAR(255) NOT NULL COMMENT 'CMIIT ID',
-    network_license VARCHAR(255) NOT NULL COMMENT '进网许可证',
-    product_name    VARCHAR(255) NOT NULL COMMENT '产品名称',
-    colour          VARCHAR(255) NOT NULL COMMENT '颜色',
-    storage         VARCHAR(255) NOT NULL COMMENT '存储空间',
-#     memory_size     decimal(5, 1) NOT NULL COMMENT '存储空间',
-#     disk_size       decimal(5, 1) NOT NULL COMMENT '硬盘大小. 单位 G，支持保留1位小数',
-    remark          VARCHAR(255) NOT NULL COMMENT '备注',
-    creator_id      BIGINT       NOT NULL COMMENT '创建者主键',
-    created_time    DATETIME     NOT NULL COMMENT '创建时间',
-    modifier_id     BIGINT       NOT NULL COMMENT '修改者主键',
-    modified_time   DATETIME     NOT NULL COMMENT '修改时间',
-    primary key (id)
-);
-
-COMMENT ON TABLE `phone_tag` IS '标签';
-COMMENT ON COLUMN `phone_tag`.id IS '主键';
-
-

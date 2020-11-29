@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useState} from "react";
-import {FormWithRedirect, ReferenceInput, required, SaveButton, SelectInput, TextInput,} from 'react-admin';
+import {FormWithRedirect, maxLength, ReferenceInput, required, SaveButton, SelectInput, TextInput,} from 'react-admin';
 import {Box, Toolbar} from '@material-ui/core';
 import Iframe from "react-iframe";
 
@@ -13,19 +13,6 @@ export const PhoneTagForm = props => {
             {...props}
             render={formProps => {
                 console.info("formProps:", formProps);
-                !formProps.record.id && (formProps.initialValues = {
-                    styleCode: 'default',
-                    templateId: 1,
-                    goodsName: '5G数字移动电话机',
-                    modelCode: 'M2001J2C',
-                    packageContent: 'Type-C 有保护套有转接头',
-                    standard: '4G 常用',
-                    cmiitId: '2019',
-                    networkLicense: '00-B324',
-                    productName: '小米10',
-                    colour: '国风雅灰',
-                    storage: '8GB内存 128GB存储',
-                });
                 return (
                     <form>
                         <Box p="1em">
@@ -43,59 +30,59 @@ export const PhoneTagForm = props => {
                                             />
                                         </Box>
                                         <Box flex={1} ml="0.5em">
-                                            <ReferenceInput label={'模版'} reference="templates" source="templateId"
-                                                            validate={[required(),]}>
-                                                <SelectInput optionText="name"/>
+                                            <ReferenceInput label={'模版'} reference="templates" source="templateId">
+                                                <SelectInput optionText="name" validate={[required(),]}/>
                                             </ReferenceInput>
                                         </Box>
                                     </Box>
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'商品名称(goodsName)'} source="goodsName"
-                                                       validate={[required(),]}
+                                                       validate={[required(), maxLength(32)]}
                                             />
                                         </Box>
                                         <Box flex={1} ml="0.5em">
                                             <TextInput label={'认证型号(modelCode)'} source="modelCode"
-                                                       validate={[required(),]}
+                                                       validate={[required(), maxLength(32)]}
                                             />
                                         </Box>
                                     </Box>
                                     <TextInput label={'包装内含(packageContent)'} source="packageContent"
-                                               validate={[required(),]}
+                                               validate={[required(), maxLength(32)]}
                                                fullWidth/>
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'执行标准(standard)'} source="standard"
-                                                       validate={[required(),]}
+                                                       validate={[required(), maxLength(32)]}
                                             />
                                         </Box>
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'CMIIT ID(cmiitId)'} source="cmiitId"
-                                                       validate={[required(),]}
+                                                       validate={[required(), maxLength(32)]}
                                             />
 
                                         </Box>
                                     </Box>
                                     <Box flex={1} ml="0.5em">
                                         <TextInput label={'进网许可证(networkLicense)'} source="networkLicense"
-                                                   validate={[required(),]}
+                                                   validate={[required(), maxLength(32)]}
                                                    fullWidth/>
                                     </Box>
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'产品名称(productName)'} source="productName"
-                                                       validate={[required(),]}
+                                                       validate={[required(), maxLength(32)]}
                                             />
 
                                         </Box>
                                         <Box flex={1} mr="0.5em">
-                                            <TextInput label={'颜色(colour)'} source="colour" validate={[required(),]}
+                                            <TextInput label={'颜色(colour)'} source="colour"
+                                                       validate={[required(), maxLength(32)]}
                                             />
-
                                         </Box>
                                     </Box>
-                                    <TextInput label={'存储空间(storage)'} source="storage" validate={[required(),]}
+                                    <TextInput label={'存储空间(storage)'} source="storage"
+                                               validate={[required(), maxLength(32)]}
                                                fullWidth/>
                                     {/*<TextInput label={'备注'} source="remark" validate={[]} multiline fullWidth/>*/}
                                 </Box>
