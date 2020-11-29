@@ -1,11 +1,20 @@
 package com.mi.pdftag.modules.phonetag;
 
+import com.github.peacetrue.attachment.AttachmentService;
+import com.github.peacetrue.core.IdCapable;
+import com.github.peacetrue.core.OperatorCapable;
 import com.github.peacetrue.core.Range;
+import com.github.peacetrue.file.FileService;
 import com.github.peacetrue.spring.data.relational.core.query.CriteriaUtils;
 import com.github.peacetrue.spring.data.relational.core.query.UpdateUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.github.peacetrue.util.DateUtils;
 import com.github.peacetrue.util.StreamUtils;
+import com.github.peacetrue.util.StructureUtils;
+import com.mi.pdftag.DitaStyle;
+import com.mi.pdftag.ServicePdfTagProperties;
+import com.mi.pdftag.modules.tag.TagServiceImpl;
+import com.mi.pdftag.modules.template.TemplateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -46,8 +55,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                 CriteriaUtils.nullableCriteria(Criteria.where("styleCode")::is, params::getStyleCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("templateId")::is, params::getTemplateId),
                 CriteriaUtils.nullableCriteria(Criteria.where("goodsName")::like, value -> "%" + value + "%", params::getGoodsName),
-                CriteriaUtils.nullableCriteria(Criteria.where("modelCode")::like, value -> "%" + value + "%", params::getModelCode),
-                CriteriaUtils.nullableCriteria(Criteria.where("standard")::like, value -> "%" + value + "%", params::getStandard),
+                CriteriaUtils.nullableCriteria(Criteria.where("productName")::like, value -> "%" + value + "%", params::getProductName),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getCreatedTime()::getUpperBound),
@@ -57,10 +65,26 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         );
     }
 
+
+    @Autowired
+    private ServicePdfTagProperties properties;
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private AttachmentService attachmentService;
+    @Autowired
+    private TemplateService templateService;
+
     @Override
     @Transactional
     public Mono<PhoneTagVO> add(PhoneTagAdd params) {
         log.info("新增标签信息[{}]", params);
+        TagServiceImpl tagService = new TagServiceImpl();
+        tagService.setProperties(properties);
+        tagService.setFileService(fileService);
+        tagService.setAttachmentService(attachmentService);
+        tagService.setTemplateService(templateService);
+
         PhoneTag entity = BeanUtils.map(params, PhoneTag.class);
         if (entity.getRemark() == null) entity.setRemark("");
         entity.setCreatorId(params.getOperatorId());
@@ -69,8 +93,10 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         entity.setModifiedTime(entity.getCreatedTime());
         return entityTemplate.insert(entity)
                 .map(item -> BeanUtils.map(item, PhoneTagVO.class))
-                .doOnNext(item -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(item, params)));
+                .doOnNext(item -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(item, params)))
+                ;
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -88,6 +114,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                     Query query = Query.query(where).with(finalPageable).sort(finalPageable.getSortOr(Sort.by("createdTime").descending()));
                     return entityTemplate.select(query, PhoneTag.class)
                             .map(item -> BeanUtils.map(item, PhoneTagVO.class))
+                            .doOnNext(item -> item.setStyleName(StructureUtils.findNameByCode(DitaStyle.values(), item.getStyleCode())))
                             .reduce(new ArrayList<>(), StreamUtils.reduceToCollection())
                             .map(item -> new PageImpl<>(item, finalPageable, total));
                 })
@@ -105,7 +132,8 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         Criteria where = buildCriteria(params);
         Query query = Query.query(where).sort(sort).limit(100);
         return entityTemplate.select(query, PhoneTag.class)
-                .map(item -> BeanUtils.map(item, PhoneTagVO.class));
+                .map(item -> BeanUtils.map(item, PhoneTagVO.class))
+                .doOnNext(item -> item.setStyleName(StructureUtils.findNameByCode(DitaStyle.values(), item.getStyleCode())));
     }
 
     @Override
@@ -117,13 +145,31 @@ public class PhoneTagServiceImpl implements PhoneTagService {
 //        );
         Criteria where = Criteria.where("id").is(params.getId());
         return entityTemplate.selectOne(Query.query(where), PhoneTag.class)
-                .map(item -> BeanUtils.map(item, PhoneTagVO.class));
+                .map(item -> BeanUtils.map(item, PhoneTagVO.class))
+                .doOnNext(item -> item.setStyleName(StructureUtils.findNameByCode(DitaStyle.values(), item.getStyleCode())));
     }
 
     @Override
     @Transactional
     public Mono<Integer> modify(PhoneTagModify params) {
         log.info("修改标签信息[{}]", params);
+        return this.modifyInner(params)
+                .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
+                .map(Tuple2::getT2)
+                .switchIfEmpty(Mono.just(0));
+    }
+
+    @Override
+    @Transactional
+    public Mono<Integer> modifyPdfPath(PhoneTagModifyPdfPath params) {
+        log.info("修改标签PDF路径信息[{}]", params);
+        return this.modifyInner(params)
+                .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
+                .map(Tuple2::getT2)
+                .switchIfEmpty(Mono.just(0));
+    }
+
+    public <T extends IdCapable<Long> & OperatorCapable<Long>> Mono<Tuple2<PhoneTagVO, Integer>> modifyInner(T params) {
         Criteria where = Criteria.where("id").is(params.getId());
         Query idQuery = Query.query(where);
         return entityTemplate.selectOne(idQuery, PhoneTag.class)
@@ -134,10 +180,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                     modify.setModifiedTime(LocalDateTime.now());
                     Update update = UpdateUtils.selectiveUpdateFromExample(modify);
                     return entityTemplate.update(idQuery, update, PhoneTag.class);
-                })
-                .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
-                .map(Tuple2::getT2)
-                .switchIfEmpty(Mono.just(0));
+                });
     }
 
     @Override

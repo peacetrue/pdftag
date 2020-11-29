@@ -28,11 +28,14 @@ function pageFormat(response) {
 
 function writeFormatFactory(params) {
     return function (response) {
-        let data = response.json;
-        if (typeof data === 'object') return data;
-        return {
-            data: {...params},
-        };
+        let data = response.json || response.body;
+        console.info("create|update.data:", response);
+        //TODO 完善代码，后台没有返回对象的场景
+        let type = typeof data;
+        if (type === 'string' || type === 'number') data = {data: data};
+        if (params && !data.id) data = {...params, ...data};
+        if (!data.id) data.id = 0;
+        return {data: data};
     }
 }
 
@@ -93,14 +96,7 @@ export default (apiUrl, httpClient = fetch) => {
                 options.params = pickQuery(params);
                 options.body = params.data;
                 //support non-standard response
-                format = response => {
-                    let data = response.json || response.body;
-                    console.info("create.data:", response);
-                    //TODO 完善代码，后台没有返回对象的场景
-                    if (typeof data === 'string') data = {data: data};
-                    if (!data.id) data.id = 0;
-                    return {data: data};
-                };
+                format = writeFormatFactory();
                 break;
             case UPDATE:
                 url += `/${params.id}`;

@@ -1,10 +1,28 @@
 import React from 'react';
-import {DateField, ReferenceField, Show, SimpleShowLayout, TextField} from 'react-admin';
+import {
+    DateField,
+    EditButton,
+    ListButton,
+    ReferenceField,
+    Show,
+    SimpleShowLayout,
+    TextField,
+    TopToolbar
+} from 'react-admin';
+import {DownloadButton} from "./DownloadButton";
+
+const AttachmentActions = ({basePath, data, resource}) => (
+    <TopToolbar>
+        <ListButton basePath={basePath} record={data}/>
+        <EditButton basePath={basePath} record={data}/>
+        <DownloadButton filePath={data.path}/>
+    </TopToolbar>
+);
 
 export const AttachmentShow = (props) => {
     console.info('AttachmentShow:', props);
     return (
-        <Show {...props} title={`${props.options.label}#${props.id}`}>
+        <Show actions={<AttachmentActions/>} {...props} title={`${props.options.label}#${props.id}`}>
             <SimpleShowLayout>
                 <TextField label={'名称'} source="name"/>
                 <TextField label={'路径'} source="path"/>

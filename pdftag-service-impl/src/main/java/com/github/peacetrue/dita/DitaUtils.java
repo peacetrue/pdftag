@@ -19,6 +19,10 @@ public abstract class DitaUtils {
     protected DitaUtils() {
     }
 
+    public static String resolvePdfFilePath(String basePath, String fileName) {
+        return basePath.concat("/").concat(FileUtils.replaceExtension(fileName, "pdf"));
+    }
+
     public static Mono<String> executePdf(String baseFolder,
                                           String inputFile,
                                           String outputFolder,
@@ -31,14 +35,11 @@ public abstract class DitaUtils {
         commands.addAll(Arrays.asList("-format", format));
         commands.addAll(Arrays.asList("-output", outputFolder));
         commands.addAll(Arrays.asList(other));
-        return execute(commands).flatMap(exitValue -> exitValue == 0
-                ? Mono.just(resolvePdfFilePath(outputFolder, Paths.get(inputFile).getFileName().toString()))
-                : Mono.error(new IllegalStateException("exec dita command abnormal return " + exitValue))
-        );
-    }
-
-    public static String resolvePdfFilePath(String basePath, String fileName) {
-        return basePath.concat("/").concat(FileUtils.replaceExtension(fileName, "pdf"));
+        return execute(commands)
+                .flatMap(exitValue -> exitValue == 0
+                        ? Mono.just(resolvePdfFilePath(outputFolder, Paths.get(inputFile).getFileName().toString()))
+                        : Mono.error(new IllegalStateException("exec dita command abnormal return " + exitValue))
+                );
     }
 
     public static Mono<Integer> execute(List<String> commands) {

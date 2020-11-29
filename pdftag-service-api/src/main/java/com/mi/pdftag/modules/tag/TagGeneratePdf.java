@@ -14,10 +14,11 @@ import javax.validation.constraints.NotNull;
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagGeneratePdf extends OperatorCapableImpl<Long> {
+public class TagGeneratePdf extends OperatorCapableImpl<Long> implements Cloneable {
 
     private String versionType;
     @NotNull
     private Tag tag;
+
 
 }

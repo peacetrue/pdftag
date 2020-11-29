@@ -1,6 +1,6 @@
 import {Button} from "react-admin";
 import React from "react";
-
+import GetAppIcon from '@material-ui/icons/GetApp';
 export const RecordExportButton = (props) => {
     console.info("RecordExportButton.props:", props);
     const {
@@ -19,6 +19,7 @@ export const RecordExportButton = (props) => {
             }}
             {...rest}
         >
+            <GetAppIcon/>
         </Button>
     )
 };

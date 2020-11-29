@@ -1,5 +1,6 @@
 package com.mi.pdftag.modules.phonetag;
 
+import com.github.peacetrue.core.IdCapable;
 import com.github.peacetrue.core.OperatorCapableImpl;
 import lombok.*;
 
@@ -12,10 +13,10 @@ import javax.validation.constraints.Size;
  */
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhoneTagModify extends OperatorCapableImpl<Long> {
+public class PhoneTagModify extends OperatorCapableImpl<Long> implements IdCapable<Long> {
 
     private static final long serialVersionUID = 0L;
 
@@ -73,12 +74,5 @@ public class PhoneTagModify extends OperatorCapableImpl<Long> {
     /** 正式附件 */
     private String productionPath;
 
-    public static PhoneTagModify forPdf(Long id, String reproductionPath, String productionPath) {
-        PhoneTagModify modify = new PhoneTagModify();
-        modify.setId(id);
-        modify.setReproductionPath(reproductionPath);
-        modify.setProductionPath(productionPath);
-        return modify;
-    }
 
 }

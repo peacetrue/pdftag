@@ -6,7 +6,7 @@ export const PhoneTagShow = (props) => {
     return (
         <Show {...props} title={`${props.options.label}#${props.id}`}>
             <SimpleShowLayout>
-                <TextField label={'样式'} source="styleCode"/>
+                <TextField label={'样式'} source="styleName"/>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link="show">
                     <TextField source="name"/>
                 </ReferenceField>

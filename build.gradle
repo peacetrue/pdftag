@@ -39,6 +39,9 @@ allprojects { project ->
     }
 
     dependencies {
+        //TODO platform 无法完全替代 dependency-management
+        //implementation platform("com.github.peacetrue:peacetrue-dependencies:2.0.0-SNAPSHOT")
+
         compileOnly "org.projectlombok:lombok"
         annotationProcessor "org.projectlombok:lombok"
         implementation "com.google.code.findbugs:jsr305"

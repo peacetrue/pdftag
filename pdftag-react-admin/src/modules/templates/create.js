@@ -15,7 +15,7 @@ export const TemplateCreate = (props) => {
                 {/*    <SelectInput optionText="name" source={'code'}/>*/}
                 {/*</ReferenceInput>*/}
                 <TextInput label={'名称'} source="name" validate={[required(),]}/>
-                <TextInput label={'内容'} source="content" fullWidth multiline validate={[required(),]}/>
+                {/*<TextInput label={'内容'} source="content" fullWidth multiline validate={[required(),]}/>*/}
                 <ReferenceInput label={'附件'} reference="attachments" source="attachmentId" validate={[required(),]}>
                     <SelectInput optionText="name"/>
                 </ReferenceInput>

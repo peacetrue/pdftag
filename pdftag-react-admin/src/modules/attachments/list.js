@@ -34,6 +34,7 @@ export const AttachmentList = props => {
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
+                <EditButton/>
                 <DownloadButton/>
             </Datagrid>
         </List>

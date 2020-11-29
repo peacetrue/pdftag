@@ -1,6 +1,5 @@
 import React, {cloneElement} from 'react';
 import {
-    Button,
     CreateButton,
     Datagrid,
     DateField,
@@ -18,8 +17,8 @@ import {
     TopToolbar,
     useListContext
 } from 'react-admin';
-import {Link} from 'react-router-dom';
-import {RecordExportButton} from './RecordExportButton'
+import {ImportsButton} from "./ImportButton";
+import {DownloadButton} from "../attachments/DownloadButton";
 
 const ListActions = (props) => {
     const {
@@ -47,6 +46,7 @@ const ListActions = (props) => {
                 filterValues,
                 context: 'button',
             })}
+            <ImportsButton/>
             <CreateButton basePath={basePath}/>
             <ExportButton
                 disabled={total === 0}
@@ -55,24 +55,17 @@ const ListActions = (props) => {
                 filterValues={filterValues}
                 maxResults={maxResults}
             />
-            <Button
-                component={Link}
-                to={`/phone-tags/imports`}
-                label={'导入'}
-                onClick={(e) => e.stopPropagation()}
-                {...rest}
-            >
-            </Button>
         </TopToolbar>
     );
 };
 
 const Filters = (props) => (
     <Filter {...props}>
-        <SelectInput label={'样式'} source="styleCode" resettable allowEmpty alwaysOn choices={[
+        <SelectInput label={'样式'} source="styleCode" choices={[
+            {id: 'default', name: '默认样式表'},
             {id: 'chinese', name: '中文样式表'},
             {id: 'english', name: '英文样式表'},
-        ]}/>
+        ]} resettable allowEmpty alwaysOn/>
         <ReferenceInput label={'模版'} reference="templates" source="templateId" resettable allowEmpty alwaysOn>
             <SelectInput optionText="name"/>
         </ReferenceInput>
@@ -89,19 +82,16 @@ export const PhoneTagList = props => {
         <List {...props} title={`${props.options.label}列表`} actions={<ListActions/>} filters={<Filters/>}
               sort={{field: 'createdTime', order: 'desc'}}>
             <Datagrid rowClick="show">
-                <TextField label={'样式'} source="styleCode"/>
+                <TextField label={'样式'} source="styleName"/>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link={'view'}>
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
                 <TextField label={'产品名称'} source="productName"/>
-                {/*<TextField label={'包装内含'} source="packageContent"/>*/}
-                {/*<TextField label={'执行标准'} source="standard"/>*/}
-                {/*<TextField label={'存储空间'} source="storage"/>*/}
                 <DateField label={'创建时间'} source="createdTime" showTime/>
                 <EditButton/>
-                <RecordExportButton/>
-                <RecordExportButton versionType="production"/>
+                <DownloadButton label={'演示导出'} filePathAttr={'reproductionPath'}/>
+                <DownloadButton label={'正式导出'} filePathAttr={'productionPath'}/>
             </Datagrid>
         </List>
     )

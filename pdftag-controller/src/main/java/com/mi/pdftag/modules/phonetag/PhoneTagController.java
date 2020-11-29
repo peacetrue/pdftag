@@ -1,6 +1,5 @@
 package com.mi.pdftag.modules.phonetag;
 
-import com.github.peacetrue.file.FileController;
 import com.github.peacetrue.imports.ImportsResult;
 import com.github.peacetrue.imports.ImportsService;
 import com.github.peacetrue.imports.csv.CsvImportsSetting;
@@ -25,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import static com.github.peacetrue.file.FileController.*;
-import static com.github.peacetrue.file.FileController.DISPOSITION_TYPE_INLINE;
 
 /**
  * 标签控制器
@@ -126,7 +124,8 @@ public class PhoneTagController {
     @Autowired
     private TagService tagService;
 
-    @RequestMapping(params = "_type=generatePdf")
+    //能通过参数 _type=generatePdf 覆盖创建和修改方法
+    @RequestMapping(value = {"", "/*"}, method = {RequestMethod.POST, RequestMethod.PUT}, params = "_type=generatePdf")
     public Mono<String> generatePdf(@RequestParam String versionType, PhoneTagAdd params) {
         log.info("生成 PDF 文件[{}]", params);
         return tagService.generatePdf(new TagGeneratePdf(versionType, params));

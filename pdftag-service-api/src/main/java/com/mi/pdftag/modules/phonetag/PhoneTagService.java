@@ -35,6 +35,9 @@ public interface PhoneTagService {
     /** 修改 */
     Mono<Integer> modify(PhoneTagModify params);
 
+    /** 修改生成的PDF路径 */
+    Mono<Integer> modifyPdfPath(PhoneTagModifyPdfPath params);
+
     /** 删除 */
     Mono<Integer> delete(PhoneTagDelete params);
 

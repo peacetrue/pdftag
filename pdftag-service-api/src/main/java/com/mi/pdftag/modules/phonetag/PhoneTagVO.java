@@ -20,6 +20,8 @@ public class PhoneTagVO implements Serializable, Tag {
     private Long id;
     /** 样式编码 */
     private String styleCode;
+    /** 样式名称 */
+    private String styleName;
     /** 模版主键 */
     private Long templateId;
     /** 商品名称 */

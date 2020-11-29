@@ -38,6 +38,8 @@ public class PhoneTagQuery extends OperatorCapableImpl<Long> {
     private String packageContent;
     /** 执行标准 */
     private String standard;
+    /** 产品名称 */
+    private String productName;
     /** 进网许可标志验证网址 */
     private String networkPermissionUrl;
     /** 进网许可证 */

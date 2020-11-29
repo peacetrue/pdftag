@@ -19,6 +19,8 @@ spring:
     user: ${spring.r2dbc.username}
     password: ${spring.r2dbc.password}
     baseline-on-migrate: true
+  main:
+    allow-bean-definition-overriding: true
 
 management:
   endpoints:
@@ -44,4 +46,3 @@ peacetrue:
       expression: 'execution(* com.mi.pdftag..*ServiceImpl.*(*,..))||execution(* com.github.peacetrue..*ServiceImpl.*(*,..))'
   file:
     base-path: /Users/xiayx/Documents/Projects/pdftag/02-output
-
