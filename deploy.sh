@@ -2,11 +2,11 @@
 
 #env=${1}
 
- rm -rf pdftag-app/src/main/resources/public
- cd pdftag-react-admin || exit
- yarn build
- mv ./build ../pdftag-app/src/main/resources/public
- cd ../
+# rm -rf pdftag-app/src/main/resources/public
+# cd pdftag-react-admin || exit
+# yarn build
+# mv ./build ../pdftag-app/src/main/resources/public
+# cd ../
 
 ./gradlew clean
 ./gradlew bootJar
