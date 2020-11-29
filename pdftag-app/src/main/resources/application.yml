@@ -1,5 +1,10 @@
 server:
   port: 8110
+#  servlet:
+#    session:
+#      timeout: 10
+#      cookie:
+#        max-age: 10
 
 db:
   hostname: localhost
@@ -21,6 +26,8 @@ spring:
     baseline-on-migrate: true
   main:
     allow-bean-definition-overriding: true
+  session:
+    timeout: 3600
 
 management:
   endpoints:
@@ -46,3 +53,4 @@ peacetrue:
       expression: 'execution(* com.mi.pdftag..*ServiceImpl.*(*,..))||execution(* com.github.peacetrue..*ServiceImpl.*(*,..))'
   file:
     base-path: /Users/xiayx/Documents/Projects/pdftag/02-output
+

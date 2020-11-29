@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
@@ -34,6 +35,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.MapSession;
+import org.springframework.session.ReactiveMapSessionRepository;
+import org.springframework.session.ReactiveSessionRepository;
+import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
 import org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration;
 import org.springframework.transaction.interceptor.DelegatingTransactionAttribute;
@@ -46,13 +51,16 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.AnnotatedElement;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xiayx
  */
+@EnableSpringWebSession
 @SpringBootApplication
 public class PdfTagApplication {
 
@@ -166,4 +174,19 @@ public class PdfTagApplication {
             };
         }
     }
+
+    @Bean
+    public ReactiveSessionRepository<MapSession> reactiveSessionRepository(SessionProperties properties) {
+        ReactiveMapSessionRepository repository = new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
+        Duration timeout = properties.getTimeout();
+        if (timeout != null) repository.setDefaultMaxInactiveInterval((int) timeout.toSeconds());
+        return repository;
+    }
+
+//    @Bean
+//    public ServerAuthenticationSuccessHandler successLoginHandler() {
+//        return (webFilterExchange, authentication) -> webFilterExchange.getExchange().getSession()
+//                .doOnNext(session -> session.setMaxIdleTime(Duration.ofMinutes(1)))
+//                .then();
+//    }
 }
