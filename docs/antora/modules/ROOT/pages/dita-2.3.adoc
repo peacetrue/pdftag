@@ -8,6 +8,8 @@
 ----
 $ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3/docsrc/samples
 
+$ cd dita-ot-2.3/docsrc/samples
+
 $ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-/docsrc/samples
 
 $ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/docsrc/samples
