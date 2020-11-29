@@ -1,6 +1,6 @@
 package com.github.peacetrue.dita;
 
-import com.github.peacetrue.io.FileUtils;
+import com.github.peacetrue.util.PdfTagFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +20,7 @@ public abstract class DitaUtils {
     }
 
     public static String resolvePdfFilePath(String basePath, String fileName) {
-        return basePath.concat("/").concat(FileUtils.replaceExtension(fileName, "pdf"));
+        return basePath.concat("/").concat(PdfTagFileUtils.replaceExtension(fileName, "pdf"));
     }
 
     public static Mono<String> executePdf(String baseFolder,

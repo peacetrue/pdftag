@@ -6,6 +6,12 @@ PDF 标签项目，根据标签信息采用 https://www.dita-ot.org/[dita] 技�
 
 image::demo.jpeg[]
 
+=== 演示地址
+
+http://101.200.133.86/index.html
+
+admin/admin
+
 == 术语
 
 === 样式
@@ -87,6 +93,14 @@ $ ../../../bin/ant -f build-chm-pdf.xml
 
 == 功能
 
+=== 用户
+
+实现用户增删改查基本功能，用于登陆身份认证。
+
+=== 附件
+
+用于上传模版文件 zip 包。
+
 === 模版
 
 .字段列表
@@ -105,16 +119,16 @@ $ ../../../bin/ant -f build-chm-pdf.xml
 |手动输入
 |例如：手机礼盒标签、手表礼盒标签等等
 
-|模版内容
+|模版附件
 |是
-|10240
-|手动输入
-|参考 <<standard_template>>
+|--
+|选择输入
+|关联一个附件
 |===
 
-实现基本增删改查功能。目前模版内容作为字段，存储在数据库。
+实现基本增删改查功能。
 
-== 标签信息
+=== 标签信息
 
 .字段列表
 |===
@@ -207,16 +221,81 @@ $ ../../../bin/ant -f build-chm-pdf.xml
 
 实现标签增删改查功能和如下功能：
 
-=== 从 CSV 导入（未实现）
+==== 从 CSV 导入（未实现）
 
 从 CSV 批量导入标签信息，导入完成后可在列表页查看，然后导出 PDF。
 
 CSV 文件第一列为表头，表头列信息包括：样式、模版、商品名称、认证型号、包装内含、执行标准、CMIIT ID、进网许可证、产品名称、颜色、存储空间；其余列为数据；样式包括 default、chinese、english（也可换为对应的中文表述），目前仅支持 default；模版值填入对应模版的编码。可下载模版文件 template.csv。
 
-=== 导出 PDF
+==== 导出 PDF
 
 根据标签信息，生成 PDF 文件。演示版附加演示版水印，正式版不需要水印。演示版水印遮住图示头尾的文字。暂未精确定位水印的位置。
 
+== 模版规范
 
+以模版 Mi_giftBox_label_Cn 为例进行说明：
+
+[source%nowrap]
+----
+.
+├── Mi_giftBox_label_Cn
+│   ├── image
+│   │   ├── border-black.svg
+│   │   ├── border.svg
+│   │   ├── legal_manual-white.svg
+│   │   └── legal_manual.svg
+│   ├── mi_giftbox_label_cn.ditamap
+│   ├── template.dita
+│   └── topic1.dita
+├── Mi_giftBox_label_Cn.zip
+----
+
+因为 dita 模版包含多个文件，所以上传时必须是一个 zip 包，zip 包上传后会自动解压。其中 *template.dita* 为入口文件，示例内容如下：
+
+[source%nowrap,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="topic1" xml:lang="zh-CN">
+    <title><text>#{goodsName} #{colour}</text><text>#{storage}</text></title> //<1>
+    <shortdesc/>
+    <conbody>
+        <image href="image/border.svg" width="85mm" height="54mm" outputclass="border"/>
+        <image href="image/border-black.svg" width="85mm" height="54mm" outputclass="border-black"/>
+        <div>
+            <p><b>包装内含﹕</b>#{packageContent}</p>
+            <p><b>执行标准：</b>#{standard}</p>
+            <p><b>商品名称﹕</b>#{goodsName}</p>
+            <p><b>认证型号：</b>#{modelCode}</p>
+            <p><b>制造商：</b>#{manufacturer}</p>
+            <p><b>制造商地址：</b>#{manufacturerAddress}</p>
+            <p><b>进网许可标志验证网址：</b><xref href="http://jwxk.MIIT.gov.cn" format="html" scope="external"
+                    >jwxk.MIIT.gov.cn</xref></p>
+            <p><b>因机器本身系统需占用存储空间，</b></p>
+            <p><b>实际存储容量比标称存储容量小属正常现象。</b></p>
+            <p><b>中国制造</b></p>
+        </div>
+        <div outputclass="logoInformation"><image outputclass="CCCLogo"/><image outputclass="10Logo"
+                /><image outputclass="RecycleLogo"/><image outputclass="Qualified"/></div>
+        <div id="reproduction" outputclass="basicInformation"> //<2>
+            <p>进网许可证号：#{networkLicense}</p>
+            <p>CMIIT ID：#{cmiitId}</p>
+            <p>202X.XX</p>
+        </div>
+    </conbody>
+</concept>
+----
+<1> `#{占位符}` 会被替换为标签中的实际值后生成 PDF 文件
+<2> `id="reproduction"` 表示演示版内容，会在生成正式版时删除
+
+== 常见问题
+
+=== Centos 7 生成 PDF 乱码
+
+.参考
+* http://blog.sina.com.cn/s/blog_5f4150730102vo0r.html
+* https://blog.csdn.net/wlwlwlwl015/article/details/51482065
+
+主要是 Centos 7 上没有中文字体，从 Window 中下载字体后，安装到 Centos 7 上。
 
 

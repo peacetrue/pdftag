@@ -31,7 +31,7 @@ export const AttachmentEdit = (props) => {
     return (
         <Edit actions={<AttachmentActions/>} {...props} title={`${props.options.label}#${props.id}`}>
             <SimpleForm>
-                <TextInput label={'名称'} source="name" validate={[required(), maxLength(10)]}/>
+                <TextInput label={'名称'} source="name" validate={[required(), maxLength(32)]}/>
                 <TextField label={'路径'} source="path" fullWidth/>
                 <TextInput label={'大小（字节）'} source="sizes"
                            validate={[required(), minValue(1), maxValue(5000000)]}/>

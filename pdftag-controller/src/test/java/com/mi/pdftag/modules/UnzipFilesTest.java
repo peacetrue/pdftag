@@ -1,6 +1,6 @@
 package com.mi.pdftag.modules;
 
-import com.github.peacetrue.io.UnzipFiles;
+import com.github.peacetrue.util.PdfTagFileUtils;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -15,6 +15,6 @@ class UnzipFilesTest {
     void unzip() throws Exception {
         String zipFilePath = "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/Mi_giftBox_label_Cn.zip";
         String destDir = "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment";
-        UnzipFiles.unzip(zipFilePath, new File(destDir));
+        PdfTagFileUtils.unzip(zipFilePath, new File(destDir));
     }
 }

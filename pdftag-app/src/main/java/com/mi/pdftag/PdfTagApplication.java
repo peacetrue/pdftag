@@ -12,10 +12,12 @@ import com.github.peacetrue.user.UserService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
@@ -32,11 +34,18 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.AnnotationTransactionAttributeSource;
+import org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration;
+import org.springframework.transaction.interceptor.DelegatingTransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.Nullable;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -137,4 +146,24 @@ public class PdfTagApplication {
         };
     }
 
+    @Configuration
+    public static class MyProxyTransactionManagementConfiguration extends ProxyTransactionManagementConfiguration {
+        @Bean
+        @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+        public TransactionAttributeSource transactionAttributeSource() {
+            return new AnnotationTransactionAttributeSource() {
+                @Nullable
+                protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
+                    TransactionAttribute ta = super.determineTransactionAttribute(element);
+                    if (ta == null) return null;
+                    return new DelegatingTransactionAttribute(ta) {
+                        @Override
+                        public boolean rollbackOn(Throwable ex) {
+                            return super.rollbackOn(ex) || ex instanceof Exception;
+                        }
+                    };
+                }
+            };
+        }
+    }
 }
