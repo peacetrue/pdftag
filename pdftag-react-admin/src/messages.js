@@ -13,6 +13,12 @@ export default {
                 name: '名称',
             },
         },
+        files: {
+            name: '文件',
+            fields: {
+                name: '名称',
+            },
+        },
         templates: {
             name: '模版',
             fields: {

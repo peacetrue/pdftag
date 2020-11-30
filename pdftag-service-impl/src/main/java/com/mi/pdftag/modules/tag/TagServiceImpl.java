@@ -58,7 +58,7 @@ public class TagServiceImpl implements TagService {
         return templateService.get(PdfTagOperatorUtils.setOperator(params, new TemplateGet(params.getTag().getTemplateId())))
                 .flatMap(templateVO -> attachmentService.get(PdfTagOperatorUtils.setOperator(params, new AttachmentGet(templateVO.getAttachmentId()))))
                 .flatMap(attachmentVO -> {
-                    String absoluteFilePath = fileService.getAbsoluteFilePath(attachmentVO.getPath());
+                    String absoluteFilePath = fileService.getAbsolutePath(attachmentVO.getPath());
                     String folderPath = absoluteFilePath.substring(0, absoluteFilePath.length() - ".zip".length());
                     String templateFile = folderPath + File.separatorChar + properties.getTemplateFileName();
                     return Mono.fromCallable(() -> new String(Files.readAllBytes(Paths.get(templateFile)), StandardCharsets.UTF_8))
@@ -81,7 +81,7 @@ public class TagServiceImpl implements TagService {
                     if (isReproduction)
                         arguments.add("-Dcustomization.dir=" + properties.getReproductionCustomizationDir());
                     //TODO 优化 PDF 存储路径
-                    String absoluteFilePath = fileService.getAbsoluteFilePath(properties.getOutputDir());
+                    String absoluteFilePath = fileService.getAbsolutePath(properties.getOutputDir());
                     return DitaUtils.executePdf(baseFolder, ditaFile, absoluteFilePath, arguments.toArray(new String[0]))
                             .doOnNext((pdfPath) -> {
                                 try {

@@ -7,6 +7,7 @@ import UserResource from './modules/users';
 import TemplateResource from "./modules/templates";
 import PhoneTagResource from './modules/phone-tags';
 import AttachmentResource from './modules/attachments';
+import FileResource from './modules/files';
 import {authProvider, dataProvider} from "./instances";
 import customRoutes from './routes';
 import messages from "./messages";
@@ -23,7 +24,8 @@ const App = () => (
         {UserResource}
         {TemplateResource}
         {PhoneTagResource}
-        {AttachmentResource}
+        {/*{AttachmentResource}*/}
+        {/*{FileResource}*/}
         <Resource name="profile"/>
     </Admin>
 );
