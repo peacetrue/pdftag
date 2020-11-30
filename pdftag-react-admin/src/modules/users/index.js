@@ -5,7 +5,8 @@ import {UserList} from './list';
 import {UserCreate} from './create';
 import {UserEdit} from './edit';
 import {UserShow} from './show';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import UserIcon from '@material-ui/icons/People';
+
 export const User = {list: UserList, create: UserCreate, edit: UserEdit, show: UserShow};
-const UserResource = <Resource icon={AccountCircleIcon} options={{label: '用户'}} name="users" {...User} />;
+const UserResource = <Resource icon={UserIcon} options={{label: '用户'}} name="users" {...User} />;
 export default UserResource;

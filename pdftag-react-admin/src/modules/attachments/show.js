@@ -7,9 +7,11 @@ import {
     Show,
     SimpleShowLayout,
     TextField,
-    TopToolbar
+    TopToolbar,
+    FunctionField
 } from 'react-admin';
 import {DownloadButton} from "./DownloadButton";
+import prettyBytes from "pretty-bytes";
 
 const AttachmentActions = ({basePath, data, resource}) => (
     <TopToolbar>
@@ -22,11 +24,12 @@ const AttachmentActions = ({basePath, data, resource}) => (
 export const AttachmentShow = (props) => {
     console.info('AttachmentShow:', props);
     return (
-        <Show actions={<AttachmentActions/>} {...props} title={`${props.options.label}#${props.id}`}>
+        <Show actions={<AttachmentActions/>} {...props} >
             <SimpleShowLayout>
                 <TextField label={'名称'} source="name"/>
                 <TextField label={'路径'} source="path"/>
-                <TextField label={'大小（字节）'} source="sizes"/>
+                {/*<TextField label={'大小（字节）'} source="sizes"/>*/}
+                <FunctionField label={'大小（字节）'} render={record => `${prettyBytes(record.sizes)}`} />
                 {/*<TextField label={'状态编码'} source="stateId"/>*/}
                 <TextField label={'备注'} source="remark"/>
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">

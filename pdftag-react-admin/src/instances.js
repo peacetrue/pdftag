@@ -12,8 +12,7 @@ import FormAuthProvider from "./formAuthProvider";
 
 export const debugHttpClient = (httpClient) => {
     return (url, options = {}) => {
-        console.info("url:", url);
-        console.info("options:", options);
+        console.info("url:", url, "options:", options);
         if (!options.headers) options.headers = new Headers();
         options.headers.set('X-Requested-With', 'XMLHttpRequest');
         return httpClient(url, options);

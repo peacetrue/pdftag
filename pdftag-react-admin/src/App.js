@@ -9,14 +9,15 @@ import PhoneTagResource from './modules/phone-tags';
 import AttachmentResource from './modules/attachments';
 import {authProvider, dataProvider} from "./instances";
 import customRoutes from './routes';
+import messages from "./messages";
 
-const i18nProvider = polyglotI18nProvider(() => chineseMessages, 'cn');
+const i18nProvider = polyglotI18nProvider(() => ({...chineseMessages, ...messages}), 'cn');
 
 const App = () => (
     <Admin title="小米PDF标签"
            dataProvider={dataProvider}
-           i18nProvider={i18nProvider}
            authProvider={authProvider}
+           i18nProvider={i18nProvider}
            customRoutes={customRoutes}
     >
         {UserResource}

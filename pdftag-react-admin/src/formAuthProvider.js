@@ -20,7 +20,10 @@ let FormAuthProvider = (url, httpClient) => {
         },
         checkError: error => {
             console.error("error:", JSON.stringify(error));
-            if (error.status === 401) return Promise.reject("unauthorized");
+            if (error.status === 401) {
+                localStorage.removeItem('token');
+                return Promise.reject("unauthorized");
+            }
             return Promise.resolve();
         },
         getPermissions: params => {

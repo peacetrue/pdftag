@@ -24,6 +24,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -129,10 +130,13 @@ public class PdfTagApplication {
     }
 
     @Bean
+    @Order(0)
     public ServerHttpSecurityConfigurer serverHttpSecurityConfigurer() {
-        return http -> http.headers(headers -> headers
-                .frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable)
-        );
+        return http -> http.headers(headers -> headers.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
+//                .authorizeExchange()
+//                .pathMatchers("/*/delete").hasRole("ROLE_ADMIN")
+//                .pathMatchers(HttpMethod.DELETE).hasRole("ROLE_ADMIN")
+                ;
     }
 
     @Bean
@@ -144,7 +148,9 @@ public class PdfTagApplication {
             @Override
             public Mono<UserDetails> findByUsername(String username) {
                 UserGet userGet = new UserGet(null, username);
-                userGet.setOperatorId(0L);
+                //调用接口时会自动注入当前用户，而获取当前用户需要通过此方法
+                //所以该方法必须手动设置操作者标识，防止循环调用
+                userGet.setOperatorId(1L);
                 return userService.get(userGet)
                         .map(user -> {
                             Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
@@ -182,6 +188,7 @@ public class PdfTagApplication {
         if (timeout != null) repository.setDefaultMaxInactiveInterval((int) timeout.toSeconds());
         return repository;
     }
+
 
 //    @Bean
 //    public ServerAuthenticationSuccessHandler successLoginHandler() {

@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "pdf-viewer-reactjs": "^2.1.2",
     "peacetrue-httpclient": "^0.0.6",
+    "pretty-bytes": "^5.4.1",
     "qs": "^6.9.4",
     "ra-data-spring-rest": "^1.0.0",
     "ra-i18n-polyglot": "^3.10.2",
