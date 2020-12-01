@@ -8,6 +8,7 @@ import {
     ExportButton,
     Filter,
     List,
+    Loading,
     ReferenceField,
     ReferenceInput,
     sanitizeListRestProps,
@@ -15,7 +16,9 @@ import {
     TextField,
     TextInput,
     TopToolbar,
-    useListContext
+    useGetIdentity,
+    useListContext,
+    usePermissions
 } from 'react-admin';
 import {ImportsButton} from "./ImportsButton";
 import {DownloadButton} from "../attachments/DownloadButton";
@@ -76,14 +79,27 @@ const Filters = (props) => (
 );
 
 
-export const PhoneTagList = props => {
+export const PhoneTagList = (props) => {
     console.info('PhoneTagList:', props);
+    //管理员查看所有，其他用户查看自己的
+    const {loading: identityLoading, identity} = useGetIdentity();
+    const {loading: permissionsLoading, permissions} = usePermissions();
+    if (identityLoading || permissionsLoading) {
+        return (
+            <Loading
+                loadingPrimary="ra.page.loading"
+                loadingSecondary="ra.message.loading"
+            />
+        );
+    }
     return (
         <List {...props}
               actions={<ListActions/>}
               filters={<Filters/>}
+              filter={{creatorId: permissions.isManager ? undefined : identity.id}}
               sort={{field: 'createdTime', order: 'desc'}}
-              empty={false}>
+              empty={false}
+        >
             <Datagrid rowClick="show">
                 <TextField label={'样式'} source="styleName"/>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link={'show'}>
@@ -91,6 +107,9 @@ export const PhoneTagList = props => {
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
                 <TextField label={'产品名称'} source="productName"/>
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
+                    <TextField source="username"/>
+                </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
                 <EditButton/>
                 <DownloadButton label={'演示导出'} filePathAttr={'reproductionPath'}/>

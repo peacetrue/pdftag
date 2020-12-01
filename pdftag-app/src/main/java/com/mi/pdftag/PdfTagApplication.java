@@ -1,5 +1,6 @@
 package com.mi.pdftag;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.peacetrue.core.IdCapable;
 import com.github.peacetrue.spring.formatter.date.AutomaticDateFormatter;
@@ -52,9 +53,7 @@ import reactor.core.publisher.Mono;
 import javax.annotation.Nullable;
 import java.lang.reflect.AnnotatedElement;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -121,6 +120,18 @@ public class PdfTagApplication {
             super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
             this.id = id;
         }
+
+        @JsonIgnore
+        public String getPassword() {
+            return super.getPassword();
+        }
+    }
+
+    private static Map<String, String> ROLES = new HashMap<>(2);
+
+    static {
+        ROLES.put("peacetrue", "SUPER_MANAGER");
+        ROLES.put("admin", "MANAGER");
     }
 
     @Bean
@@ -137,7 +148,7 @@ public class PdfTagApplication {
                 userGet.setOperatorId(1L);
                 return userService.get(userGet)
                         .map(user -> {
-                            String role = "admin".equals(username) ? "ROLE_ADMIN" : "ROLE_USER";
+                            String role = "ROLE_" + ROLES.getOrDefault(username, "USER");
                             Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(role));
                             return new IdUser(user.getId(), user.getUsername(), user.getPassword(), authorities);
                         });

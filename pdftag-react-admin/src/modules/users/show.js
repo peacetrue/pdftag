@@ -1,6 +1,6 @@
 import React from 'react';
 import {DateField, FunctionField, ReferenceField, Show, SimpleShowLayout, TextField} from 'react-admin';
-
+import Role from "./Role";
 export const UserShow = (props) => {
     console.info('UserShow:', props);
     return (
@@ -8,7 +8,7 @@ export const UserShow = (props) => {
             <SimpleShowLayout>
                 <TextField label={'用户名'} source="username"/>
                 <TextField label={'密码'} source="password"/>
-                <FunctionField label={'角色'} render={record => record.username === 'admin' ? '管理员' : '普通用户'}/>
+                {Role}
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link={'show'}>
                     <TextField source="username"/>
                 </ReferenceField>

@@ -13,6 +13,7 @@ import AttachmentIcon from '@material-ui/icons/Attachment';
 import {authProvider, dataProvider} from "./instances";
 import customRoutes from './routes';
 import messages from "./messages";
+import FileResource from "./modules/files";
 
 const i18nProvider = polyglotI18nProvider(() => ({...chineseMessages, ...messages}), 'cn');
 
@@ -33,29 +34,31 @@ const App = () => (
                                      show={PhoneTag.show}
             />;
             let resources = [
-                permissions.isAdmin ? null : phoneTag,
+                permissions.isManager ? null : phoneTag,
                 <Resource icon={UserIcon}
                           name="users"
-                          list={permissions.isAdmin ? User.list : null}
-                          create={permissions.isAdmin ? User.create : null}
-                          edit={permissions.isAdmin ? User.edit : null}
+                          list={permissions.isManager ? User.list : null}
+                          create={permissions.isManager ? User.create : null}
+                          edit={permissions.isManager ? User.edit : null}
                           show={User.show}
                 />,
                 <Resource
                     name="templates"
-                    list={permissions.isAdmin ? Template.list : null}
-                    create={permissions.isAdmin ? Template.create : null}
-                    edit={permissions.isAdmin ? Template.edit : null}
+                    list={permissions.isManager ? Template.list : null}
+                    create={permissions.isManager ? Template.create : null}
+                    edit={permissions.isManager ? Template.edit : null}
                     show={Template.show}
                 />,
-                permissions.isAdmin ? phoneTag : null,
+                permissions.isManager ? phoneTag : null,
                 <Resource icon={AttachmentIcon}
                           name="attachments"
-                          list={permissions.isAdmin ? Attachment.list : null}
-                          create={permissions.isAdmin ? Attachment.create : null}
-                          edit={permissions.isAdmin ? Attachment.edit : null}
+                          list={permissions.isSuperManager ? Attachment.list : null}
+                          create={permissions.isSuperManager ? Attachment.create : null}
+                          edit={permissions.isSuperManager ? Attachment.edit : null}
                           show={Attachment.show}
-                />
+                />,
+                permissions.isSuperManager ? FileResource : null,
+                <Resource name={'profile'}/>
             ];
             return resources;
         }}

@@ -5,12 +5,12 @@ import {
     DateInput,
     EditButton,
     Filter,
-    FunctionField,
     List,
     ReferenceField,
     TextField,
     TextInput
 } from 'react-admin';
+import Role from "./Role";
 
 const Filters = (props) => (
     <Filter {...props}>
@@ -20,7 +20,7 @@ const Filters = (props) => (
     </Filter>
 );
 
-export const UserList = props => {
+export const UserList = ({permissions, ...props}) => {
     console.info('UserList:', props);
     return (
         <List {...props}
@@ -29,7 +29,7 @@ export const UserList = props => {
         >
             <Datagrid rowClick="show">
                 <TextField label={'用户名'} source="username"/>
-                <FunctionField label={'角色'} render={record => record.username === 'admin' ? '管理员' : '普通用户'}/>
+                {Role}
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
                     <TextField source="username"/>
                 </ReferenceField>

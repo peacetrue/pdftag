@@ -11,6 +11,7 @@ import {
     SimpleForm,
     TextField
 } from 'react-admin';
+import Role from "./Role";
 
 export const UserEdit = (props) => {
     console.info('UserEdit:', props);
@@ -20,6 +21,7 @@ export const UserEdit = (props) => {
             <SimpleForm>
                 <TextField label={'用户名'} source="username"/>
                 <PasswordInput label={'密码'} source="password" validate={validate}/>
+                {Role}
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
                     <TextField source="username"/>
                 </ReferenceField>
