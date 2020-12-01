@@ -7,8 +7,7 @@ export const TemplateCreate = (props) => {
     let dataProvider = useDataProvider();
     ///*initialValues={{code: 'test01', name: 'test01'}}*/
     return (
-        <Create {...props} title={`新建${props.options.label}`}
-                transform={transformFactory(dataProvider, 'attachmentId')}>
+        <Create {...props} transform={transformFactory(dataProvider, 'attachmentId')}>
             <SimpleForm>
                 <TextInput label={'编号'} source="code" validate={[required(), maxLength(32)]} placeholder={'请输入唯一的编号'}/>
                 <TextInput label={'名称'} source="name" validate={[required(), maxLength(32)]}/>

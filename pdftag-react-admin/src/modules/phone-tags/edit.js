@@ -5,7 +5,7 @@ import {PhoneTagForm} from "./form";
 export const PhoneTagEdit = (props) => {
     console.info('PhoneTagEdit:', props);
     return (
-        <Edit {...props} undoable={false} title={`${props.options.label}#${props.id}`}>
+        <Edit {...props} undoable={false} >
             <PhoneTagForm/>
         </Edit>
     );

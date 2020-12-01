@@ -34,7 +34,7 @@ export const TemplateList = props => {
     console.info('TemplateList:', props);
     const classes = useListStyles();
     return (
-        <List {...props} title={`${props.options.label}列表`} filters={<Filters/>}
+        <List {...props}  filters={<Filters/>}
               sort={{field: 'createdTime', order: 'desc'}}>
             <Datagrid rowClick="show">
                 <TextField label={'编号'} source="code"/>

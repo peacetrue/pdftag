@@ -26,7 +26,7 @@ export default {
                 name: '名称',
             },
         },
-        phoneTags: {
+        'phone-tags': {
             name: '标签',
             fields: {
                 goodsName: '商品名称',

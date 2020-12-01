@@ -36,7 +36,7 @@ export const AttachmentList = props => {
     console.info('AttachmentList:', props);
     return (
         <List {...props}
-              title={`${props.options.label}列表`}
+
               filters={<Filters/>}
               bulkActionButtons={<BulkActionButtons/>}
               sort={{field: 'id', order: 'desc'}}>

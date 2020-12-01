@@ -4,7 +4,7 @@ import {DateField, ReferenceField, Show, SimpleShowLayout, TextField} from 'reac
 export const TemplateShow = (props) => {
     console.info('TemplateShow:', props);
     return (
-        <Show {...props} title={`${props.options.label}#${props.id}`}>
+        <Show {...props} >
             <SimpleShowLayout>
                 <TextField label={'编号'} source="code"/>
                 {/*<TextField label={'类型'} source="typeCode"/>*/}

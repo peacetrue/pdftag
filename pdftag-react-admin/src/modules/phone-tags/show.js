@@ -4,7 +4,7 @@ import {DateField, ReferenceField, Show, SimpleShowLayout, TextField} from 'reac
 export const PhoneTagShow = (props) => {
     console.info('PhoneTagShow:', props);
     return (
-        <Show {...props} title={`${props.options.label}#${props.id}`}>
+        <Show {...props} >
             <SimpleShowLayout>
                 <TextField label={'样式'} source="styleName"/>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link="show">

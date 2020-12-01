@@ -3,8 +3,15 @@ let FormAuthProvider = (url, httpClient) => {
         login: params => {
             return httpClient(`${url}/login`, {method: 'post', body: params})
                 .then(token => {
-                    localStorage.setItem('token', token.name);
-                    token.authorities && localStorage.setItem('permissions', JSON.stringify(token.authorities));
+                    console.info("login token:", token);
+                    localStorage.setItem('token', token.username);
+                    if (!token.authorities) return;
+                    let authorities = token.authorities.map(item => item.authority.split('_', 2).pop());
+                    let isAdmin = authorities.indexOf('ADMIN') !== -1;
+                    localStorage.setItem('permissions', JSON.stringify({
+                        isAdmin: isAdmin,
+                        roles: authorities
+                    }));
                 });
         },
         logout: params => {

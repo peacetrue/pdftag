@@ -24,7 +24,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -125,6 +124,28 @@ public class PdfTagApplication {
     }
 
     @Bean
+    public ReactiveUserDetailsService userDetailsService() {
+        return new ReactiveUserDetailsService() {
+            @Autowired
+            private UserService userService;
+
+            @Override
+            public Mono<UserDetails> findByUsername(String username) {
+                UserGet userGet = new UserGet(null, username);
+                //调用接口时会自动注入当前用户，而获取当前用户需要通过此方法
+                //所以该方法必须手动设置操作者标识，防止循环调用
+                userGet.setOperatorId(1L);
+                return userService.get(userGet)
+                        .map(user -> {
+                            String role = "admin".equals(username) ? "ROLE_ADMIN" : "ROLE_USER";
+                            Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(role));
+                            return new IdUser(user.getId(), user.getUsername(), user.getPassword(), authorities);
+                        });
+            }
+        };
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
@@ -139,29 +160,8 @@ public class PdfTagApplication {
                 ;
     }
 
-    @Bean
-    public ReactiveUserDetailsService userDetailsService() {
-        return new ReactiveUserDetailsService() {
-            @Autowired
-            private UserService userService;
-
-            @Override
-            public Mono<UserDetails> findByUsername(String username) {
-                UserGet userGet = new UserGet(null, username);
-                //调用接口时会自动注入当前用户，而获取当前用户需要通过此方法
-                //所以该方法必须手动设置操作者标识，防止循环调用
-                userGet.setOperatorId(1L);
-                return userService.get(userGet)
-                        .map(user -> {
-                            Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-                            return new IdUser(user.getId(), user.getUsername(), user.getPassword(), authorities);
-                        });
-            }
-        };
-    }
-
     @Configuration
-    public static class MyProxyTransactionManagementConfiguration extends ProxyTransactionManagementConfiguration {
+    public static class ExceptionProxyTransactionManagementConfiguration extends ProxyTransactionManagementConfiguration {
         @Bean
         @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
         public TransactionAttributeSource transactionAttributeSource() {
