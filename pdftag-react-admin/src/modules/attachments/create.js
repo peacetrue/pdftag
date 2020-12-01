@@ -1,19 +1,12 @@
 import React from 'react';
-import {Create, FileField, FileInput, maxLength, minLength, regex, required, SimpleForm, TextInput,} from 'react-admin';
+import {Create, FileField, FileInput, maxLength, required, SimpleForm, TextInput,} from 'react-admin';
 
-import {toFormData} from "./Upload";
-
-const transform = data => {
-    console.info("transform data:", data);
-    let formData = toFormData(data.file.rawFile);
-    data.remark && formData.append("remark", data.remark);
-    return formData;
-}
+import {transform} from "./Utils";
 
 export const AttachmentCreate = (props) => {
     console.info('AttachmentCreate:', props);
     return (
-        <Create {...props} title={`上传${props.options.label}`} transform={transform}>
+        <Create {...props} transform={data => transform(data, 'file')}>
             <SimpleForm>
                 <FileInput label="附件" source="file" accept={'.zip'}
                            minSize={1} maxSize={5000000}

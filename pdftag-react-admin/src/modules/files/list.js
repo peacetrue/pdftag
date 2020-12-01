@@ -7,7 +7,6 @@ import {
     Filter,
     FunctionField,
     List,
-    NumberInput,
     TextField,
     TextInput,
     useListContext
@@ -24,8 +23,8 @@ const Filters = (props) => (
     <Filter {...props}>
         <TextInput label={'基础路径'} source="id" resettable allowEmpty alwaysOn/>
         <TextInput label={'名称'} source="name" resettable allowEmpty alwaysOn/>
-        <NumberInput label={'大小下限'} source="sizes.lowerBound" resettable allowEmpty alwaysOn/>
-        <NumberInput label={'大小上限'} source="sizes.upperBound" resettable allowEmpty alwaysOn/>
+        {/*<NumberInput label={'大小下限'} source="sizes.lowerBound" resettable allowEmpty alwaysOn/>*/}
+        {/*<NumberInput label={'大小上限'} source="sizes.upperBound" resettable allowEmpty alwaysOn/>*/}
     </Filter>
 );
 
@@ -48,7 +47,10 @@ const UpButton = ({record}) => {
     };
     return (
         record.id.indexOf('/') !== -1
-            ? <Button label={'上级'} onClick={e => setFilters({...filterValues, id: getParent(record.id)})}>
+            ? <Button label={'上级'} onClick={e => {
+                e.stopPropagation();
+                setFilters({...filterValues, id: getParent(record.id)})
+            }}>
                 <ExpandLessSharpIcon/>
             </Button>
             : null
@@ -60,7 +62,10 @@ const DownButton = ({record}) => {
         setFilters,
     } = useListContext();
     return (
-        <Button label={'下级'} onClick={e => setFilters({...filterValues, id: record.id})}>
+        <Button label={'下级'} onClick={e => {
+            e.stopPropagation();
+            setFilters({...filterValues, id: record.id})
+        }}>
             <ExpandMoreSharpIcon/>
         </Button>
     );
@@ -89,7 +94,7 @@ export const FileList = props => {
               filters={<Filters/>}
               bulkActionButtons={<BulkActionButtons/>}
         >
-            <Datagrid>
+            <Datagrid rowClick={'toggleSelection'}>
                 <FunctionField label={'类型'} source={'folder'} render={FileTypeIcon}/>
                 <TextField label={'名称'} source="name" cellClassName={classes.comment}/>
                 <TextField label={'路径'} source="path" cellClassName={classes.comment}/>

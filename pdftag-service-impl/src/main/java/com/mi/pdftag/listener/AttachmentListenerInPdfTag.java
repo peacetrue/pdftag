@@ -24,7 +24,7 @@ import java.io.IOException;
  **/
 @Slf4j
 @Component
-public class PdfTagAttachmentListener {
+public class AttachmentListenerInPdfTag {
 
     public final static int ZIP_EXTENSION_LENGTH = ".zip".length();
 
@@ -40,6 +40,7 @@ public class PdfTagAttachmentListener {
 
         AttachmentVO attachmentVO = (AttachmentVO) event.getSource();
         log.info("上传附件[{}]后，解压 zip 文件", attachmentAdd.getPath());
+        //TODO 解压出来的目录可能与实际 zip 包目录不同，例如 Mi_giftBox_label_Cn(1).zip -> Mi_giftBox_label_Cn
         String absoluteFilePath = fileService.getAbsolutePath(attachmentVO.getPath());
         try {
             PdfTagFileUtils.unzip(absoluteFilePath);

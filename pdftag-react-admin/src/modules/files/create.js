@@ -1,13 +1,14 @@
 import React from 'react';
-import {Create, FileField, FileInput, required, SimpleForm,} from 'react-admin';
+import {Create, FileField, FileInput, required, SimpleForm, TextInput,} from 'react-admin';
 
-import {toFormData} from "./Upload";
+import {toFormData} from "./Utils";
 
 export const FileCreate = (props) => {
     console.info('FileCreate:', props);
     return (
-        <Create {...props} transform={data => toFormData(data.file.rawFile)}>
+        <Create {...props} transform={data => toFormData(data, 'file')}>
             <SimpleForm>
+                <TextInput source={'relativePath'} validate={[]}/>
                 <FileInput label="文件" source="file"
                            minSize={1} maxSize={5000000}
                            validate={[required(),]}

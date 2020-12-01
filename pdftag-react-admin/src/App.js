@@ -24,8 +24,8 @@ const App = () => (
         {UserResource}
         {TemplateResource}
         {PhoneTagResource}
-        {/*{AttachmentResource}*/}
-        {/*{FileResource}*/}
+        {AttachmentResource}
+        {FileResource}
         <Resource name="profile"/>
     </Admin>
 );

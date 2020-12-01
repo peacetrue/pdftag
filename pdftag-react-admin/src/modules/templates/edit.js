@@ -12,7 +12,7 @@ import {
     TextInput,
     useDataProvider
 } from 'react-admin';
-import transformFactory from "../attachments/Upload";
+import transformFactory from "../attachments/Utils";
 
 export const TemplateEdit = (props) => {
     console.info('TemplateEdit:', props);

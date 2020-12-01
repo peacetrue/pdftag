@@ -17,6 +17,7 @@ export default {
             name: '文件',
             fields: {
                 name: '名称',
+                relativePath: '基础路径',
             },
         },
         templates: {
