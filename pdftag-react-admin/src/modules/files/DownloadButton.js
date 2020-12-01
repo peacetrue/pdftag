@@ -1,6 +1,7 @@
-import {Button, useNotify} from "react-admin";
+import {Button} from "react-admin";
 import React from "react";
 import GetAppIcon from '@material-ui/icons/GetApp';
+import {buildUrl} from "./Utils";
 
 export const DownloadButton = (props) => {
     let {
@@ -10,19 +11,18 @@ export const DownloadButton = (props) => {
         filePathAttr = 'path',
         dispositionType = 'attachment'
     } = props;
-    let notify = useNotify();
     let download = e => {
         e.stopPropagation();
         filePath = filePath || record[filePathAttr];
-        if (filePath) {
-            window.open(`${process.env.REACT_APP_BASE_URL}/files/${filePath}?dispositionType=${dispositionType}`);
-        } else {
-            notify("文件尚在生成中，请稍后刷新列表重试！");
-        }
+        filePath && window.open(buildUrl(filePath, dispositionType));
     };
     return (
         <Button label={label} onClick={download}>
             <GetAppIcon/>
         </Button>
     );
+}
+
+export const PreviewButton = (props) => {
+    return <DownloadButton label={'预览'} dispositionType={'inline'} {...props} />;
 }

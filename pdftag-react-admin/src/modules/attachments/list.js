@@ -13,7 +13,7 @@ import {
     FunctionField
 } from 'react-admin';
 import prettyBytes from 'pretty-bytes'
-import {DownloadButton} from './DownloadButton'
+import {DownloadButton} from '../files/DownloadButton'
 
 const Filters = (props) => (
     <Filter {...props}>

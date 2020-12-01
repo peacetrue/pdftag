@@ -17,12 +17,12 @@ export const toFormData = (data, fileAttr) => {
 
     files.forEach(file => formData.append(name, file, file.name));
     formData.append("_query", JSON.stringify({fileCount: fileCount}));
-    Object.keys(data).filter(name => name !== fileAttr).forEach(name => {
-        formData.append(name, data[name]);
-    });
+    Object.keys(data).filter(name => name !== fileAttr)
+        .forEach(name => formData.append(name, data[name]));
     return formData;
 }
 
 
-export const buildPreviewUrl = path => `${process.env.REACT_APP_BASE_URL}/files/${path}?dispositionType=inline`;
-export const buildDownloadUrl = path => `${process.env.REACT_APP_BASE_URL}/files/${path}?dispositionType=attachment`;
+export const buildUrl = (path, dispositionType) => `${process.env.REACT_APP_BASE_URL}/files/${path}?dispositionType=${dispositionType}`;
+export const buildPreviewUrl = path => buildUrl(path, 'inline');
+export const buildDownloadUrl = path => buildUrl(path, 'attachment');

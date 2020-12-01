@@ -10,7 +10,7 @@ import {
     TopToolbar,
     FunctionField
 } from 'react-admin';
-import {DownloadButton} from "./DownloadButton";
+import {DownloadButton} from "../files/DownloadButton";
 import prettyBytes from "pretty-bytes";
 
 const AttachmentActions = ({basePath, data, resource}) => (

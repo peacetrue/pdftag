@@ -12,6 +12,9 @@ import {
     useRedirect
 } from 'react-admin';
 
+import {toFormData} from "../files/Utils";
+import {DownloadButton} from "../files/DownloadButton";
+
 const PhoneTagImportsToolbar = props => {
     const notify = useNotify();
     const redirect = useRedirect();
@@ -29,40 +32,32 @@ const PhoneTagImportsToolbar = props => {
             .then(response => {
                 // success side effects go here
                 redirect('/phone-tags');
-                notify(`导入成功！`);
+                notify(`标签导入成功！`);
             })
             .catch(error => {
                 // failure side effects go here
-                notify(`导入失败: ${error.message}`, 'warning');
+                notify(`标签导入失败: ${error.message}`, 'warning');
             });
     }
     return (
         <Toolbar {...props} >
-            <SaveButton label={'导入'} onSuccess={handleSuccess}/>
+            <SaveButton label={'导入标签'} onSuccess={handleSuccess}/>
         </Toolbar>
     );
 };
 
-const toFormData = file => {
-    let formData = new FormData();
-    formData.append("file", file, file.name)
-    return formData;
-}
-
-const transform = data => {
-    console.info("transform data:", data);
-    let formData = toFormData(data.file.rawFile);
-    data.remark && formData.append("remark", data.remark);
-    formData.append("_query", JSON.stringify({type: 'imports'}));
-    return formData;
-}
 
 export const PhoneTagImports = (props) => {
     console.info('PhoneTagImports:', props);
     return (
-        <Create title={`导入标签`} basePath={'/phone-tags'} resource={'phone-tags'} transform={transform}>
+        <Create title={`导入 标签`}
+                basePath={'/phone-tags'}
+                resource={'phone-tags'}
+                transform={data => toFormData(data, 'file')}
+        >
             <SimpleForm toolbar={<PhoneTagImportsToolbar/>}>
-                <FileInput label="CSV文件" source="file" accept=".csv" validate={[required(),]}>
+
+                <FileInput label="上传 CSV 文件" source="file" accept=".csv" validate={[required(),]}>
                     <FileField source="src" title="title"/>
                 </FileInput>
             </SimpleForm>

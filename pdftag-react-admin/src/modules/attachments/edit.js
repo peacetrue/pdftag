@@ -16,7 +16,7 @@ import {
     TextInput,
     TopToolbar
 } from 'react-admin';
-import {DownloadButton} from "./DownloadButton";
+import {DownloadButton} from "../files/DownloadButton";
 
 const AttachmentActions = ({basePath, data, resource}) => (
     <TopToolbar>

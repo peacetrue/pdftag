@@ -21,7 +21,7 @@ import {
     usePermissions
 } from 'react-admin';
 import {ImportsButton} from "./ImportsButton";
-import {DownloadButton} from "../attachments/DownloadButton";
+import {DownloadButton} from "../files/DownloadButton";
 
 const ListActions = (props) => {
     const {
@@ -50,14 +50,17 @@ const ListActions = (props) => {
                 context: 'button',
             })}
             <ImportsButton/>
-            <CreateButton basePath={basePath}/>
+            <CreateButton label={'新建标签'} basePath={basePath}/>
+{/*
             <ExportButton
+                label={'导出标签'}
                 disabled={total === 0}
                 resource={resource}
                 sort={currentSort}
                 filterValues={filterValues}
                 maxResults={maxResults}
             />
+*/}
         </TopToolbar>
     );
 };
@@ -112,8 +115,8 @@ export const PhoneTagList = (props) => {
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
                 <EditButton/>
-                <DownloadButton label={'演示导出'} filePathAttr={'reproductionPath'}/>
-                <DownloadButton label={'正式导出'} filePathAttr={'productionPath'}/>
+                <DownloadButton label={'演示版导出'} filePathAttr={'reproductionPath'}/>
+                <DownloadButton label={'正式版导出'} filePathAttr={'productionPath'}/>
             </Datagrid>
         </List>
     )
