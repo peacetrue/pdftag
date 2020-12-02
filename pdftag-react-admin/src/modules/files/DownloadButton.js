@@ -6,15 +6,16 @@ import {buildUrl} from "./Utils";
 export const DownloadButton = (props) => {
     let {
         label = '下载',
-        filePath,
+        filePath = '',
         record,
         filePathAttr = 'path',
         dispositionType = 'attachment'
     } = props;
+    filePath = filePath || record[filePathAttr];
+    if (!filePath) return null;
     let download = e => {
         e.stopPropagation();
-        filePath = filePath || record[filePathAttr];
-        filePath && window.open(buildUrl(filePath, dispositionType));
+        window.open(buildUrl(filePath, dispositionType));
     };
     return (
         <Button label={label} onClick={download}>

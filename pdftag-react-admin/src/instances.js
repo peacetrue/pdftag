@@ -10,9 +10,9 @@ import FormAuthProvider from "./formAuthProvider";
 //     };
 // };
 
-export const debugHttpClient = (httpClient) => {
+export const debugRequestHttpClient = (httpClient) => {
     return (url, options = {}) => {
-        console.info("url:", url, "options:", options);
+        console.info("url:", url, options);
         if (!options.headers) options.headers = new Headers();
         options.headers.set('X-Requested-With', 'XMLHttpRequest');
         return httpClient(url, options);
@@ -26,6 +26,6 @@ const resultConverter = httpClient => {
     };
 };
 
-export const httpClient = defaultHttpClientJoiner(fetchUtils.fetchJson, httpClientProxies.cors, httpClientProxies.springRest, debugHttpClient);
+export const httpClient = defaultHttpClientJoiner(fetchUtils.fetchJson, httpClientProxies.cors, httpClientProxies.springRest, debugRequestHttpClient);
 export const dataProvider = springDataProvider(process.env.REACT_APP_BASE_URL, httpClient);
 export const authProvider = FormAuthProvider(process.env.REACT_APP_BASE_URL, defaultHttpClientJoiner(httpClient, resultConverter));

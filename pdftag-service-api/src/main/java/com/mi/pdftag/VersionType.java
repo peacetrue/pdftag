@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum VersionType implements CodeCapable, NameCapable {
 
     REPRODUCTION("reproduction", "演示"),
-    PRODUCTION("production", "正式"),
+    PRODUCTION("production", "发布"),
     ;
 
     private final String code;

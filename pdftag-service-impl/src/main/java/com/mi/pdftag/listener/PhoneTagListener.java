@@ -1,8 +1,12 @@
 package com.mi.pdftag.listener;
 
 import com.github.peacetrue.core.OperatorCapable;
+import com.github.peacetrue.core.Operators;
+import com.github.peacetrue.file.FileDelete;
+import com.github.peacetrue.file.FileService;
 import com.github.peacetrue.operator.PdfTagOperatorUtils;
 import com.mi.pdftag.modules.phonetag.PhoneTagAdd;
+import com.mi.pdftag.modules.phonetag.PhoneTagDelete;
 import com.mi.pdftag.modules.phonetag.PhoneTagModify;
 import com.mi.pdftag.modules.phonetag.PhoneTagVO;
 import com.mi.pdftag.modules.tag.TagGeneratePdf;
@@ -44,9 +48,25 @@ public class PhoneTagListener {
                 payload,
                 new TagGeneratePdf(null, vo)
         );
-        tagService.generatePdfAllVersion(params)
-                .publishOn(Schedulers.elastic())
-                .subscribe();
+        tagService.generatePdfAllVersion(params).publishOn(Schedulers.elastic()).subscribe();
     }
 
+    @Autowired
+    private FileService fileService;
+
+    @EventListener
+    public void deletePdfAfterPhoneTagDelete(PayloadApplicationEvent<PhoneTagDelete> event) {
+        log.info("删除标签[{}]之后删除PDF", event.getPayload().getId());
+        PhoneTagVO source = (PhoneTagVO) event.getSource();
+
+        if (source.getReproductionPath() != null) {
+            fileService.delete(Operators.setOperator(event.getPayload(), new FileDelete(source.getReproductionPath())))
+                    .publishOn(Schedulers.elastic()).subscribe();
+        }
+
+        if (source.getProductionPath() != null) {
+            fileService.delete(Operators.setOperator(event.getPayload(), new FileDelete(source.getProductionPath())))
+                    .publishOn(Schedulers.elastic()).subscribe();
+        }
+    }
 }

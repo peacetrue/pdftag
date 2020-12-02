@@ -18,7 +18,7 @@ export const TemplateEdit = (props) => {
     console.info('TemplateEdit:', props);
     let dataProvider = useDataProvider();
     return (
-        <Edit {...props}
+        <Edit undoable={false} {...props}
               transform={transformFactory(dataProvider, 'attachmentId')}>
             <SimpleForm>
                 <TextInput label={'编号'} source="code" validate={[required(), maxLength(32)]} placeholder={'请输入唯一的编号'}/>

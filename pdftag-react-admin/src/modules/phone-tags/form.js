@@ -1,6 +1,15 @@
 import * as React from "react";
 import {useState} from "react";
-import {FormWithRedirect, maxLength, ReferenceInput, required, SaveButton, SelectInput, TextInput,} from 'react-admin';
+import {
+    FormWithRedirect,
+    maxLength,
+    minLength,
+    ReferenceInput,
+    required,
+    SaveButton,
+    SelectInput,
+    TextInput,
+} from 'react-admin';
 import {Box, Toolbar} from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -8,19 +17,19 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import Iframe from "react-iframe";
 import {buildPreviewUrl} from "../files/Utils";
 
-let state = 1;
+const requiredInstance = required();
+const stateRequired = (value, values) => {
+    return values.stateId === 1 ? undefined : requiredInstance(value, values)
+}
+
 export const PhoneTagForm = props => {
     console.info("PhoneTagForm.props:", props);
     let pdfPath = props.record.reproductionPath || 'preview.pdf';
     let [url, setUrl] = useState(buildPreviewUrl(pdfPath));
-    let _requiredInstance = required();
-    let requiredInstance = (value, values) => {
-        return state === 1 ? undefined : _requiredInstance(value, values)
-    }
     return (
         <FormWithRedirect
             {...props}
-            render={formProps => {
+            render={(formProps) => {
                 console.info("formProps:", formProps);
                 return (
                     <form>
@@ -30,13 +39,9 @@ export const PhoneTagForm = props => {
                                     {/*<Typography variant="h6" gutterBottom>具体值</Typography>*/}
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
-                                            <SelectInput label={'样式'} source="styleCode" validate={[required(),]}
-                                                         choices={[
-                                                             {id: 'default', name: '默认样式表'},
-                                                             {id: 'chinese', name: '中文样式表'},
-                                                             {id: 'english', name: '英文样式表'},
-                                                         ]}
-                                            />
+                                            <ReferenceInput label={'样式'} reference="enums/ditaStyle" source="styleCode">
+                                                <SelectInput optionText="name" validate={[required(),]}/>
+                                            </ReferenceInput>
                                         </Box>
                                         <Box flex={1} ml="0.5em">
                                             <ReferenceInput label={'模版'} reference="templates" source="templateId">
@@ -47,51 +52,48 @@ export const PhoneTagForm = props => {
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'商品名称(goodsName)'} source="goodsName"
-                                                       validate={[requiredInstance, maxLength(32)]}
+                                                       validate={[stateRequired, maxLength(32)]}
                                             />
                                         </Box>
                                         <Box flex={1} ml="0.5em">
                                             <TextInput label={'认证型号(modelCode)'} source="modelCode"
-                                                       validate={[requiredInstance, maxLength(32)]}
+                                                       validate={[stateRequired, maxLength(32)]}
                                             />
                                         </Box>
                                     </Box>
                                     <TextInput label={'包装内含(packageContent)'} source="packageContent"
-                                               validate={[requiredInstance, maxLength(32)]}
+                                               validate={[stateRequired, maxLength(32)]}
                                                fullWidth/>
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'执行标准(standard)'} source="standard"
-                                                       validate={[requiredInstance, maxLength(32)]}
+                                                       validate={[stateRequired, maxLength(32)]}
                                             />
                                         </Box>
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'CMIIT ID(cmiitId)'} source="cmiitId"
-                                                       validate={[requiredInstance, maxLength(32)]}
+                                                       validate={[stateRequired, maxLength(32)]}
                                             />
                                         </Box>
                                     </Box>
                                     <Box flex={1} ml="0.5em">
                                         <TextInput label={'进网许可证(networkLicense)'} source="networkLicense"
-                                                   validate={[requiredInstance, maxLength(32)]}
+                                                   validate={[stateRequired, minLength(10), maxLength(32)]}
                                                    fullWidth/>
                                     </Box>
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'产品名称(productName)'} source="productName"
-                                                       validate={[requiredInstance, maxLength(32)]}
-                                            />
+                                                       validate={[stateRequired, maxLength(32)]}/>
 
                                         </Box>
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'颜色(colour)'} source="colour"
-                                                       validate={[requiredInstance, maxLength(32)]}
-                                            />
+                                                       validate={[stateRequired, maxLength(32)]}/>
                                         </Box>
                                     </Box>
                                     <TextInput label={'存储空间(storage)'} source="storage"
-                                               validate={[requiredInstance, maxLength(32)]}
-                                               fullWidth/>
+                                               validate={[stateRequired, maxLength(32)]} fullWidth/>
                                     {/*<TextInput label={'备注'} source="remark" validate={[]} multiline fullWidth/>*/}
                                 </Box>
 
@@ -108,11 +110,24 @@ export const PhoneTagForm = props => {
                             </Box>
                         </Box>
                         <Toolbar>
-                            <Box display="flex" justifyContent="space-around" width="50%">
+                            <Box display="flex" justifyContent="space-around" width="60%">
                                 <SaveButton
+                                    label={'发布'}
                                     saving={formProps.saving}
-                                    handleSubmitWithRedirect={formProps.handleSubmitWithRedirect}
+                                    handleSubmitWithRedirect={event => {
+                                        formProps.form.change('stateId', 2);
+                                        return formProps.handleSubmitWithRedirect(event)
+                                    }}
                                 />
+                                {formProps.record.stateId !== 2 ? (<SaveButton
+                                    label={'保存草稿'}
+                                    saving={formProps.saving}
+                                    handleSubmitWithRedirect={event => {
+                                        formProps.form.change('stateId', 1);
+                                        return formProps.handleSubmitWithRedirect(event)
+                                    }}
+                                    variant="outlined"
+                                />) : null}
                                 <SaveButton
                                     label={'预览'}
                                     icon={<VisibilityIcon/>}
@@ -124,7 +139,7 @@ export const PhoneTagForm = props => {
                                     })}
                                     saving={formProps.saving}
                                     handleSubmitWithRedirect={event => {
-                                        state = 1;
+                                        formProps.form.change('stateId', 1);
                                         return formProps.handleSubmitWithRedirect(event)
                                     }}
                                     onSuccess={(data) => {
@@ -144,7 +159,11 @@ export const PhoneTagForm = props => {
                                         }, ...data
                                     })}
                                     saving={formProps.saving}
-                                    handleSubmitWithRedirect={formProps.handleSubmitWithRedirect}
+                                    handleSubmitWithRedirect={event => {
+                                        formProps.form.change('stateId', 2);
+                                        return formProps.handleSubmitWithRedirect(event)
+                                    }}
+
                                     onSuccess={(data) => {
                                         let url = buildPreviewUrl(data.data.data);
                                         window.open(url);
@@ -156,7 +175,10 @@ export const PhoneTagForm = props => {
                                     label="正式版导出"
                                     icon={<GetAppIcon/>}
                                     saving={formProps.saving}
-                                    handleSubmitWithRedirect={formProps.handleSubmitWithRedirect}
+                                    handleSubmitWithRedirect={event => {
+                                        formProps.form.change('stateId', 2);
+                                        return formProps.handleSubmitWithRedirect(event);
+                                    }}
                                     onSuccess={props => {
                                         window.open(`${process.env.REACT_APP_BASE_URL}/phone-tags/${props.data.id}/export?versionType=production`);
                                     }}

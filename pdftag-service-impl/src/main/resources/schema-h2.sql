@@ -47,3 +47,6 @@ CREATE TABLE `phone_tag`
 
 COMMENT ON TABLE `phone_tag` IS '标签';
 COMMENT ON COLUMN `phone_tag`.id IS '主键';
+
+# INSERT INTO user (username, password, creator_id, created_time, modifier_id, modified_time)
+# VALUES ('peacetrue', '{noop}peacetrue', 1, current_timestamp, 1, current_timestamp);

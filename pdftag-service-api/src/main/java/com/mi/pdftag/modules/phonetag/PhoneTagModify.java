@@ -69,10 +69,8 @@ public class PhoneTagModify extends OperatorCapableImpl<Long> implements IdCapab
     /** 备注 */
     @Size(min = 1, max = 255)
     private String remark;
-    /** 演示附件 */
-    private String reproductionPath;
-    /** 正式附件 */
-    private String productionPath;
+    /** 状态 {@link PhoneTagState} */
+    private Integer stateId;
 
 
 }

@@ -17,9 +17,9 @@ public class ServicePdfTagProperties {
     private Map<String, String> ditaBaseDir = new HashMap<>(3);
 
     {
-        ditaBaseDir.put(DitaStyle.DEFAULT.getCode(), "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3");
-        ditaBaseDir.put(DitaStyle.CHINESE.getCode(), "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese");
-        ditaBaseDir.put(DitaStyle.ENGLISH.getCode(), "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-english");
+        ditaBaseDir.put(DitaStyle.DEFAULT.getId(), "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3");
+        ditaBaseDir.put(DitaStyle.CHINESE.getId(), "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese");
+        ditaBaseDir.put(DitaStyle.ENGLISH.getId(), "/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-english");
     }
 
     /**

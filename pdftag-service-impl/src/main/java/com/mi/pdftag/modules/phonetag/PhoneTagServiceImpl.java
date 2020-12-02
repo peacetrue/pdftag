@@ -8,8 +8,6 @@ import com.github.peacetrue.spring.data.relational.core.query.UpdateUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.github.peacetrue.util.DateUtils;
 import com.github.peacetrue.util.StreamUtils;
-import com.github.peacetrue.util.StructureUtils;
-import com.mi.pdftag.DitaStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,13 +19,17 @@ import org.springframework.data.relational.core.query.Query;
 import org.springframework.data.relational.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ReflectionUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
 import javax.annotation.Nullable;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -50,13 +52,13 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                 CriteriaUtils.nullableCriteria(Criteria.where("styleCode")::is, params::getStyleCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("templateId")::is, params::getTemplateId),
                 CriteriaUtils.nullableCriteria(Criteria.where("goodsName")::like, value -> "%" + value + "%", params::getGoodsName),
-                CriteriaUtils.nullableCriteria(Criteria.where("productName")::like, value -> "%" + value + "%", params::getProductName),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getCreatedTime()::getUpperBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("modifierId")::is, params::getModifierId),
                 CriteriaUtils.nullableCriteria(Criteria.where("modifiedTime")::greaterThanOrEquals, params.getModifiedTime()::getLowerBound),
-                CriteriaUtils.nullableCriteria(Criteria.where("modifiedTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getModifiedTime()::getUpperBound)
+                CriteriaUtils.nullableCriteria(Criteria.where("modifiedTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getModifiedTime()::getUpperBound),
+                CriteriaUtils.nullableCriteria(Criteria.where("stateId")::is, params::getStateId)
         );
     }
 
@@ -65,9 +67,8 @@ public class PhoneTagServiceImpl implements PhoneTagService {
     public Mono<PhoneTagVO> add(PhoneTagAdd params) {
         log.info("新增标签信息[{}]", params);
         PhoneTag entity = BeanUtils.map(params, PhoneTag.class);
-        if (entity.getRemark() == null) entity.setRemark("");
-        if (entity.getReproductionPath() == null) entity.setReproductionPath("");
-        if (entity.getProductionPath() == null) entity.setProductionPath("");
+        setDefaultValue(entity);
+        if (entity.getStateId() == null) entity.setStateId(PhoneTagState.DRAFT.getId());
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());
@@ -76,6 +77,20 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                 .map(item -> BeanUtils.map(item, PhoneTagVO.class))
                 .doOnNext(item -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(item, params)))
                 ;
+    }
+
+    public static void setDefaultValue(Object object) {
+        PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(object.getClass());
+        Arrays.stream(descriptors).forEach(descriptor -> {
+            if (descriptor.getPropertyType() == String.class) {
+                Method readMethod = descriptor.getReadMethod();
+                Object value = ReflectionUtils.invokeMethod(readMethod, object);
+                if (value == null) {
+                    Method writeMethod = descriptor.getWriteMethod();
+                    ReflectionUtils.invokeMethod(writeMethod, object, "");
+                }
+            }
+        });
     }
 
     @Override
@@ -94,7 +109,6 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                     Query query = Query.query(where).with(finalPageable).sort(finalPageable.getSortOr(Sort.by("createdTime").descending()));
                     return entityTemplate.select(query, PhoneTag.class)
                             .map(item -> BeanUtils.map(item, PhoneTagVO.class))
-                            .doOnNext(item -> item.setStyleName(StructureUtils.findNameByCode(DitaStyle.values(), item.getStyleCode())))
                             .reduce(new ArrayList<>(), StreamUtils.reduceToCollection())
                             .map(item -> new PageImpl<>(item, finalPageable, total));
                 })
@@ -112,8 +126,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         Criteria where = buildCriteria(params);
         Query query = Query.query(where).sort(sort).limit(100);
         return entityTemplate.select(query, PhoneTag.class)
-                .map(item -> BeanUtils.map(item, PhoneTagVO.class))
-                .doOnNext(item -> item.setStyleName(StructureUtils.findNameByCode(DitaStyle.values(), item.getStyleCode())));
+                .map(item -> BeanUtils.map(item, PhoneTagVO.class));
     }
 
     @Override
@@ -125,8 +138,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
 //        );
         Criteria where = Criteria.where("id").is(params.getId());
         return entityTemplate.selectOne(Query.query(where), PhoneTag.class)
-                .map(item -> BeanUtils.map(item, PhoneTagVO.class))
-                .doOnNext(item -> item.setStyleName(StructureUtils.findNameByCode(DitaStyle.values(), item.getStyleCode())));
+                .map(item -> BeanUtils.map(item, PhoneTagVO.class));
     }
 
     @Override

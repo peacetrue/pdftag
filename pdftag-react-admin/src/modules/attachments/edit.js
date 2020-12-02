@@ -29,7 +29,7 @@ const AttachmentActions = ({basePath, data, resource}) => (
 export const AttachmentEdit = (props) => {
     console.info('AttachmentEdit:', props);
     return (
-        <Edit actions={<AttachmentActions/>} {...props} >
+        <Edit actions={<AttachmentActions/>} undoable={false} {...props} >
             <SimpleForm>
                 <TextInput label={'名称'} source="name" validate={[required(), maxLength(32)]}/>
                 <TextField label={'路径'} source="path" fullWidth/>

@@ -17,7 +17,7 @@ export const UserEdit = (props) => {
     console.info('UserEdit:', props);
     let validate = [required(), minLength(6), maxLength(32), regex(/^[0-9a-zA-Z-.]+$/)];
     return (
-        <Edit {...props} >
+        <Edit undoable={false} {...props} >
             <SimpleForm>
                 <TextField label={'用户名'} source="username"/>
                 <PasswordInput label={'密码'} source="password" validate={validate}/>

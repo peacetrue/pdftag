@@ -7,17 +7,17 @@ export default {
                 username: '用户名',
             }
         },
-        attachments: {
-            name: '附件',
-            fields: {
-                name: '名称',
-            },
-        },
         files: {
             name: '文件',
             fields: {
                 name: '名称',
                 relativePath: '基础路径',
+            },
+        },
+        attachments: {
+            name: '附件',
+            fields: {
+                name: '名称',
             },
         },
         templates: {

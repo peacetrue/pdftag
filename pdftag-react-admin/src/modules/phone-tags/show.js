@@ -6,7 +6,9 @@ export const PhoneTagShow = (props) => {
     return (
         <Show {...props} >
             <SimpleShowLayout>
-                <TextField label={'样式'} source="styleName"/>
+                <ReferenceField label={'样式'} reference="enums/ditaStyle" source="styleCode" link={false}>
+                    <TextField source="name"/>
+                </ReferenceField>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link="show">
                     <TextField source="name"/>
                 </ReferenceField>

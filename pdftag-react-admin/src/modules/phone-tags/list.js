@@ -1,11 +1,10 @@
-import React, {cloneElement} from 'react';
+import React, {cloneElement, Fragment} from 'react';
 import {
+    BulkDeleteButton,
     CreateButton,
     Datagrid,
     DateField,
-    DateInput,
     EditButton,
-    ExportButton,
     Filter,
     List,
     Loading,
@@ -51,7 +50,7 @@ const ListActions = (props) => {
             })}
             <ImportsButton/>
             <CreateButton label={'新建标签'} basePath={basePath}/>
-{/*
+            {/*
             <ExportButton
                 label={'导出标签'}
                 disabled={total === 0}
@@ -60,27 +59,39 @@ const ListActions = (props) => {
                 filterValues={filterValues}
                 maxResults={maxResults}
             />
-*/}
+            */}
         </TopToolbar>
     );
 };
 
 const Filters = (props) => (
     <Filter {...props}>
-        <SelectInput label={'样式'} source="styleCode" choices={[
-            {id: 'default', name: '默认样式表'},
-            {id: 'chinese', name: '中文样式表'},
-            {id: 'english', name: '英文样式表'},
-        ]} resettable allowEmpty alwaysOn/>
+        <ReferenceInput label={'样式'} reference="enums/ditaStyle" source="styleCode" resettable allowEmpty alwaysOn>
+            <SelectInput optionText="name"/>
+        </ReferenceInput>
         <ReferenceInput label={'模版'} reference="templates" source="templateId" resettable allowEmpty alwaysOn>
             <SelectInput optionText="name"/>
         </ReferenceInput>
+        <ReferenceInput label={'状态'} reference="enums/phoneTagState" source="stateId" resettable allowEmpty alwaysOn>
+            <SelectInput optionText="name"/>
+        </ReferenceInput>
         <TextInput label={'商品名称'} source="goodsName" resettable allowEmpty alwaysOn/>
-        <DateInput label={'创建时间起始值'} source="createdTime.lowerBound" allowEmpty/>
-        <DateInput label={'创建时间结束值'} source="createdTime.upperBound" allowEmpty/>
+        {/*<DateInput label={'创建时间起始值'} source="createdTime.lowerBound" allowEmpty/>*/}
+        {/*<DateInput label={'创建时间结束值'} source="createdTime.upperBound" allowEmpty/>*/}
     </Filter>
 );
 
+const BulkActionButtons = props => (
+    <Fragment>
+        <BulkDeleteButton {...props} undoable={false}/>
+    </Fragment>
+);
+
+const DownloadPDF = ({record}) => <DownloadButton
+    label={record.stateId === 2 ? '正式版导出' : '演示版导出'}
+    record={record}
+    filePathAttr={record.stateId === 2 ? 'reproductionPath' : 'productionPath'}
+/>;
 
 export const PhoneTagList = (props) => {
     console.info('PhoneTagList:', props);
@@ -100,23 +111,28 @@ export const PhoneTagList = (props) => {
               actions={<ListActions/>}
               filters={<Filters/>}
               filter={{creatorId: permissions.isManager ? undefined : identity.id}}
-              sort={{field: 'createdTime', order: 'desc'}}
               empty={false}
+              bulkActionButtons={<BulkActionButtons/>}
         >
             <Datagrid rowClick="show">
-                <TextField label={'样式'} source="styleName"/>
+                <ReferenceField label={'样式'} reference="enums/ditaStyle" source="styleCode" link={false}>
+                    <TextField source="name"/>
+                </ReferenceField>
                 <ReferenceField label={'模版'} reference="templates" source="templateId" link={'show'}>
                     <TextField source="name"/>
                 </ReferenceField>
+                <ReferenceField label={'状态'} reference="enums/phoneTagState" source="stateId" link={false}>
+                    <TextField source="name"/>
+                </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
-                <TextField label={'产品名称'} source="productName"/>
-                <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={false}>
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
                 <EditButton/>
-                <DownloadButton label={'演示版导出'} filePathAttr={'reproductionPath'}/>
-                <DownloadButton label={'正式版导出'} filePathAttr={'productionPath'}/>
+                {/*<DownloadButton label={'演示版导出'} filePathAttr={'reproductionPath'}/>*/}
+                {/*<DownloadButton label={'正式版导出'} filePathAttr={'productionPath'}/>*/}
+                <DownloadPDF/>
             </Datagrid>
         </List>
     )

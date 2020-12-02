@@ -25,10 +25,35 @@ image::react-admin/0001.png[]
 
 导出 CSV 乱码
 
-=== 上传时添加请求参数
+=== 扩展接口
 
 标准 CRUD 方法之外的其他方法需要通过参数区分，上传时无法根据 FormData 中的参数区分，必须添加 URL 参数
 
 === 无数据时提示
 
 image::react-admin/0002.png[]
+
+resource
+
+=== 通过 JS API 设置表单字段值
+
+你可以通过界面操作某个字段设置其值，但如何实现点击某个按钮时设置字段的值呢？
+
+
+=== 有用的东西
+
+[source%nowrap]
+----
+const CreateRelatedCommentButton = ({ record }) => (
+    <Button
+        component={Link}
+        to={{
+            pathname: '/comments/create',
+            state: { record: { post_id: record.id } },
+        }}
+    >
+        Write a comment for that post
+    </Button>
+);
+----
+

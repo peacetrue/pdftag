@@ -2,6 +2,7 @@ package com.mi.pdftag.modules.tag;
 
 import com.github.peacetrue.attachment.AttachmentGet;
 import com.github.peacetrue.attachment.AttachmentService;
+import com.github.peacetrue.core.Operators;
 import com.github.peacetrue.dita.DitaUtils;
 import com.github.peacetrue.file.FileService;
 import com.github.peacetrue.operator.PdfTagOperatorUtils;
@@ -55,8 +56,8 @@ public class TagServiceImpl implements TagService {
     public Mono<String> generatePdf(TagGeneratePdf params) {
         log.info("生成PDF文件: {}", params);
         boolean isReproduction = VersionType.REPRODUCTION.getCode().equals(params.getVersionType());
-        return templateService.get(PdfTagOperatorUtils.setOperator(params, new TemplateGet(params.getTag().getTemplateId())))
-                .flatMap(templateVO -> attachmentService.get(PdfTagOperatorUtils.setOperator(params, new AttachmentGet(templateVO.getAttachmentId()))))
+        return templateService.get(Operators.setOperator(params, new TemplateGet(params.getTag().getTemplateId())))
+                .flatMap(templateVO -> attachmentService.get(Operators.setOperator(params, new AttachmentGet(templateVO.getAttachmentId()))))
                 .flatMap(attachmentVO -> {
                     String absoluteFilePath = fileService.getAbsolutePath(attachmentVO.getPath());
                     String folderPath = absoluteFilePath.substring(0, absoluteFilePath.length() - ".zip".length());

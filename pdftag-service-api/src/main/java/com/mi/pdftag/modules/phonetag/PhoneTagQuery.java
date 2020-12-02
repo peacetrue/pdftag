@@ -54,6 +54,9 @@ public class PhoneTagQuery extends OperatorCapableImpl<Long> {
     private Long modifierId;
     /** 修改时间 */
     private Range.LocalDateTime modifiedTime;
+    /** 状态 {@link PhoneTagState} */
+    private Integer stateId;
+
 
     public PhoneTagQuery(Long[] id) {
         this.id = id;

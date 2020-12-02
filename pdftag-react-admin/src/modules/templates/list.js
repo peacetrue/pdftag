@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {
+    BulkDeleteButton,
     Datagrid,
     DateField,
     DateInput,
@@ -10,7 +11,7 @@ import {
     TextField,
     TextInput
 } from 'react-admin';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
 const Filters = (props) => (
     <Filter {...props}>
@@ -30,12 +31,19 @@ const useListStyles = makeStyles({
     },
 });
 
+const BulkActionButtons = props => (
+    <Fragment>
+        <BulkDeleteButton {...props} undoable={false}/>
+    </Fragment>
+);
+
+
 export const TemplateList = props => {
     console.info('TemplateList:', props);
-    const classes = useListStyles();
     return (
-        <List {...props}  filters={<Filters/>}
-              sort={{field: 'createdTime', order: 'desc'}}>
+        <List {...props} filters={<Filters/>}
+              bulkActionButtons={<BulkActionButtons/>}
+        >
             <Datagrid rowClick="show">
                 <TextField label={'编号'} source="code"/>
                 {/*<TextField label={'类型'} source="typeCode"/>*/}

@@ -65,7 +65,7 @@ public class PhoneTagAdd extends OperatorCapableImpl<Long> implements Tag {
     private String storage;
     /** 备注 */
     @Size(min = 1, max = 255)
-    private String remark = "";
+    private String remark;
 // default
     /** 进网许可标志验证网址 */
     private String networkPermissionUrl = "jwxk.miit.gov.cn";
@@ -73,4 +73,6 @@ public class PhoneTagAdd extends OperatorCapableImpl<Long> implements Tag {
     private String manufacturer = "小米通讯技术有限公司";
     /** 制造商地址 */
     private String manufacturerAddress = "北京市海淀区西二旗中路33号院6号楼9层019号";
+    /** 状态 {@link PhoneTagState} */
+    private Integer stateId;
 }

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {
+    BulkDeleteButton,
     Datagrid,
     DateField,
     DateInput,
@@ -20,12 +21,18 @@ const Filters = (props) => (
     </Filter>
 );
 
+const BulkActionButtons = props => (
+    <Fragment>
+        <BulkDeleteButton {...props} undoable={false}/>
+    </Fragment>
+);
+
 export const UserList = ({permissions, ...props}) => {
     console.info('UserList:', props);
     return (
         <List {...props}
               filters={<Filters/>}
-              sort={{field: 'createdTime', order: 'desc'}}
+              bulkActionButtons={<BulkActionButtons/>}
         >
             <Datagrid rowClick="show">
                 <TextField label={'用户名'} source="username"/>

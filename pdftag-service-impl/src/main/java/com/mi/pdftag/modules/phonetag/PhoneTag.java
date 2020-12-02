@@ -57,6 +57,8 @@ public class PhoneTag implements Serializable {
     private String reproductionPath;
     /** 正式附件 */
     private String productionPath;
+    /** 状态 {@link PhoneTagState} */
+    private Integer stateId;
     /** 创建者主键 */
     private Long creatorId;
     /** 创建时间 */

@@ -105,5 +105,3 @@ create table user
 
 INSERT INTO user (id, username, password, creator_id, created_time, modifier_id, modified_time)
 VALUES (1, 'admin', '{noop}admin', 1, '2020-11-22 02:29:13', 1, '2020-11-23 08:25:01');
-INSERT INTO user (username, password, creator_id, created_time, modifier_id, modified_time)
-VALUES ('peacetrue', '{noop}peacetrue', 1, current_timestamp, 1, current_timestamp);

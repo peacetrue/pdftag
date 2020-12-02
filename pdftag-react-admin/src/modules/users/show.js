@@ -1,6 +1,7 @@
 import React from 'react';
-import {DateField, FunctionField, ReferenceField, Show, SimpleShowLayout, TextField} from 'react-admin';
+import {DateField, ReferenceField, Show, SimpleShowLayout, TextField} from 'react-admin';
 import Role from "./Role";
+
 export const UserShow = (props) => {
     console.info('UserShow:', props);
     return (

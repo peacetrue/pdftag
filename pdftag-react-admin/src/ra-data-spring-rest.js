@@ -129,7 +129,12 @@ export default (apiUrl, httpClient = fetch) => {
             options.body.delete("_query");
         }
 
-        return httpClient(url, options).then(format);
+        return httpClient(url, options)
+            .then(format)
+            .then(response => {
+                console.info(`url:${url},response:`, response)
+                return response;
+            });
     };
     return dataProvider;
 };

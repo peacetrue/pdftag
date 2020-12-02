@@ -1,5 +1,6 @@
 package com.mi.pdftag.listener;
 
+import com.github.peacetrue.core.Operators;
 import com.github.peacetrue.operator.PdfTagOperatorUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.mi.pdftag.modules.phonetag.PhoneTagModify;
@@ -44,7 +45,7 @@ public class TagListener {
             BeanUtils.setPropertyValue(params, entry.getKey() + "Path", entry.getValue());
         }
 
-        phoneTagService.modifyPdfPath(PdfTagOperatorUtils.setOperator(payload, params))
+        phoneTagService.modifyPdfPath(Operators.setOperator(payload, params))
                 .publishOn(Schedulers.elastic())
                 .subscribe();
     }

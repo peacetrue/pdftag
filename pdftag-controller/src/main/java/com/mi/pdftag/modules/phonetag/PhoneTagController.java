@@ -107,8 +107,8 @@ public class PhoneTagController {
     @Autowired
     private ImportsService importsService;
 
-    @PostMapping(params = "type=imports")
-    public Mono<ImportsResult> imports(@RequestPart("file") FilePart file) {
+    @PostMapping(params = "fileCount=1")
+    public Mono<ImportsResult> imports(@RequestPart("filePart") FilePart file) {
         log.info("导入CSV文件[{}]", file.filename());
         CsvImportsSetting importsSetting = new CsvImportsSetting();
         importsSetting.setHeader(new String[]{"样式", "模版", "商品名称", "认证型号", "包装内含", "执行标准", "CMIIT ID", "进网许可证", "产品名称", "颜色", "存储空间"});
