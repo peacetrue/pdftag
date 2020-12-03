@@ -16,9 +16,11 @@ spring:
   application:
     name: pdftag
   r2dbc:
-    url: r2dbc:pool:mysql://${db.hostname}:3306/${db.schema}?autoreconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    url: r2dbcs:mysql://${db.hostname}:3306/${db.schema}?autoreconnect=true&useUnicode=true&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
     username: ${db.username}
     password: ${db.password}
+    pool:
+      enabled: true
   flyway:
     url: jdbc:mysql://${db.hostname}:3306/${db.schema}
     user: ${spring.r2dbc.username}

@@ -90,7 +90,7 @@ const BulkActionButtons = props => (
 const DownloadPDF = ({record}) => <DownloadButton
     label={record.stateId === 2 ? '正式版导出' : '演示版导出'}
     record={record}
-    filePathAttr={record.stateId === 2 ? 'reproductionPath' : 'productionPath'}
+    filePathAttr={record.stateId === 2 ? 'productionPath' : 'reproductionPath'}
 />;
 
 export const PhoneTagList = (props) => {

@@ -21,10 +21,10 @@ const requiredInstance = required();
 const stateRequired = (value, values) => {
     return values.stateId === 1 ? undefined : requiredInstance(value, values)
 }
-
+const stateIds = {'1': 'reproductionPath', '2': 'productionPath'};
 export const PhoneTagForm = props => {
     console.info("PhoneTagForm.props:", props);
-    let pdfPath = props.record.reproductionPath || 'preview.pdf';
+    let pdfPath = props.record[stateIds[props.record.stateId]] || 'preview.pdf';
     let [url, setUrl] = useState(buildPreviewUrl(pdfPath));
     return (
         <FormWithRedirect
@@ -172,15 +172,23 @@ export const PhoneTagForm = props => {
                                     variant="outlined"
                                 />
                                 <SaveButton
-                                    label="正式版导出"
+                                    label={'正式版导出'}
                                     icon={<GetAppIcon/>}
+                                    transform={data => ({
+                                        _query: {
+                                            _type: 'generatePdf',
+                                            versionType: 'production'
+                                        }, ...data
+                                    })}
                                     saving={formProps.saving}
                                     handleSubmitWithRedirect={event => {
-                                        formProps.form.change('stateId', 2);
-                                        return formProps.handleSubmitWithRedirect(event);
+                                        formProps.form.change('stateId', 1);
+                                        return formProps.handleSubmitWithRedirect(event)
                                     }}
-                                    onSuccess={props => {
-                                        window.open(`${process.env.REACT_APP_BASE_URL}/phone-tags/${props.data.id}/export?versionType=production`);
+                                    onSuccess={(data) => {
+                                        let url = buildPreviewUrl(data.data.data);
+                                        window.open(url);
+                                        setUrl(url);
                                     }}
                                     variant="outlined"
                                 />

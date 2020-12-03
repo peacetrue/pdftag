@@ -1,9 +1,7 @@
 package com.mi.pdftag.listener;
 
 import com.github.peacetrue.core.Operators;
-import com.github.peacetrue.operator.PdfTagOperatorUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
-import com.mi.pdftag.modules.phonetag.PhoneTagModify;
 import com.mi.pdftag.modules.phonetag.PhoneTagModifyPdfPath;
 import com.mi.pdftag.modules.phonetag.PhoneTagService;
 import com.mi.pdftag.modules.phonetag.PhoneTagVO;
@@ -33,10 +31,11 @@ public class TagListener {
     public void modifyPhoneTagPdfPathAfterGeneratePdf(PayloadApplicationEvent<TagGeneratePdf> event) {
         TagGeneratePdf payload = event.getPayload();
         //当且仅当所有PDF打印完成时触发
-        if (!(payload.getTag() instanceof PhoneTagVO) || payload.getVersionType() != null) return;
+        if (!(payload.getTag() instanceof PhoneTagVO)) return;
+        //payload.getVersionType() != null
 
         PhoneTagVO tag = (PhoneTagVO) payload.getTag();
-        log.info("生成PDF文件后，设置关联标签的路径");
+        log.info("生成PDF文件后，设置关联标签[{}]的路径", tag.getId());
 
         PhoneTagModifyPdfPath params = new PhoneTagModifyPdfPath();
         params.setId(tag.getId());
