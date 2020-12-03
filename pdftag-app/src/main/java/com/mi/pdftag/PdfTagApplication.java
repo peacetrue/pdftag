@@ -3,6 +3,9 @@ package com.mi.pdftag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.peacetrue.core.IdCapable;
+import com.github.peacetrue.result.Result;
+import com.github.peacetrue.result.ResultImpl;
+import com.github.peacetrue.result.ResultType;
 import com.github.peacetrue.spring.formatter.date.AutomaticDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateTimeFormatter;
@@ -12,6 +15,7 @@ import com.github.peacetrue.user.UserGet;
 import com.github.peacetrue.user.UserService;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +29,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -45,6 +51,8 @@ import org.springframework.transaction.annotation.ProxyTransactionManagementConf
 import org.springframework.transaction.interceptor.DelegatingTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAttributeSource;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
@@ -207,4 +215,15 @@ public class PdfTagApplication {
 //                .doOnNext(session -> session.setMaxIdleTime(Duration.ofMinutes(1)))
 //                .then();
 //    }
+
+    @Slf4j
+    @RestControllerAdvice
+    public static class GlobalExceptionHandler {
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<Result> handle(Exception exception) {
+            log.warn("接收到控制层抛出的异常", exception);
+            ResultImpl result = new ResultImpl(ResultType.failure.name(), exception.getMessage());
+            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

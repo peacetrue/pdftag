@@ -24,7 +24,7 @@ const PhoneTagImportsToolbar = props => {
     const redirect = useRedirect();
     const dataProvider = useDataProvider();
     const handleSuccess = (props) => {
-        console.info("handleSuccess.props:", props);
+        console.info("handleSuccess.props:", JSON.stringify(props));
         let errorMessages = props.data.errorMessages;
         if (errorMessages && errorMessages.length > 0) {
             notify(`导入失败！${errorMessages.map(item => item.errorMessage).join(',')}`);
@@ -36,16 +36,19 @@ const PhoneTagImportsToolbar = props => {
             .then(response => {
                 // success side effects go here
                 redirect('/phone-tags');
-                notify(`标签导入成功！`);
+                notify(`标签导入成功！`, 'success', {}, false, null);
             })
             .catch(error => {
                 // failure side effects go here
-                notify(`标签导入失败: ${error.message}`, 'warning');
+                notify(`标签导入失败: ${error.message}`, 'warning', {}, false, null);
             });
     }
     return (
         <Toolbar {...props} >
-            <SaveButton icon={<PublishIcon/>} label={'批量导入标签'} onSuccess={handleSuccess}/>
+            <SaveButton icon={<PublishIcon/>}
+                        label={'批量导入标签'}
+                        onSuccess={handleSuccess}
+                        onFailure={(error) => notify(`标签导入失败: ${error.message}`, 'warning', {}, false, null)}/>
         </Toolbar>
     );
 };
