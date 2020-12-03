@@ -11,6 +11,7 @@ logging:
   level:
     root: debug
   file:
+    path: /root/peacetrue/pdftag/03-logs
     max-history: 2
 
 com:

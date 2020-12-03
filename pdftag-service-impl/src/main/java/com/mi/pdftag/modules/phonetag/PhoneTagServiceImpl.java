@@ -145,34 +145,34 @@ public class PhoneTagServiceImpl implements PhoneTagService {
     @Transactional
     public Mono<Integer> modify(PhoneTagModify params) {
         log.info("修改标签信息[{}]", params);
-        return this.modifyInner(params)
-                .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
-                .map(Tuple2::getT2)
-                .switchIfEmpty(Mono.just(0));
+        return this.modifyGeneric(params);
     }
 
     @Override
     @Transactional
     public Mono<Integer> modifyPdfPath(PhoneTagModifyPdfPath params) {
         log.info("修改标签PDF路径信息[{}]", params);
-        return this.modifyInner(params)
-                .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
-                .map(Tuple2::getT2)
-                .switchIfEmpty(Mono.just(0));
+        return this.modifyGeneric(params);
     }
 
-    public <T extends IdCapable<Long> & OperatorCapable<Long>> Mono<Tuple2<PhoneTagVO, Integer>> modifyInner(T params) {
+    private  <T extends IdCapable<Long> & OperatorCapable<Long>> Mono<Integer> modifyGeneric(T params) {
         Criteria where = Criteria.where("id").is(params.getId());
         Query idQuery = Query.query(where);
         return entityTemplate.selectOne(idQuery, PhoneTag.class)
-                .map(item -> BeanUtils.map(item, PhoneTagVO.class))
                 .zipWhen(entity -> {
                     PhoneTag modify = BeanUtils.map(params, PhoneTag.class);
                     modify.setModifierId(params.getOperatorId());
                     modify.setModifiedTime(LocalDateTime.now());
                     Update update = UpdateUtils.selectiveUpdateFromExample(modify);
                     return entityTemplate.update(idQuery, update, PhoneTag.class);
-                });
+                })
+                .map(tuple2 -> {
+                    PhoneTagVO vo = BeanUtils.map(tuple2.getT1(), PhoneTagVO.class);
+                    BeanUtils.copyProperties(params, vo, BeanUtils.EMPTY_PROPERTY_VALUE);
+                    eventPublisher.publishEvent(new PayloadApplicationEvent<>(vo, params));
+                    return tuple2.getT2();
+                })
+                .switchIfEmpty(Mono.just(0));
     }
 
     @Override

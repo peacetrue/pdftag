@@ -56,8 +56,12 @@ public class TagServiceImpl implements TagService {
     public Mono<String> generatePdf(TagGeneratePdf params) {
         log.info("生成PDF文件: {}", params);
         boolean isReproduction = VersionType.REPRODUCTION.getCode().equals(params.getVersionType());
-        return templateService.get(Operators.setOperator(params, new TemplateGet(params.getTag().getTemplateId())))
-                .flatMap(templateVO -> attachmentService.get(Operators.setOperator(params, new AttachmentGet(templateVO.getAttachmentId()))))
+        TemplateGet templateGet = new TemplateGet(params.getTag().getTemplateId());
+        return templateService.get(Operators.setOperator(params, templateGet))
+                .flatMap(templateVO -> {
+                    AttachmentGet attachmentGet = new AttachmentGet(templateVO.getAttachmentId());
+                    return attachmentService.get(Operators.setOperator(params, attachmentGet));
+                })
                 .flatMap(attachmentVO -> {
                     String absoluteFilePath = fileService.getAbsolutePath(attachmentVO.getPath());
                     String folderPath = absoluteFilePath.substring(0, absoluteFilePath.length() - ".zip".length());
