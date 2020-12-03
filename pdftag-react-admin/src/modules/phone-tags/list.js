@@ -125,7 +125,7 @@ export const PhoneTagList = (props) => {
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
-                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={false}>
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={'edit'}>
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>

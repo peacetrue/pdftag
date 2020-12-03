@@ -14,6 +14,7 @@ import FileResource from "./modules/files";
 import {AttachmentShow} from "./modules/attachments/show";
 import {UserShow} from "./modules/users/show";
 import {TemplateShow} from "./modules/templates/show";
+import {UserEdit} from "./modules/users/edit";
 
 const i18nProvider = polyglotI18nProvider(() => ({...chineseMessages, ...messages}), 'cn');
 
@@ -44,7 +45,7 @@ const App = () => (
             } else {
                 resources = [
                     PhoneTagResource,
-                    <Resource name={'users'} show={UserShow}/>,
+                    <Resource name={'users'} show={UserShow} edit={UserEdit}/>,
                     <Resource name={'templates'} show={TemplateShow}/>,
                     <Resource name={'attachments'} show={AttachmentShow}/>,
                 ];
