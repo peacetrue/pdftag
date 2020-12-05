@@ -66,12 +66,12 @@ export const PhoneTagForm = props => {
                                         </Box>
                                     </Box>
                                     <TextInput label={'包装内含(packageContent)'} source="packageContent"
-                                               validate={[stateRequired, maxLength(32)]}
+                                               validate={[stateRequired, maxLength(255)]}
                                                fullWidth/>
                                     <Box display="flex">
                                         <Box flex={1} mr="0.5em">
                                             <TextInput label={'执行标准(standard)'} source="standard"
-                                                       validate={[stateRequired, maxLength(32)]}
+                                                       validate={[stateRequired, maxLength(255)]}
                                             />
                                         </Box>
                                         <Box flex={1} mr="0.5em">

@@ -13,7 +13,8 @@ cd ../
 
 scp pdftag-app/build/libs/pdftag-app-1.0.0-SNAPSHOT.jar $ali_ssh:/root/peacetrue/pdftag
 
-ssh $ali_ssh:/root/peacetrue/pdftag <<EOF
+ssh $ali_ssh <<EOF
+cd /root/peacetrue/pdftag
 killbp 80
 nohup java -jar pdftag-app-1.0.0-SNAPSHOT.jar >/dev/null 2>&1  &
 EOF

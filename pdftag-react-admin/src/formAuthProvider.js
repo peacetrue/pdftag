@@ -11,7 +11,7 @@ let formAuthProvider = (url, httpClient) => {
                         'admin': ['MANAGER'],
                     };
                     //let authorities = user.authorities.map(item => item.authority.replace('ROLE_', ''));
-                    let authorities = globalAuthorities[username];
+                    let authorities = globalAuthorities[username] || ['USER'];
                     let isSuperManager = authorities.indexOf('SUPER_MANAGER') !== -1;
                     localStorage.setItem('permissions', JSON.stringify({
                         isSuperManager: isSuperManager,

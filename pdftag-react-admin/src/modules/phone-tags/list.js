@@ -2,6 +2,7 @@ import React, {cloneElement, Fragment} from 'react';
 import {
     BulkDeleteButton,
     CreateButton,
+    CloneButton,
     Datagrid,
     DateField,
     EditButton,
@@ -136,6 +137,7 @@ export const PhoneTagList = (props) => {
                 <EditButton/>
                 {/*<DownloadButton label={'演示版导出'} filePathAttr={'reproductionPath'}/>*/}
                 {/*<DownloadButton label={'正式版导出'} filePathAttr={'productionPath'}/>*/}
+                <CloneButton/>
                 <DownloadPDF/>
             </Datagrid>
         </List>
