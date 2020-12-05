@@ -43,7 +43,7 @@ export const Profile = ({staticContext, ...props}) => {
                 </Box>
                 <Box flex={2} ml="1em">
                     <Paper>
-                        <Box p='1em'><Typography variant="h6">修改密码</Typography></Box>
+                        <Box p='1em'><Typography variant="h6">密码修改</Typography></Box>
                         <Edit id="profile"
                               basePath="/profile"
                               resource='profile'
