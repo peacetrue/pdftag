@@ -93,6 +93,7 @@ export const FileList = props => {
         <List {...props}
               filters={<Filters/>}
               bulkActionButtons={<BulkActionButtons/>}
+              exporter={false}
         >
             <Datagrid rowClick={'toggleSelection'}>
                 <FunctionField label={'类型'} source={'folder'} render={FileTypeIcon}/>

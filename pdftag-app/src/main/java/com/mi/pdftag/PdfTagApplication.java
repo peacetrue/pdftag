@@ -1,8 +1,5 @@
 package com.mi.pdftag;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.peacetrue.core.IdCapable;
 import com.github.peacetrue.result.Result;
 import com.github.peacetrue.result.ResultImpl;
 import com.github.peacetrue.result.ResultType;
@@ -11,12 +8,7 @@ import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticLocalDateTimeFormatter;
 import com.github.peacetrue.spring.formatter.date.AutomaticTimeFormatter;
 import com.github.peacetrue.spring.security.ServerHttpSecurityConfigurer;
-import com.github.peacetrue.user.UserGet;
-import com.github.peacetrue.user.UserService;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,17 +23,7 @@ import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.ServerCodecConfigurer;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.MapSession;
 import org.springframework.session.ReactiveMapSessionRepository;
 import org.springframework.session.ReactiveSessionRepository;
@@ -56,12 +38,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
-import reactor.core.publisher.Mono;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.AnnotatedElement;
 import java.time.Duration;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -75,20 +55,10 @@ public class PdfTagApplication {
         SpringApplication.run(PdfTagApplication.class, args);
     }
 
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public static class WebFluxConfig implements WebFluxConfigurer {
 
-        @Autowired
-        private ObjectMapper objectMapper;
-
-        @Override
-        public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
-            configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
-            configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
-        }
-
-        @Override
         public void addCorsMappings(CorsRegistry registry) {
             registry.addMapping("/**")
                     .allowedOrigins("*")
@@ -113,65 +83,11 @@ public class PdfTagApplication {
         }
     }
 
-    @Getter
-    @Setter
-    public static class IdUser extends User implements IdCapable<Long> {
-
-        private Long id;
-
-        public IdUser(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
-            super(username, password, authorities);
-            this.id = id;
-        }
-
-        public IdUser(Long id, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-            super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-            this.id = id;
-        }
-
-        @JsonIgnore
-        public String getPassword() {
-            return super.getPassword();
-        }
-    }
-
-    private static Map<String, String> ROLES = new HashMap<>(2);
-
-    static {
-        ROLES.put("peacetrue", "SUPER_MANAGER");
-        ROLES.put("admin", "MANAGER");
-    }
-
-    @Bean
-    public ReactiveUserDetailsService userDetailsService() {
-        return new ReactiveUserDetailsService() {
-            @Autowired
-            private UserService userService;
-
-            @Override
-            public Mono<UserDetails> findByUsername(String username) {
-                UserGet userGet = new UserGet(null, username);
-                //调用接口时会自动注入当前用户，而获取当前用户需要通过此方法
-                //所以该方法必须手动设置操作者标识，防止循环调用
-                userGet.setOperatorId(1L);
-                return userService.get(userGet)
-                        .map(user -> {
-                            String role = "ROLE_" + ROLES.getOrDefault(username, "USER");
-                            Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(role));
-                            return new IdUser(user.getId(), user.getUsername(), user.getPassword(), authorities);
-                        });
-            }
-        };
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 
     @Bean
     @Order(0)
     public ServerHttpSecurityConfigurer serverHttpSecurityConfigurer() {
+        // iframe 可以跨域访问本项目内的资源
         return http -> http.headers(headers -> headers.frameOptions(ServerHttpSecurity.HeaderSpec.FrameOptionsSpec::disable))
 //                .authorizeExchange()
 //                .pathMatchers("/*/delete").hasRole("ROLE_ADMIN")

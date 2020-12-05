@@ -1,7 +1,7 @@
 import React from 'react';
 import {Create, FileField, FileInput, required, SimpleForm, TextInput,} from 'react-admin';
 
-import {toFormData} from "./Utils";
+import {toFormData} from "./utils";
 
 export const FileCreate = (props) => {
     console.info('FileCreate:', props);

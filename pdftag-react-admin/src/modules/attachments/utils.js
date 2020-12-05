@@ -1,5 +1,5 @@
 import React from 'react';
-import {toFormData} from "../files/Utils";
+import {toFormData} from "../files/utils";
 
 export const transform = toFormData;
 

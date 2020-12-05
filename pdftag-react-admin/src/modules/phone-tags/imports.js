@@ -13,7 +13,7 @@ import {
     useRedirect
 } from 'react-admin';
 
-import {toFormData} from "../files/Utils";
+import {toFormData} from "../files/utils";
 import {DownloadTemplateButton} from "./DownloadTemplateButton";
 import PublishIcon from '@material-ui/icons/Publish';
 import Box from '@material-ui/core/Box';
@@ -68,7 +68,8 @@ export const PhoneTagImports = (props) => {
                 <Box component="p" color="text.secondary" fontSize={12} fullWidth>
                     下载 CSV 模版文件后，使用 Excel 打开，编辑文件中的内容，保存后通过下面的功能上传，批量导入标签数据
                 </Box>
-                <FileInput label="上传 CSV 文件" source="file" accept=".csv" validate={[required(),]}>
+                <FileInput label="上传 CSV 文件" source="file" accept=".csv"
+                           validate={[required(),]}>
                     <FileField source="src" title="title"/>
                 </FileInput>
             </SimpleForm>

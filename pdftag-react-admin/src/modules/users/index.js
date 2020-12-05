@@ -8,5 +8,5 @@ import {UserShow} from './show';
 import UserIcon from '@material-ui/icons/People';
 
 export const User = {list: UserList, create: UserCreate, edit: UserEdit, show: UserShow};
-export const UserResource = <Resource icon={UserIcon} options={{label: '用户'}} name="users" {...User} />;
+export const UserResource = <Resource icon={UserIcon} name="users" {...User} />;
 export default UserResource;

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Create, FileField, FileInput, maxLength, required, SimpleForm, TextInput, useDataProvider} from 'react-admin';
-import transformFactory from "../attachments/Utils";
+import transformFactory from "../attachments/utils";
 
 export const TemplateCreate = (props) => {
     console.info('TemplateCreate:', props);

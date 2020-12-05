@@ -1,14 +1,7 @@
 import {defaultHttpClientJoiner, httpClientProxies} from "peacetrue-httpclient";
-import {fetchUtils} from "react-admin";
+import {fetchUtils, GET_ONE} from "react-admin";
 import springDataProvider from "./ra-data-spring-rest";
-import FormAuthProvider from "./formAuthProvider";
-
-// const apiProxy = httpClient => {
-//     return (url, options) => {
-//         if (!url.startsWith("http")) url = process.env.REACT_APP_BASE_URL + url;
-//         return httpClient(url, options);
-//     };
-// };
+import formAuthProvider from "./formAuthProvider";
 
 export const debugRequestHttpClient = (httpClient) => {
     return (url, options = {}) => {
@@ -28,4 +21,15 @@ const resultConverter = httpClient => {
 
 export const httpClient = defaultHttpClientJoiner(fetchUtils.fetchJson, httpClientProxies.cors, httpClientProxies.springRest, debugRequestHttpClient);
 export const dataProvider = springDataProvider(process.env.REACT_APP_BASE_URL, httpClient);
-export const authProvider = FormAuthProvider(process.env.REACT_APP_BASE_URL, defaultHttpClientJoiner(httpClient, resultConverter));
+export const dataProvider2 = (type, resource, params) => {
+    if (resource === 'profile' && type === GET_ONE) {
+        let token = localStorage.getItem('token');
+        if (token) {
+            let user = JSON.parse(token);
+            return Promise.resolve({data: {...user, id: 'profile'}});
+        }
+        return Promise.reject();
+    }
+    return dataProvider(type, resource, params);
+}
+export const authProvider = formAuthProvider(process.env.REACT_APP_BASE_URL, defaultHttpClientJoiner(httpClient, resultConverter));

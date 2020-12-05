@@ -31,31 +31,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 @PropertySource("classpath:/application-pdf-tag-controller.yml")
 public class ControllerPdfTagAutoConfiguration {
 
-    @Bean
-    public ReactivePageableHandlerMethodArgumentResolver reactivePageableHandlerMethodArgumentResolver() {
-        return new ReactivePageableHandlerMethodArgumentResolver();
-    }
-
-    @Bean
-    public ReactiveSortHandlerMethodArgumentResolver reactiveSortHandlerMethodArgumentResolver() {
-        return new ReactiveSortHandlerMethodArgumentResolver();
-    }
-
-    @Bean
-    public AutomaticDateFormatter dateFormatter() {
-        return new AutomaticDateFormatter();
-    }
-
-    @Bean
-    public AutomaticLocalDateTimeFormatter localDateTimeFormatter() {
-        return new AutomaticLocalDateTimeFormatter();
-    }
-
-    @Bean
-    public AutomaticLocalDateFormatter localDateFormatter() {
-        return new AutomaticLocalDateFormatter();
-    }
-
     @ControllerAdvice
     public static class StringTrimmerControllerAdvice {
         @InitBinder

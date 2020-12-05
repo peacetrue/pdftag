@@ -1,6 +1,5 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {
-    BulkDeleteButton,
     Datagrid,
     DateField,
     DateInput,
@@ -11,7 +10,7 @@ import {
     TextField,
     TextInput
 } from 'react-admin';
-import {makeStyles} from '@material-ui/core/styles';
+import {ConfirmBulkActionButtons} from "../../Components";
 
 const Filters = (props) => (
     <Filter {...props}>
@@ -22,36 +21,16 @@ const Filters = (props) => (
     </Filter>
 );
 
-const useListStyles = makeStyles({
-    comment: {
-        maxWidth: '18em',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-    },
-});
-
-const BulkActionButtons = props => (
-    <Fragment>
-        <BulkDeleteButton {...props} undoable={false}/>
-    </Fragment>
-);
-
-
 export const TemplateList = props => {
     console.info('TemplateList:', props);
     return (
         <List {...props} filters={<Filters/>}
-              bulkActionButtons={<BulkActionButtons/>}
+              bulkActionButtons={<ConfirmBulkActionButtons/>}
+              exporter={false}
         >
             <Datagrid rowClick="show">
                 <TextField label={'编号'} source="code"/>
-                {/*<TextField label={'类型'} source="typeCode"/>*/}
                 <TextField label={'名称'} source="name"/>
-                {/*<TextField label={'内容'} source="content" cellClassName={classes.comment}/>*/}
-                {/*<TextField label={'备注'} source="remark"/>*/}
-                {/*<TextField label={'创建者主键'} source="creatorId"/>*/}
-
                 <ReferenceField label={'模版附件'} reference="attachments" source="attachmentId" link="show">
                     <TextField source="name"/>
                 </ReferenceField>
@@ -59,8 +38,6 @@ export const TemplateList = props => {
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>
-                {/*<TextField label={'修改者主键'} source="modifierId"/>*/}
-                {/*<DateField label={'修改时间'} source="modifiedTime" showTime/>*/}
                 <EditButton/>
             </Datagrid>
         </List>

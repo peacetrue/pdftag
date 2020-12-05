@@ -1,7 +1,7 @@
 import {Button} from "react-admin";
 import React from "react";
 import GetAppIcon from '@material-ui/icons/GetApp';
-import {buildUrl} from "./Utils";
+import {buildUrl} from "./utils";
 
 export const DownloadButton = (props) => {
     let {

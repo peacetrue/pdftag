@@ -10,7 +10,8 @@ import {
     UPDATE_MANY
 } from "react-admin";
 
-function pageParams(params) {
+/** used to format pagination params */
+export const paginationParamsFormatter = (params) => {
     return {
         ...params.filter,
         page: params.pagination.page - 1,
@@ -19,34 +20,63 @@ function pageParams(params) {
     };
 }
 
-function pageFormat(response) {
+/** used to format pagination response */
+export const paginationResponseFormatter = (response) => {
     return {
         data: response.json.content,
         total: parseInt(response.json.totalElements, 10)
     };
 }
 
-function writeFormatFactory(params) {
-    return function (response) {
+/** used to build writeResponseFormatter which is used to format write(create/update) response */
+export const writeResponseFormatterBuilder = (params) => {
+    return (response) => {
         let data = response.json || response.body;
-        console.info("create|update.data:", response);
-        //TODO 完善代码，后台没有返回对象的场景
-        let type = typeof data;
-        if (type === 'string' || type === 'number') data = {data: data};
+        console.info("create|update.response:", response);
+        // for react-admin, the response data must has id otherwise error
+        let dataType = typeof data;
+        // not object, wrap as object
+        if (dataType === 'string' || dataType === 'number' || dataType === 'boolean') data = {original: data};
+        // without id, put params as default, may be there is id in params
         if (params && !data.id) data = {...params, ...data};
-        if (!data.id) data.id = 0;
+        // still without id, put 0, may be the business never need id
+        if (data.id === undefined || data.id === null) data.id = 0;
         return {data: data};
     }
 }
 
-const pickQuery = params => {
-    let query = {};
-    if (params.query) query = {...params.query};
-    if (params.data && params.data._query) {
-        query = {...query, ...params.data._query};
-        delete params.data._query;
+/** used to pick out url query params base on special field */
+export const queryPickerBuilder = (fieldName = '_query') => {
+    return (params) => {
+        let queryObject = {};
+        //for GET from params
+        if (fieldName in params) {
+            queryObject = {...params[fieldName]};
+            delete params[fieldName];
+        }
+        //for POST/PUT from param.data
+        if (params.data) {
+            //for file upload
+            if (params.data instanceof FormData) {
+                let query = params.data.get(fieldName);
+                if (query) {
+                    queryObject = {...queryObject, ...JSON.parse(query)};
+                    params.data.delete(fieldName);
+                }
+            } else if (fieldName in params.data) {
+                queryObject = {...queryObject, ...params.data[fieldName]};
+                delete params.data[fieldName];
+            }
+        }
+        return Object.keys(queryObject).length === 0 ? null : queryObject;
     }
-    return Object.keys(query).length === 0 ? null : query;
+}
+
+export const queryPicker = queryPickerBuilder();
+
+export const urlFormatter = (url, params) => {
+    if (url.includes('/')) return url;
+    return `${url}/${params.id}`;
 }
 
 /**
@@ -65,76 +95,62 @@ const pickQuery = params => {
  */
 export default (apiUrl, httpClient = fetch) => {
     let dataProvider = (type, resource, params) => {
-        let url = `${apiUrl}/${resource}`,
+        let url = `${resource}`,
             options = {},
             format = response => ({data: response.json});
         switch (type) {
             case GET_LIST:
                 options.method = 'GET';
-                options.params = pageParams(params);
-                options.params = {...options.params, ...params.query};
-                format = pageFormat;
+                options.params = {...paginationParamsFormatter(params), ...queryPicker(params)};
+                format = paginationResponseFormatter;
                 break;
             case GET_ONE:
+                url = urlFormatter(url, params);
                 options.method = 'GET';
-                options.params = params.query;
-                url += `/${params.id}`;
+                options.params = queryPicker(params);
                 break;
             case GET_MANY:
                 options.method = 'GET';
-                options.params = {id: params.ids, ...params.query};
+                options.params = {id: params.ids, ...queryPicker(params)};
                 break;
             case GET_MANY_REFERENCE:
                 options.method = 'GET';
-                options.params = pageParams(params);
+                options.params = {...paginationParamsFormatter(params), ...queryPicker(params)};
                 options.params[params.target] = params.id;
-                options.params = {...options.params, ...params.query};
-                format = pageFormat;
+                format = paginationResponseFormatter;
                 break;
             case CREATE:
                 options.method = 'POST';
-                options.params = pickQuery(params);
+                options.params = queryPicker(params);
                 options.body = params.data;
                 //support non-standard response
-                format = writeFormatFactory();
+                format = writeResponseFormatterBuilder(params.data);
                 break;
             case UPDATE:
-                url += `/${params.id}`;
+                url = urlFormatter(url, params);
                 options.method = 'PUT';
-                options.params = pickQuery(params);
+                options.params = queryPicker(params);
                 options.body = params.data;
                 //support non-standard response
-                format = writeFormatFactory(params.data);
+                format = writeResponseFormatterBuilder(params.data);
                 break;
             case UPDATE_MANY:
                 //multiple call UPDATE
-                return Promise.all(params.ids.map(id => dataProvider(UPDATE, resource, {id, ...params})))
-                    .then(response => ({data: response.map(item => item.data)}));
+                let updates = params.ids.map(id => dataProvider(UPDATE, resource, {id, ...params}));
+                return Promise.all(updates).then(response => ({data: response.map(item => item.data)}));
             case DELETE:
-                url += `/${params.id}`;
-                options.params = params.query;
+                url = urlFormatter(url, params);
                 options.method = 'DELETE';
+                options.params = queryPicker(params);
                 break;
             case DELETE_MANY:
                 //multiple call DELETE
-                return Promise.all(params.ids.map(id => dataProvider(DELETE, resource, {id})))
-                    .then(response => ({data: response.map(item => item.data)}));
+                let deletes = params.ids.map(id => dataProvider(DELETE, resource, {id}));
+                return Promise.all(deletes).then(response => ({data: response.map(item => item.data)}));
             default:
                 throw new Error(`unknown type [${type}]`);
         }
-
-        if (options.body instanceof FormData) {
-            let query = options.body.get("_query");
-            query && (options.params = JSON.parse(query));
-            options.body.delete("_query");
-        }
-
-        return httpClient(url, options)
-            .then(format)
-            .then(response => {
-                console.info(`url:${url},response:`, response)
-                return response;
-            });
+        return httpClient(`${apiUrl}/${url}`, options).then(format);
     };
     return dataProvider;
 };

@@ -9,23 +9,27 @@ import {
     SaveButton,
     SelectInput,
     TextInput,
+    useNotify
 } from 'react-admin';
 import {Box, Toolbar} from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import GetAppIcon from '@material-ui/icons/GetApp';
-
 import Iframe from "react-iframe";
-import {buildPreviewUrl} from "../files/Utils";
+import {buildPreviewUrl} from "../files/utils";
+import UploadButton from "./UploadButton";
+import PublishIcon from '@material-ui/icons/Publish';
+import Headers from "./headers";
 
+const stateIds = {'1': 'reproductionPath', '2': 'productionPath'};
 const requiredInstance = required();
 const stateRequired = (value, values) => {
     return values.stateId === 1 ? undefined : requiredInstance(value, values)
 }
-const stateIds = {'1': 'reproductionPath', '2': 'productionPath'};
 export const PhoneTagForm = props => {
     console.info("PhoneTagForm.props:", props);
     let pdfPath = props.record[stateIds[props.record.stateId]] || 'preview.pdf';
     let [url, setUrl] = useState(buildPreviewUrl(pdfPath));
+    let notify = useNotify();
     return (
         <FormWithRedirect
             {...props}
@@ -119,6 +123,32 @@ export const PhoneTagForm = props => {
                                         return formProps.handleSubmitWithRedirect(event)
                                     }}
                                 />
+                                {formProps.record.id ? null : (<UploadButton
+                                    label={'导入'}
+                                    icon={<PublishIcon/>}
+                                    accept={'.csv'}
+                                    onChange={files => {
+                                        let text = files[0].text();
+                                        text.then(content => {
+                                            let lines = content.split('\n').map(item => item.trim()).filter(item => Boolean(item));
+                                            if (lines.length < 2) {
+                                                return notify('至少需要 2 行，第 1 行为标题，第 2 行为数据！', 'error', false, null);
+                                            }
+                                            let headers = lines[0].split(',');
+                                            console.info("headers:", headers);
+                                            for (let i = 0; i < headers.length; i++) {
+                                                if (headers[i] !== Headers.name[i]) {
+                                                    return notify(`第 ${i + 1} 列，标题'${headers[i]}'错误，必须是'${Headers.name[i]}'`, 'error', false, null)
+                                                }
+                                            }
+                                            let values = lines[1].split(',');
+                                            values.forEach((item, index) => {
+                                                if (Headers.code[index] === 'templateId') return;
+                                                formProps.form.change(Headers.code[index], item);
+                                            });
+                                        });
+                                    }}
+                                />)}
                                 {formProps.record.stateId !== 2 ? (<SaveButton
                                     label={'保存草稿'}
                                     saving={formProps.saving}
@@ -144,7 +174,7 @@ export const PhoneTagForm = props => {
                                     }}
                                     onSuccess={(data) => {
                                         console.info("onSuccess.data:", data);
-                                        setUrl(buildPreviewUrl(data.data.data))
+                                        setUrl(buildPreviewUrl(data.data.original))
                                     }}
                                     variant="outlined"
                                     // color={'secondary'}
@@ -165,7 +195,7 @@ export const PhoneTagForm = props => {
                                     }}
 
                                     onSuccess={(data) => {
-                                        let url = buildPreviewUrl(data.data.data);
+                                        let url = buildPreviewUrl(data.data.original);
                                         window.open(url);
                                         setUrl(url);
                                     }}
@@ -186,7 +216,7 @@ export const PhoneTagForm = props => {
                                         return formProps.handleSubmitWithRedirect(event)
                                     }}
                                     onSuccess={(data) => {
-                                        let url = buildPreviewUrl(data.data.data);
+                                        let url = buildPreviewUrl(data.data.original);
                                         window.open(url);
                                         setUrl(url);
                                     }}

@@ -15,7 +15,7 @@ import prettyBytes from "pretty-bytes";
 
 const AttachmentActions = ({basePath, data, resource}) => (
     <TopToolbar>
-        <ListButton basePath={basePath} record={data}/>
+        {/*<ListButton basePath={basePath} record={data}/>*/}
         {/*<EditButton basePath={basePath} record={data}/>*/}
         <DownloadButton filePath={data.path}/>
     </TopToolbar>

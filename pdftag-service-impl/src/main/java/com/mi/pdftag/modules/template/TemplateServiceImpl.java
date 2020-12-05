@@ -146,9 +146,11 @@ public class TemplateServiceImpl implements TemplateService {
         Criteria where = Criteria.where("id").is(params.getId());
         Query idQuery = Query.query(where);
         return entityTemplate.selectOne(idQuery, Template.class)
-                .map(item -> BeanUtils.map(item, TemplateVO.class))
                 .zipWhen(region -> entityTemplate.delete(idQuery, Template.class))
-                .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
+                .doOnNext(tuple2 -> {
+                    TemplateVO vo = BeanUtils.map(tuple2.getT1(), TemplateVO.class);
+                    eventPublisher.publishEvent(new PayloadApplicationEvent<>(vo, params));
+                })
                 .map(Tuple2::getT2)
                 .switchIfEmpty(Mono.just(0));
     }

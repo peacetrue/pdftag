@@ -5,6 +5,7 @@ import {
     Datagrid,
     DateField,
     EditButton,
+    ExportButton,
     Filter,
     List,
     Loading,
@@ -21,7 +22,8 @@ import {
 } from 'react-admin';
 import {ImportsButton} from "./ImportsButton";
 import {DownloadButton} from "../files/DownloadButton";
-
+import {exporterBuilder} from "../../exporter";
+import Headers from './headers'
 const ListActions = (props) => {
     const {
         className,
@@ -50,16 +52,16 @@ const ListActions = (props) => {
             })}
             <ImportsButton/>
             <CreateButton label={'新建标签'} basePath={basePath}/>
-            {/*
-            <ExportButton
-                label={'导出标签'}
-                disabled={total === 0}
-                resource={resource}
-                sort={currentSort}
-                filterValues={filterValues}
-                maxResults={maxResults}
-            />
-            */}
+            {
+                <ExportButton
+                    label={'导出标签'}
+                    disabled={total === 0}
+                    resource={resource}
+                    sort={currentSort}
+                    filterValues={filterValues}
+                    maxResults={maxResults}
+                />
+            }
         </TopToolbar>
     );
 };
@@ -106,6 +108,7 @@ export const PhoneTagList = (props) => {
             />
         );
     }
+
     return (
         <List {...props}
               actions={<ListActions/>}
@@ -113,6 +116,7 @@ export const PhoneTagList = (props) => {
               filter={{creatorId: permissions.isManager ? undefined : identity.id}}
               empty={false}
               bulkActionButtons={<BulkActionButtons/>}
+              exporter={exporterBuilder(props.resource, Headers.code)}
         >
             <Datagrid rowClick="show">
                 <ReferenceField label={'样式'} reference="enums/ditaStyle" source="styleCode" link={false}>
@@ -125,7 +129,7 @@ export const PhoneTagList = (props) => {
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
-                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={'edit'}>
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={'show'}>
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>

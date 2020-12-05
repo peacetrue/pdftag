@@ -36,6 +36,7 @@ export const AttachmentList = props => {
               filters={<Filters/>}
               bulkActionButtons={<BulkActionButtons/>}
               sort={{field: 'id', order: 'desc'}}
+              exporter={false}
         >
             <Datagrid rowClick="show">
                 <TextField label={'名称'} source="name"/>

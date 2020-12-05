@@ -1,7 +1,7 @@
 import React from 'react';
 import {Create, FileField, FileInput, maxLength, required, SimpleForm, TextInput,} from 'react-admin';
 
-import {transform} from "./Utils";
+import {transform} from "./utils";
 
 export const AttachmentCreate = (props) => {
     console.info('AttachmentCreate:', props);

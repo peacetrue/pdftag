@@ -1,12 +1,17 @@
-let FormAuthProvider = (url, httpClient) => {
+let formAuthProvider = (url, httpClient) => {
     return {
         login: params => {
             return httpClient(`${url}/login`, {method: 'post', body: params})
-                .then(token => {
-                    console.info("login token:", token);
-                    localStorage.setItem('token', JSON.stringify(token));
-                    if (!token.authorities) return;
-                    let authorities = token.authorities.map(item => item.authority.replace('ROLE_', ''));
+                .then(user => {
+                    console.info("current user:", user);
+                    localStorage.setItem('token', JSON.stringify(user));
+                    let username = user.username;
+                    const globalAuthorities = {
+                        'peacetrue': ['SUPER_MANAGER'],
+                        'admin': ['MANAGER'],
+                    };
+                    //let authorities = user.authorities.map(item => item.authority.replace('ROLE_', ''));
+                    let authorities = globalAuthorities[username];
                     let isSuperManager = authorities.indexOf('SUPER_MANAGER') !== -1;
                     localStorage.setItem('permissions', JSON.stringify({
                         isSuperManager: isSuperManager,
@@ -51,4 +56,4 @@ let FormAuthProvider = (url, httpClient) => {
     };
 };
 
-export default FormAuthProvider;
+export default formAuthProvider;
