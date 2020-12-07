@@ -7,6 +7,6 @@ import {UserEdit} from './edit';
 import {UserShow} from './show';
 import UserIcon from '@material-ui/icons/People';
 
-export const User = {list: UserList, create: UserCreate, edit: UserEdit, show: UserShow};
+export const User = {list: UserList, create: UserCreate, /*edit: UserEdit,*/ show: UserShow};
 export const UserResource = <Resource icon={UserIcon} name="users" {...User} />;
 export default UserResource;
