@@ -29,12 +29,12 @@ export const TemplateList = props => {
               exporter={false}
         >
             <Datagrid rowClick="show">
-                <TextField label={'编号'} source="code"/>
-                <TextField label={'名称'} source="name"/>
-                <ReferenceField label={'模版附件'} reference="attachments" source="attachmentId" link="show">
+                <ReferenceField label={'样式'} reference="enums/ditaStyle" source="styleId" link={false}>
                     <TextField source="name"/>
                 </ReferenceField>
-                <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
+                <TextField label={'编号'} source="code"/>
+                <TextField label={'名称'} source="name"/>
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={false}>
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>

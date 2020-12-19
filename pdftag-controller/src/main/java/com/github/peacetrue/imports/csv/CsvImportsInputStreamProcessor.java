@@ -6,19 +6,18 @@
 package com.github.peacetrue.imports.csv;
 
 import com.github.peacetrue.imports.ImportsContext;
-import com.github.peacetrue.imports.ImportsException;
 import com.github.peacetrue.imports.ImportsInputStreamProcessor;
 import com.github.peacetrue.imports.ImportsRowProcessor;
-import com.github.peacetrue.imports.supports.RowNumberWrapperImpl;
+import com.mi.pdftag.modules.phonetag.imports.CSVRecordRowNumberWrapper;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 public class CsvImportsInputStreamProcessor implements ImportsInputStreamProcessor {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -29,41 +28,15 @@ public class CsvImportsInputStreamProcessor implements ImportsInputStreamProcess
     }
 
     public void processInputStream(InputStream inputStream, ImportsContext importsContext) throws IOException {
-        this.logger.info("解析数据[{}]", inputStream);
         CsvImportsSetting setting = (CsvImportsSetting) importsContext.getImportsSetting();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, setting.getCharset()));
-        int lineIndex = -1;
-
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ++lineIndex;
-            if (lineIndex == setting.getMaxRowCount()) {
-                this.logger.debug("到达允许的最大行数[{}]，处理完成", setting.getMaxRowCount());
+        InputStreamReader streamReader = new InputStreamReader(inputStream, setting.getCharset());
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withHeader(setting.getHeader()).withSkipHeaderRecord().parse(streamReader);
+        for (CSVRecord record : records) {
+            if (record.getRecordNumber() == setting.getMaxRowCount()) {
+                logger.debug("到达允许的最大行数[{}]，处理完成", setting.getMaxRowCount());
                 return;
             }
-
-            this.logger.debug("读取第[{}]行的信息[{}]", lineIndex + 1, line);
-            String[] header;
-            if (lineIndex == 0) {
-                header = line.split(setting.getSeparator());
-                for (int i = 0; i < setting.getHeader().length; i++) {
-                    String exceptItem = setting.getHeader()[i];
-                    String actualItem = header[i];
-                    if (!exceptItem.equals(actualItem)) {
-                        String bom = toBOM(exceptItem);
-                        if (!bom.equals(actualItem)) {
-                            throw new ImportsException(String.format("表头 '%s' 错误，期待 '%s'", actualItem, exceptItem));
-                        }
-                    }
-                }
-                this.logger.debug("忽略第一行（标题行）");
-            } else if (line.trim().equals("")) {
-                this.logger.debug("忽略空行");
-            } else {
-                header = line.split(setting.getSeparator(), setting.getHeader().length);
-                this.logger.debug("转换成单元格数组[{}]", Arrays.toString(header));
-                this.importsRowProcessor.processRow(new RowNumberWrapperImpl(lineIndex + 1, header), importsContext);
-            }
+            importsRowProcessor.processRow(new CSVRecordRowNumberWrapper(record), importsContext);
         }
     }
 

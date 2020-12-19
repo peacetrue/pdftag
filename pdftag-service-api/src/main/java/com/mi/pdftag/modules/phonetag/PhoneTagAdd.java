@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 
 /**
@@ -20,13 +21,11 @@ public class PhoneTagAdd extends OperatorCapableImpl<Long> implements Tag {
 
     private static final long serialVersionUID = 0L;
 
-    /** 样式编码 */
-    @NotNull
-    @Size(min = 1, max = 32)
-    private String styleCode;
     /** 模版主键 */
     @NotNull
     private Long templateId;
+    /** 样式编码 */
+    private String styleCode;
     /** 商品名称 */
     @NotNull
     @Size(min = 1, max = 255)
@@ -63,16 +62,25 @@ public class PhoneTagAdd extends OperatorCapableImpl<Long> implements Tag {
     @NotNull
     @Size(min = 1, max = 255)
     private String storage;
-    /** 备注 */
+    /** 商标 */
+    @NotNull
     @Size(min = 1, max = 255)
-    private String remark;
-// default
+    private String brand;
+    /** 生产日期 */
+    @NotNull
+    private LocalDate productDate;
     /** 进网许可标志验证网址 */
+    @Size(min = 1, max = 255)
     private String networkPermissionUrl = "jwxk.miit.gov.cn";
     /** 制造商 */
+    @Size(min = 1, max = 255)
     private String manufacturer = "小米通讯技术有限公司";
     /** 制造商地址 */
+    @Size(min = 1, max = 255)
     private String manufacturerAddress = "北京市海淀区西二旗中路33号院6号楼9层019号";
     /** 状态 {@link PhoneTagState} */
     private Integer stateId;
+    /** 备注 */
+    @Size(min = 1, max = 255)
+    private String remark;
 }

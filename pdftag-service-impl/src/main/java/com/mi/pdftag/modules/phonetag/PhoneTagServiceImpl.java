@@ -8,12 +8,15 @@ import com.github.peacetrue.spring.data.relational.core.query.UpdateUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.github.peacetrue.util.DateUtils;
 import com.github.peacetrue.util.StreamUtils;
+import com.mi.pdftag.DitaStyle;
+import com.mi.pdftag.modules.template.TemplateGet;
+import com.mi.pdftag.modules.template.TemplateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.PayloadApplicationEvent;
 import org.springframework.data.domain.*;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.r2dbc.core.R2dbcEntityOperations;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.data.relational.core.query.Update;
@@ -42,9 +45,11 @@ import java.util.Collections;
 public class PhoneTagServiceImpl implements PhoneTagService {
 
     @Autowired
-    private R2dbcEntityTemplate entityTemplate;
+    private R2dbcEntityOperations entityOperations;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private TemplateService templateService;
 
     public static Criteria buildCriteria(PhoneTagQuery params) {
         return CriteriaUtils.and(
@@ -68,12 +73,24 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         log.info("新增标签信息[{}]", params);
         if (params.getStateId() == null) params.setStateId(PhoneTagState.DRAFT.getId());
         PhoneTag entity = BeanUtils.map(params, PhoneTag.class);
-        setDefaultValue(entity);
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());
         entity.setModifiedTime(entity.getCreatedTime());
-        return entityTemplate.insert(entity)
+        return templateService.get(new TemplateGet(params.getTemplateId()))
+                .doOnNext(vo -> {
+                    entity.setStyleCode(vo.getStyleCode());
+                    if (vo.getStyleCode().equals(DitaStyle.CHINESE.name())) {
+                        if (params.getManufacturer() == null)
+                            params.setManufacturer("小米通讯技术有限公司");
+                        if (params.getManufacturerAddress() == null)
+                            params.setManufacturerAddress("北京市海淀区西二旗中路33号院6号楼9层019号");
+                        if (params.getNetworkPermissionUrl() == null)
+                            params.setNetworkPermissionUrl("jwxk.miit.gov.cn");
+                    }
+                    setDefaultValue(entity);
+                })
+                .flatMap(vo -> entityOperations.insert(entity))
                 .map(item -> BeanUtils.map(item, PhoneTagVO.class))
                 .doOnNext(item -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(item, params)))
                 ;
@@ -103,11 +120,11 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         Pageable finalPageable = pageable == null ? PageRequest.of(0, 10) : pageable;
         Criteria where = buildCriteria(params);
 
-        return entityTemplate.count(Query.query(where), PhoneTag.class)
+        return entityOperations.count(Query.query(where), PhoneTag.class)
                 .flatMap(total -> total == 0L ? Mono.empty() : Mono.just(total))
                 .<Page<PhoneTagVO>>flatMap(total -> {
                     Query query = Query.query(where).with(finalPageable).sort(finalPageable.getSortOr(Sort.by("createdTime").descending()));
-                    return entityTemplate.select(query, PhoneTag.class)
+                    return entityOperations.select(query, PhoneTag.class)
                             .map(item -> BeanUtils.map(item, PhoneTagVO.class))
                             .reduce(new ArrayList<>(), StreamUtils.reduceToCollection())
                             .map(item -> new PageImpl<>(item, finalPageable, total));
@@ -125,7 +142,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         if (sort == null) sort = Sort.by("createdTime").descending();
         Criteria where = buildCriteria(params);
         Query query = Query.query(where).sort(sort).limit(100);
-        return entityTemplate.select(query, PhoneTag.class)
+        return entityOperations.select(query, PhoneTag.class)
                 .map(item -> BeanUtils.map(item, PhoneTagVO.class));
     }
 
@@ -137,7 +154,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
 //                CriteriaUtils.nullableCriteria(Criteria.where("id")::is, params::getId),
 //        );
         Criteria where = Criteria.where("id").is(params.getId());
-        return entityTemplate.selectOne(Query.query(where), PhoneTag.class)
+        return entityOperations.selectOne(Query.query(where), PhoneTag.class)
                 .map(item -> BeanUtils.map(item, PhoneTagVO.class));
     }
 
@@ -155,16 +172,16 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         return this.modifyGeneric(params);
     }
 
-    private  <T extends IdCapable<Long> & OperatorCapable<Long>> Mono<Integer> modifyGeneric(T params) {
+    private <T extends IdCapable<Long> & OperatorCapable<Long>> Mono<Integer> modifyGeneric(T params) {
         Criteria where = Criteria.where("id").is(params.getId());
         Query idQuery = Query.query(where);
-        return entityTemplate.selectOne(idQuery, PhoneTag.class)
+        return entityOperations.selectOne(idQuery, PhoneTag.class)
                 .zipWhen(entity -> {
                     PhoneTag modify = BeanUtils.map(params, PhoneTag.class);
                     modify.setModifierId(params.getOperatorId());
                     modify.setModifiedTime(LocalDateTime.now());
                     Update update = UpdateUtils.selectiveUpdateFromExample(modify);
-                    return entityTemplate.update(idQuery, update, PhoneTag.class);
+                    return entityOperations.update(idQuery, update, PhoneTag.class);
                 })
                 .map(tuple2 -> {
                     PhoneTagVO vo = BeanUtils.map(tuple2.getT1(), PhoneTagVO.class);
@@ -181,9 +198,9 @@ public class PhoneTagServiceImpl implements PhoneTagService {
         log.info("删除标签信息[{}]", params);
         Criteria where = Criteria.where("id").is(params.getId());
         Query idQuery = Query.query(where);
-        return entityTemplate.selectOne(idQuery, PhoneTag.class)
+        return entityOperations.selectOne(idQuery, PhoneTag.class)
                 .map(item -> BeanUtils.map(item, PhoneTagVO.class))
-                .zipWhen(region -> entityTemplate.delete(idQuery, PhoneTag.class))
+                .zipWhen(region -> entityOperations.delete(idQuery, PhoneTag.class))
                 .doOnNext(tuple2 -> eventPublisher.publishEvent(new PayloadApplicationEvent<>(tuple2.getT1(), params)))
                 .map(Tuple2::getT2)
                 .switchIfEmpty(Mono.just(0));

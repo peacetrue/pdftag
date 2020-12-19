@@ -23,6 +23,6 @@ export const toFormData = (data, fileAttr) => {
 }
 
 
-export const buildUrl = (path, dispositionType) => `${process.env.REACT_APP_BASE_URL}/files/${path}?dispositionType=${dispositionType}`;
-export const buildPreviewUrl = path => buildUrl(path, 'inline');
-export const buildDownloadUrl = path => buildUrl(path, 'attachment');
+export const buildUrl = (path, dispositionType, zoom) => `${process.env.REACT_APP_BASE_URL}/files/${path}?dispositionType=${dispositionType}${zoom || ''}`;
+export const buildPreviewUrl = (path, zoom) => buildUrl(path, 'inline',zoom);
+export const buildDownloadUrl = (path) => buildUrl(path, 'attachment');

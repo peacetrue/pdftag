@@ -14,9 +14,10 @@ import java.util.Arrays;
  **/
 @Getter
 public enum PhoneTagState implements IdCapable<Integer>, NameCapable {
-
+//1.4 同步修改预览页的提示文字
+//    1.6 新建标签页或编辑标签页，通过点击左侧菜单等操作改变页面，默认做“保存草稿”处理
     DRAFT(1, "草稿", VersionType.REPRODUCTION),
-    NORMAL(2, "发布", VersionType.PRODUCTION),
+    NORMAL(2, "模板", VersionType.PRODUCTION),
     ;
 
     private final Integer id;

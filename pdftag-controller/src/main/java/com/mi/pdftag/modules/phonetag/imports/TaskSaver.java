@@ -5,10 +5,9 @@ import com.github.peacetrue.imports.ImportsSaver;
 import com.github.peacetrue.imports.RowNumberWrapper;
 import com.mi.pdftag.modules.phonetag.PhoneTagAdd;
 import com.mi.pdftag.modules.phonetag.PhoneTagService;
-import com.mi.pdftag.modules.phonetag.PhoneTagVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
 
@@ -33,13 +32,9 @@ public class TaskSaver implements ImportsSaver<PhoneTagAdd> {
 
     @SuppressWarnings("unchecked")
     public void save(RowNumberWrapper<PhoneTagAdd> wrapper, ImportsContext importsContext) {
-        new Thread(() -> {
-            phoneTagService.add(wrapper.getRow()).subscribe();
-            log.info("导入保存");
-        }).start();
+        phoneTagService.add(wrapper.getRow())
+                .publishOn(Schedulers.elastic())
+                .subscribe();
     }
-
-
-
 
 }

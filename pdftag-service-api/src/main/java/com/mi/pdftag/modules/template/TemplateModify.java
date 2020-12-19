@@ -23,20 +23,18 @@ public class TemplateModify extends OperatorCapableImpl<Long> {
     @NotNull
     private Long id;
     /** 编号 */
-    @NotNull
     @Size(min = 1, max = 32)
     private String code;
+    /** 样式 */
+    private Integer styleId;
     /** 类型. 1、phone，不同的模版类型对应标签的字段不同 */
-    @NotNull
     private String typeCode;
     /** 名称 */
-    @NotNull
     @Size(min = 1, max = 32)
     private String name;
-//    /** 内容 */
-//    @NotNull
-//    @Size(min = 1, max = 1023)
-//    private String content;
+    /** 内容 */
+    @Size(min = 1, max = 1023)
+    private String content;
     /** 附件 */
     private Long attachmentId;
     /** 备注 */

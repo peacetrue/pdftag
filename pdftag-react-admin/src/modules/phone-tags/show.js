@@ -6,10 +6,7 @@ export const PhoneTagShow = (props) => {
     return (
         <Show {...props} >
             <SimpleShowLayout>
-                <ReferenceField label={'样式'} reference="enums/ditaStyle" source="styleCode" link={false}>
-                    <TextField source="name"/>
-                </ReferenceField>
-                <ReferenceField label={'模版'} reference="templates" source="templateId" link="show">
+                <ReferenceField label={'标签种类'} reference="templates" source="templateId" link="show">
                     <TextField source="name"/>
                 </ReferenceField>
                 <TextField label={'商品名称'} source="goodsName"/>
@@ -17,6 +14,7 @@ export const PhoneTagShow = (props) => {
                 <TextField label={'包装内含'} source="packageContent"/>
                 <TextField label={'执行标准'} source="standard"/>
                 <TextField label={'进网许可标志验证网址'} source="networkPermissionUrl"/>
+                <TextField label={'商标'} source="brand"/>
                 <TextField label={'制造商'} source="manufacturer"/>
                 <TextField label={'制造商地址'} source="manufacturerAddress"/>
                 <TextField label={'CMIIT ID'} source="cmiitId"/>
@@ -24,7 +22,7 @@ export const PhoneTagShow = (props) => {
                 <TextField label={'产品名称'} source="productName"/>
                 <TextField label={'颜色'} source="colour"/>
                 <TextField label={'存储空间'} source="storage"/>
-                <TextField label={'备注'} source="remark"/>
+                <DateField label={'生产日期'} source="productDate"/>
                 <ReferenceField label={'创建者'} reference="users" source="creatorId" link="show">
                     <TextField source="username"/>
                 </ReferenceField>

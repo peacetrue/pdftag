@@ -9,17 +9,17 @@ import lombok.Getter;
  * @since : 2020-11-24 13:53
  **/
 @Getter
-public enum DitaStyle implements IdCapable<String>, NameCapable {
+public enum DitaStyle implements IdCapable<Integer>, NameCapable {
 
-    DEFAULT("default", "默认样式"),
-    CHINESE("chinese", "中文样式"),
-    ENGLISH("english", "英文样式"),
+    DEFAULT(1, "默认样式"),
+    CHINESE(2, "中文礼盒背贴（大陆版）"),
+    ENGLISH(3, "英文礼盒背贴（分销版）"),
     ;
 
-    private final String id;
+    private final Integer id;
     private final String name;
 
-    DitaStyle(String id, String name) {
+    DitaStyle(Integer id, String name) {
         this.id = id;
         this.name = name;
     }

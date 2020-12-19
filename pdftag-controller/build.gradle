@@ -8,6 +8,7 @@ dependencies {
     implementation "com.github.peacetrue:peacetrue-spring"
     implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "org.springframework.data:spring-data-commons"
+    implementation 'org.apache.commons:commons-csv'
 
     testImplementation project(':pdftag-service-impl')
     testImplementation project(path: ':pdftag-service-impl', configuration: 'testArtifacts')

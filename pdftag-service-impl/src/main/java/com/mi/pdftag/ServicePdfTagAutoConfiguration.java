@@ -1,5 +1,6 @@
 package com.mi.pdftag;
 
+import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties;
@@ -17,6 +18,7 @@ import java.util.Objects;
 /**
  * @author xiayx
  */
+@Slf4j
 @Configuration
 @EnableConfigurationProperties({ServicePdfTagProperties.class, FlywayProperties.class})
 @ComponentScan(basePackageClasses = ServicePdfTagAutoConfiguration.class)
@@ -27,6 +29,7 @@ public class ServicePdfTagAutoConfiguration {
 
     public ServicePdfTagAutoConfiguration(ServicePdfTagProperties properties) {
         this.properties = Objects.requireNonNull(properties);
+        log.info("ServicePdfTagProperties: {}", properties);
     }
 
     @Bean

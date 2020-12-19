@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -37,12 +38,12 @@ public class PhoneTag implements Serializable {
     private String standard;
     /** CMIIT ID */
     private String cmiitId;
-//    /** 进网许可标志验证网址 */
-//    private String networkPermissionUrl;
-//    /** 制造商 */
-//    private String manufacturer;
-//    /** 制造商地址 */
-//    private String manufacturerAddress;
+    /** 进网许可标志验证网址 */
+    private String networkPermissionUrl;
+    /** 制造商 */
+    private String manufacturer;
+    /** 制造商地址 */
+    private String manufacturerAddress;
     /** 进网许可证 */
     private String networkLicense;
     /** 产品名称 */
@@ -51,6 +52,10 @@ public class PhoneTag implements Serializable {
     private String colour;
     /** 存储空间 */
     private String storage;
+    /** 商标 */
+    private String brand;
+    /** 生产日期 */
+    private LocalDate productDate;
     /** 备注 */
     private String remark;
     /** 演示附件 */

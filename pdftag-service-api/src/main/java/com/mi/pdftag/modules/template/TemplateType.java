@@ -1,6 +1,6 @@
 package com.mi.pdftag.modules.template;
 
-import com.github.peacetrue.core.CodeCapable;
+import com.github.peacetrue.core.IdCapable;
 import com.github.peacetrue.core.NameCapable;
 import lombok.Getter;
 
@@ -9,16 +9,16 @@ import lombok.Getter;
  * @since : 2020-11-24 13:53
  **/
 @Getter
-public enum TemplateType implements CodeCapable, NameCapable {
+public enum TemplateType implements IdCapable<Integer>, NameCapable {
 
-    PHONE("phone", "手机"),
+    PHONE(1, "手机"),
     ;
 
-    private final String code;
+    private final Integer id;
     private final String name;
 
-    TemplateType(String code, String name) {
-        this.code = code;
+    TemplateType(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 }

@@ -1,6 +1,6 @@
 // in src/App.js
 import React from 'react';
-import {Admin, Resource} from 'react-admin';
+import {Admin, Resource,mergeTranslations} from 'react-admin';
 import polyglotI18nProvider from 'ra-i18n-polyglot';
 import chineseMessages from 'ra-language-chinese';
 import UserResource from './modules/users';
@@ -17,7 +17,7 @@ import {TemplateShow} from "./modules/templates/show";
 import CustomLayout from "./CustomLayout";
 import Dashboard from './Dashboard';
 
-const i18nProvider = polyglotI18nProvider(() => ({...chineseMessages, ...messages}), 'cn');
+const i18nProvider = polyglotI18nProvider(() => mergeTranslations(chineseMessages, messages), 'cn');
 
 const App = () => (
     <Admin title="小米PDF标签"
@@ -32,17 +32,17 @@ const App = () => (
             let resources;
             if (permissions.isSuperManager) {
                 resources = [
-                    UserResource,
-                    TemplateResource,
                     PhoneTagResource,
+                    TemplateResource,
+                    UserResource,
                     AttachmentResource,
                     FileResource,
                 ];
             } else if (permissions.isManager) {
                 resources = [
-                    UserResource,
-                    TemplateResource,
                     PhoneTagResource,
+                    TemplateResource,
+                    UserResource,
                     <Resource name={'attachments'} show={AttachmentShow}/>,
                 ]
             } else {

@@ -44,6 +44,9 @@ public class TemplateServiceImpl implements TemplateService {
         return CriteriaUtils.and(
                 CriteriaUtils.nullableCriteria(CriteriaUtils.smartIn("id"), params::getId),
                 CriteriaUtils.nullableCriteria(Criteria.where("code")::is, params::getCode),
+                CriteriaUtils.nullableCriteria(Criteria.where("styleId")::is, params::getStyleId),
+                CriteriaUtils.nullableCriteria(Criteria.where("styleCode")::is, params::getStyleCode),
+                CriteriaUtils.nullableCriteria(Criteria.where("typeCode")::is, params::getTypeCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("name")::like, value -> "%" + value + "%", params::getName),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
@@ -58,9 +61,10 @@ public class TemplateServiceImpl implements TemplateService {
     @Transactional
     public Mono<TemplateVO> add(TemplateAdd params) {
         log.info("新增模版信息[{}]", params);
+        if (params.getRemark() == null) params.setRemark("");
+        if (params.getTypeCode() == null) params.setTypeCode(TemplateType.PHONE.name());
         Template entity = BeanUtils.map(params, Template.class);
         entity.setContent("");
-        if (entity.getRemark() == null) entity.setRemark("");
         entity.setCreatorId(params.getOperatorId());
         entity.setCreatedTime(LocalDateTime.now());
         entity.setModifierId(entity.getCreatorId());

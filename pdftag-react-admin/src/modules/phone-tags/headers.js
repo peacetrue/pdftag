@@ -1,9 +1,11 @@
 import messages from "../../messages";
 
+//"标签种类", "商品名称", "认证型号", "包装内含", "执行标准", "CMIIT ID", "进网许可证", "产品名称", "颜色", "存储空间", "生产日期", "商标", "制造商", "制造商地址"
 let codes = [
-    'styleCode', 'templateId', 'goodsName',
+    'templateId', 'goodsName',
     'modelCode', 'packageContent', 'standard', 'cmiitId',
-    'networkLicense', 'productName', 'colour', 'storage'
+    'networkLicense', 'productName', 'colour', 'storage',
+    'productDate', 'brand', 'manufacturer', 'manufacturerAddress'
 ];
 
 export const converter = (fields, codes) => {

@@ -55,7 +55,7 @@ export const UserList = ({permissions, ...props}) => {
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'最近修改时间'} source="modifiedTime" showTime/>
-                <EditButton/>
+                {/*<EditButton/>*/}
                 <ResetPasswordButton/>
             </Datagrid>
         </List>

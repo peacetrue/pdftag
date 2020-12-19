@@ -15,7 +15,7 @@ $ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/
 $ cd /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/docsrc/samples
 
 #常规导出
-$ ../../bin/dita -input sequence.ditamap -format pdf
+$ ../../bin/dita -input sequence.ditamap -format pdf -Dpdf.formatter=ah -Daxf.path=/usr/local/AHFormatterV70
 
 #常规导出
 $ ../../bin/dita -input sequence.ditamap -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
@@ -24,10 +24,25 @@ $ ../../bin/dita -input sequence.ditamap -format pdf -output /Users/xiayx/Docume
 $ ../../bin/dita -input Mi_giftBox_label_En/mi_giftbox_label_en.ditamap -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/礼盒标签中英文dita20201125/Mi_giftBox_label_En -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
 
 #常规导出
+$ ../../bin/dita -input Mi_giftBox_label_En/topic1.dita -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/礼盒标签中英文dita20201125/Mi_giftBox_label_En -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
+
+$ ../../bin/dita -input Mi_giftBox_label_En/mi_giftbox_label_en.ditamap -Dargs.input.dir=/root/peacetrue/pdftag/礼盒标签中英文dita20201125/Mi_giftBox_label_En -format pdf -output /root/peacetrue/pdftag/02-output
+
+../../bin/dita -input sequence.ditamap -format html5 \
+     -output output/sequence \
+     -Dargs.input.dir=dita-ot-2.3-chinese/docsrc/samples \
+     -propertyfile properties/sequence-html5.properties
+
+#常规导出
+$ ../../bin/dita -input Mi_giftBox_label_En/template.dita -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/礼盒标签中英文dita20201125/Mi_giftBox_label_En -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
+
+#常规导出
 $ ../../bin/dita -input Mi_giftBox_label_Cn/mi_giftbox_label_cn.ditamap -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/礼盒标签中英文dita20201125/Mi_giftBox_label_Cn -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output
 
 #设置水印
 $ ../../bin/dita -input sequence.ditamap -format pdf -Dcustomization.dir=/Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark
+
+$ ../../bin/dita -input sequence.ditamap -format pdf -output /Users/xiayx/Documents/Projects/pdftag/02-output -Dcustomization.dir=/Users/xiayx/Documents/Projects/pdftag/01-upload/watermark/default
 ----
 
 .dita-ot-2.3-chinese
@@ -72,3 +87,18 @@ $ ../../../bin/ant -f build-chm-pdf.xml
 
 $ /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-chinese/bin/ant -f /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/Mi_giftBox_label_Cn_test.xml
 ----
+
+* rename 's/ //g' *
+* rename 's/TTF/ttf/g' *
+
+== AH Formatter
+
+https://www.antennahouse.com/trial-formatter
+
+* /usr/local/AHFormatterV70
+* build.xml
+**  /usr/local/AHFormatterV70
+**  /usr/AHFormatterV70
+** <property name="pdf.formatter" value="ah"/>
+** <property name="axf.path" value="C:\Program Files\Antenna House\AHFormatter"/>
+

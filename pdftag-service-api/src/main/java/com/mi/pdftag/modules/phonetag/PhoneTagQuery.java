@@ -25,11 +25,10 @@ public class PhoneTagQuery extends OperatorCapableImpl<Long> {
 
     /** 主键 */
     private Long[] id;
-    /** 样式编码 */
-    @Size(min = 1, max = 32)
-    private String styleCode;
     /** 模版主键 */
     private Long templateId;
+    /** 样式编码 */
+    private String styleCode;
     /** 商品名称 */
     private String goodsName;
     /** 认证型号 */

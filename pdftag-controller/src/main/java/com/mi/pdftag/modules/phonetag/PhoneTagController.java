@@ -111,7 +111,7 @@ public class PhoneTagController {
     public Mono<ImportsResult> imports(@RequestPart("filePart") FilePart file) {
         log.info("导入CSV文件[{}]", file.filename());
         CsvImportsSetting importsSetting = new CsvImportsSetting();
-        importsSetting.setHeader(new String[]{"样式", "模版", "商品名称", "认证型号", "包装内含", "执行标准", "CMIIT ID", "进网许可证", "产品名称", "颜色", "存储空间"});
+        importsSetting.setHeader(new String[]{"标签种类", "商品名称", "认证型号", "包装内含", "执行标准", "CMIIT ID", "进网许可证", "产品名称", "颜色", "存储空间", "生产日期", "商标", "制造商", "制造商地址"});
         importsSetting.setCharset(StandardCharsets.UTF_8);
         importsSetting.setMaxRowCount(100);
         return file.content()

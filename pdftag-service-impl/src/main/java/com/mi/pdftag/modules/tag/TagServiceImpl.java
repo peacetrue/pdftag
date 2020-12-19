@@ -2,13 +2,14 @@ package com.mi.pdftag.modules.tag;
 
 import com.github.peacetrue.attachment.AttachmentGet;
 import com.github.peacetrue.attachment.AttachmentService;
+import com.github.peacetrue.attachment.AttachmentVO;
 import com.github.peacetrue.core.Operators;
 import com.github.peacetrue.dita.DitaUtils;
 import com.github.peacetrue.file.FileService;
-import com.github.peacetrue.operator.PdfTagOperatorUtils;
 import com.github.peacetrue.spring.SpringExpressionUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.github.peacetrue.spring.util.CloneUtils;
+import com.github.peacetrue.util.DateTimeFormatterUtils;
 import com.github.peacetrue.util.UUIDUtils;
 import com.mi.pdftag.ServicePdfTagProperties;
 import com.mi.pdftag.VersionType;
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -58,16 +60,24 @@ public class TagServiceImpl implements TagService {
         boolean isReproduction = VersionType.REPRODUCTION.getCode().equals(params.getVersionType());
         TemplateGet templateGet = new TemplateGet(params.getTag().getTemplateId());
         return templateService.get(Operators.setOperator(params, templateGet))
+                .doOnNext(templateVO -> BeanUtils.setPropertyValue(params.getTag(), "styleCode", templateVO.getStyleCode()))
                 .flatMap(templateVO -> {
                     AttachmentGet attachmentGet = new AttachmentGet(templateVO.getAttachmentId());
                     return attachmentService.get(Operators.setOperator(params, attachmentGet));
                 })
                 .flatMap(attachmentVO -> {
-                    String absoluteFilePath = fileService.getAbsolutePath(attachmentVO.getPath());
-                    String folderPath = absoluteFilePath.substring(0, absoluteFilePath.length() - ".zip".length());
+                    String folderPath = resolveFolderPath(attachmentVO);
                     String templateFile = folderPath + File.separatorChar + properties.getTemplateFileName();
                     return Mono.fromCallable(() -> new String(Files.readAllBytes(Paths.get(templateFile)), StandardCharsets.UTF_8))
-                            .map(content -> SpringExpressionUtils.parse(content, BeanUtils.map(params.getTag())))
+                            .map(content -> {
+                                Map<String, Object> map = BeanUtils.map(params.getTag());
+                                map.computeIfPresent("productDate", (key, value) ->
+                                        DateTimeFormatterUtils.COMMON_MONTH
+                                                .format((LocalDate) value)
+                                                .replace('-', '.')
+                                );
+                                return SpringExpressionUtils.parse(content, map);
+                            })
                             .flatMap(content -> Mono.fromCallable(() -> {
                                 //TODO handle long overflow
                                 String tempFileName = "template-" + UUIDUtils.randomUUID() + ".dita";
@@ -78,13 +88,18 @@ public class TagServiceImpl implements TagService {
                             }));
                 })
                 .flatMap(ditaFilePath -> {
-                    String baseFolder = properties.getDitaBaseDir().get(params.getTag().getStyleCode());
+                    String baseFolder = properties.getDitaBaseDirs().get(params.getTag().getStyleCode());
                     String ditaFileName = ditaFilePath.getFileName().toString();
                     String ditaFile = ditaFilePath.getParent().getFileName().toString() + File.separatorChar + ditaFileName;
-                    List<String> arguments = new ArrayList<>(2);
+                    List<String> arguments = new ArrayList<>(4);
                     arguments.add("-Dargs.input.dir=" + ditaFilePath.getParent().toString());
-                    if (isReproduction)
-                        arguments.add("-Dcustomization.dir=" + properties.getReproductionCustomizationDir());
+                    arguments.add("-Dpdf.formatter=ah");
+                    arguments.add("-Daxf.path=" + properties.getAxfPath());
+                    if (isReproduction) {
+                        String dir = properties.getReproductionCustomizationDirs().get(params.getTag().getStyleCode());
+                        arguments.add("-Dcustomization.dir=" + dir);
+                        arguments.add("-Dargs.debug=yes");
+                    }
                     //TODO 优化 PDF 存储路径
                     String absoluteFilePath = fileService.getAbsolutePath(properties.getOutputDir());
                     return DitaUtils.executePdf(baseFolder, ditaFile, absoluteFilePath, arguments.toArray(new String[0]))
@@ -101,6 +116,12 @@ public class TagServiceImpl implements TagService {
                     Map<String, String> source = Collections.singletonMap(params.getVersionType(), pdfPath);
                     eventPublisher.publishEvent(new PayloadApplicationEvent<>(source, params));
                 });
+    }
+
+    private String resolveFolderPath(AttachmentVO attachmentVO) {
+        String folderPath = fileService.getAbsolutePath(attachmentVO.getPath());
+        if (!folderPath.endsWith(".zip")) return folderPath;
+        return folderPath.substring(0, folderPath.length() - ".zip".length());
     }
 
     @Override
@@ -126,5 +147,5 @@ public class TagServiceImpl implements TagService {
         reproductionGeneratePdf.setVersionType(versionType.getCode());
         return reproductionGeneratePdf;
     }
-
+// /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3-english/bin/dita -input english/topic1.dita -format pdf -output /Users/xiayx/Documents/Projects/pdftag/01-upload/output -Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/01-upload/giftBoxLabel/english -Dpdf.formatter=ah -Daxf.path=/usr/local/AHFormatterV70
 }

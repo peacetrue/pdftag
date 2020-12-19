@@ -35,3 +35,5 @@ hs_err_pid*
 **/volumes
 
 docs/antora/modules/ROOT/attachment/*
+deploy
+01-upload

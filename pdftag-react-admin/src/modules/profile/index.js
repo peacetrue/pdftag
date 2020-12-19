@@ -53,7 +53,7 @@ export const Profile = ({staticContext, ...props}) => {
                               {...props}
                         >
                             <SimpleForm toolbar={<EditToolbar/>}>
-                                <PasswordInput label={'原密码'} source="oldPassword" validate={userRules.password}
+                                <PasswordInput label={'原密码'} source="oldPassword" validate={userRules.oldPassword}
                                                fullWidth/>
                                 <PasswordInput label={'新密码'} source="newPassword" validate={userRules.password}
                                                fullWidth/>

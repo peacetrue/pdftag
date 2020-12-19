@@ -1,9 +1,7 @@
 package com.mi.pdftag.modules.template;
 
 import com.github.peacetrue.core.OperatorCapableImpl;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -15,6 +13,8 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class TemplateAdd extends OperatorCapableImpl<Long> {
 
     private static final long serialVersionUID = 0L;
@@ -23,8 +23,11 @@ public class TemplateAdd extends OperatorCapableImpl<Long> {
     @NotNull
     @Size(min = 1, max = 32)
     private String code;
+    /** 样式 */
+    @NotNull
+    private Integer styleId;
     /** 类型. 1、phone，不同的模版类型对应标签的字段不同 */
-    private String typeCode = TemplateType.PHONE.getCode();
+    private String typeCode;
     /** 名称 */
     @NotNull
     @Size(min = 1, max = 32)
@@ -34,9 +37,10 @@ public class TemplateAdd extends OperatorCapableImpl<Long> {
     @Size(min = 1, max = 1023)
     private String content;
     /** 附件 */
+    @NotNull
     private Long attachmentId;
     /** 备注 */
     @Size(max = 255)
-    private String remark = "";
+    private String remark;
 
 }

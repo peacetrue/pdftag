@@ -1,5 +1,5 @@
 server:
-  port: 8110
+  port: 80
 
 db:
   hostname: localhost
@@ -9,17 +9,22 @@ db:
 
 logging:
   level:
-    root: debug
+    root: info
   file:
     path: /root/peacetrue/pdftag/03-logs
     max-history: 2
 
+peacetrue:
+  file:
+    base-path: /root/peacetrue/pdftag/01-upload
+
 com:
   mi:
     pdf-tag:
-      dita-base-dir:
-        default: /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3
-        chinese: /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3
-        english: /Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/dita-ot-2.3
-      output-dir: /Users/xiayx/Documents/Projects/pdftag/02-output
-      reproduction-customization-dir: /Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark
+      dita-base-dir: /root/peacetrue/pdftag
+      output-dir: pdf
+      reproduction-customization-dir: /root/peacetrue/pdftag/watermark
+      axf-path: /usr/AHFormatterV70
+spring:
+  session:
+    timeout: 7d

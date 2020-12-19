@@ -4,7 +4,10 @@ import com.mi.pdftag.modules.tag.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -18,10 +21,10 @@ public class PhoneTagVO implements Serializable, Tag {
 
     /** 主键 */
     private Long id;
-    /** 样式编码 */
-    private String styleCode;
     /** 模版主键 */
     private Long templateId;
+    /** 样式编码 */
+    private String styleCode;
     /** 商品名称 */
     private String goodsName;
     /** 认证型号 */
@@ -46,6 +49,10 @@ public class PhoneTagVO implements Serializable, Tag {
     private String colour;
     /** 存储空间 */
     private String storage;
+    /** 商标 */
+    private String brand;
+    /** 生产日期 */
+    private LocalDate productDate;
     /** 备注 */
     private String remark;
     /** 演示附件 */

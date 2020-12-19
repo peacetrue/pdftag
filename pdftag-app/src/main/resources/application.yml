@@ -30,7 +30,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   session:
-    timeout: 3600
+    timeout: 7d
 
 management:
   endpoints:

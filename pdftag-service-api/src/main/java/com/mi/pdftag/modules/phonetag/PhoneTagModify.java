@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 
 
 /**
@@ -66,11 +67,16 @@ public class PhoneTagModify extends OperatorCapableImpl<Long> implements IdCapab
     @NotNull
     @Size(min = 1, max = 255)
     private String storage;
+    /** 商标 */
+    @Size(min = 1, max = 255)
+    private String brand;
+    /** 生产日期 */
+    private LocalDate productDate;
+    /** 状态 {@link PhoneTagState} */
+    private Integer stateId;
     /** 备注 */
     @Size(min = 1, max = 255)
     private String remark;
-    /** 状态 {@link PhoneTagState} */
-    private Integer stateId;
 
 
 }

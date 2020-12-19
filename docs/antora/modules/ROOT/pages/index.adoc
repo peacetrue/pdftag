@@ -311,6 +311,78 @@ CSV 文件第一列为表头，表头列信息包括：样式、模版、商品�
 
 解决办法：避免上传重名 zip 包
 
-=== nohup
+=== 启动服务
 
 nohup java -jar pdftag-app-1.0.0-SNAPSHOT.jar >/dev/null 2>&1 &
+
+
+== 部署步骤
+
+. 预备文件：
+** dita-ot-2.3.zip
+** 样式文件
+** 字体文件
+** AH Formatter：AHFormatterV70_64-7.0E-MR5.x86_64.rpm
+** 模版文件
+
+. 在样式表中配置 AHFormatter 渲染器
+[source%nowrap,xml]
+----
+# org.dita.pdf2/build.xml
+# 注释改行
+<property name="pdf.formatter" value="fop"/>
+<property name="pdf.formatter" value="ah"/>
+<property name="axf.path" value="/usr/local/AHFormatterV70"/>
+----
+
+. AHFormatter 渲染器配置字体
+[source%nowrap,shell]
+----
+$ cd /usr/local/AHFormatterV70/etc
+$  vi font-config.xml
+<font-folder path="/root/peacetrue/pdftag/字体/微软雅黑"/>
+<font-folder path="/root/peacetrue/pdftag/字体/新小米兰亭Pro/小米兰亭Pro独立字重版">
+<font-folder path="/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/字体/微软雅黑"/>
+<font-folder path="/Users/xiayx/Documents/Projects/pdftag/docs/antora/modules/ROOT/attachment/字体/新小米兰亭Pro/小米兰亭Pro独立字重版">
+  <font-alias file="MILanPro_Light.ttf">
+  <alias family-name="小米兰亭Light"/>
+  </font-alias>
+  <font-alias file="MILanPro_Medium.ttf">
+  <alias family-name="小米兰亭Medium"/>
+  </font-alias>
+  <font-alias file="msyhbd.ttc">
+  <alias family-name="微软雅黑" weight="bold"/>
+  </font-alias>
+  <font-alias file="msyh.ttc">
+  <alias family-name="微软雅黑"/>
+  </font-alias>
+  <font-alias file="msyhl.ttc">
+  <alias family-name="微软雅黑" weight="light"/>
+  </font-alias>
+</font-folder>
+----
+
+. 调整样式表字体
+* zh.xml copy to zh_CN.xml
+
+. 拷贝 dita
+** dita-ot-2.3-chinese
+** dita-ot-2.3-english
+[source%nowrap,shell]
+----
+cp -r dita-ot-2.3 dita-ot-2.3-chinese
+cp -r dita-ot-2.3 dita-ot-2.3-english
+----
+
+. 使用样式表插件替换原 org.dita.pdf2 插件
+[source%nowrap,xml]
+----
+rm -rf dita-ot-2.3-english/plugins/org.dita.pdf2
+cp -r 礼盒标签中文样式表和英文样式表20201217/礼盒标签-英文样式表/org.dita.pdf2 dita-ot-2.3-english/plugins
+
+rm -rf dita-ot-2.3-chinese/plugins/org.dita.pdf2
+cp -r 礼盒标签中文样式表和英文样式表20201217/礼盒标签-中文样式表/org.dita.pdf2 dita-ot-2.3-chinese/plugins
+----
+
+
+

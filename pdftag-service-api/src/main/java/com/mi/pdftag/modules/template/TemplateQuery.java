@@ -23,6 +23,10 @@ public class TemplateQuery extends OperatorCapableImpl<Long> {
     private Long[] id;
     /** 编号 */
     private String code;
+    /** 样式 */
+    private Integer styleId;
+    /** 样式编号 */
+    private String styleCode;
     /** 类型. 1、phone，不同的模版类型对应标签的字段不同 */
     private String typeCode;
     /** 名称 */
