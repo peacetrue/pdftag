@@ -34,7 +34,7 @@ public class PhoneTagListener {
         log.info("新增/修改标签[{}]后，生成[{}]版本的PDF文件", vo.getId(), versionType);
         //TODO 会阻塞后续IO线程，如何避免
         tagService.generatePdf(Operators.setOperator(payload, new TagGeneratePdf(versionType, vo)))
-                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                 .subscribe();
     }
 
@@ -59,6 +59,6 @@ public class PhoneTagListener {
     private void deletePdf(PayloadApplicationEvent<PhoneTagDelete> event, String filePath) {
         if (StringUtils.isEmpty(filePath)) return;
         fileService.delete(Operators.setOperator(event.getPayload(), new FileDelete(filePath)))
-                .publishOn(Schedulers.elastic()).subscribe();
+                .subscribeOn(Schedulers.elastic()).subscribe();
     }
 }

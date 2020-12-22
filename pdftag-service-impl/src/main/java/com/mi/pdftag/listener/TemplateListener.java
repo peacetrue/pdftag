@@ -31,7 +31,7 @@ public class TemplateListener {
         log.info("删除模版[{}]后，删除关联的附件[{}]", source.getId(), source.getAttachmentId());
         AttachmentDelete attachmentDelete = new AttachmentDelete(source.getAttachmentId());
         attachmentService.delete(Operators.setOperator(event.getPayload(), attachmentDelete))
-                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                 .subscribe();
     }
 }

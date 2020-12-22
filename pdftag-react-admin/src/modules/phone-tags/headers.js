@@ -12,6 +12,7 @@ export const converter = (fields, codes) => {
     return codes.map(item => fields[item]);
 }
 
+
 export const Headers = {
     code: codes,
     name: converter(messages.resources["phone-tags"].fields, codes)

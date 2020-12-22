@@ -33,7 +33,7 @@ public class TaskSaver implements ImportsSaver<PhoneTagAdd> {
     @SuppressWarnings("unchecked")
     public void save(RowNumberWrapper<PhoneTagAdd> wrapper, ImportsContext importsContext) {
         phoneTagService.add(wrapper.getRow())
-                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                 .subscribe();
     }
 

@@ -10,7 +10,6 @@ import com.github.peacetrue.spring.SpringExpressionUtils;
 import com.github.peacetrue.spring.util.BeanUtils;
 import com.github.peacetrue.spring.util.CloneUtils;
 import com.github.peacetrue.util.DateTimeFormatterUtils;
-import com.github.peacetrue.util.UUIDUtils;
 import com.mi.pdftag.ServicePdfTagProperties;
 import com.mi.pdftag.VersionType;
 import com.mi.pdftag.modules.template.TemplateGet;
@@ -31,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -63,10 +63,12 @@ public class TagServiceImpl implements TagService {
                 .doOnNext(templateVO -> BeanUtils.setPropertyValue(params.getTag(), "styleCode", templateVO.getStyleCode()))
                 .flatMap(templateVO -> {
                     AttachmentGet attachmentGet = new AttachmentGet(templateVO.getAttachmentId());
-                    return attachmentService.get(Operators.setOperator(params, attachmentGet));
+                    return attachmentService.get(Operators.setOperator(params, attachmentGet))
+                            .doOnNext(templateVO::setAttachment)
+                            .thenReturn(templateVO);
                 })
-                .flatMap(attachmentVO -> {
-                    String folderPath = resolveFolderPath(attachmentVO);
+                .flatMap(templateVO -> {
+                    String folderPath = resolveFolderPath(templateVO.getAttachment());
                     String templateFile = folderPath + File.separatorChar + properties.getTemplateFileName();
                     return Mono.fromCallable(() -> new String(Files.readAllBytes(Paths.get(templateFile)), StandardCharsets.UTF_8))
                             .map(content -> {
@@ -79,8 +81,13 @@ public class TagServiceImpl implements TagService {
                                 return SpringExpressionUtils.parse(content, map);
                             })
                             .flatMap(content -> Mono.fromCallable(() -> {
-                                //TODO handle long overflow
-                                String tempFileName = "template-" + UUIDUtils.randomUUID() + ".dita";
+                                Tag tag = params.getTag();
+                                //表格名称应为“产品名称+样式名称+序号（或时间戳），需保证标签中含有上述字段的情况下，可按上述规则
+                                String tempFileName = String.format("%s%s-%s.dita",
+                                        BeanUtils.getPropertyValue(tag, "productName"),
+                                        templateVO.getName(),
+                                        DateTimeFormatterUtils.SHORT_TIME.format(LocalTime.now())
+                                );
                                 Path tempFilePath = Paths.get(folderPath, tempFileName);
                                 Path path = Files.createFile(tempFilePath);
                                 Files.write(path, content.getBytes(StandardCharsets.UTF_8));
@@ -103,7 +110,7 @@ public class TagServiceImpl implements TagService {
                     //TODO 优化 PDF 存储路径
                     String absoluteFilePath = fileService.getAbsolutePath(properties.getOutputDir());
                     return DitaUtils.executePdf(baseFolder, ditaFile, absoluteFilePath, arguments.toArray(new String[0]))
-                            .doOnNext((pdfPath) -> {
+                            .doOnTerminate(() -> {
                                 try {
                                     Files.delete(ditaFilePath);
                                 } catch (IOException e) {

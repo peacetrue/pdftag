@@ -37,3 +37,4 @@ hs_err_pid*
 docs/antora/modules/ROOT/attachment/*
 deploy
 01-upload
+pdftag-app/src/main/resources/public

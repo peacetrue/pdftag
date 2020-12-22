@@ -1,5 +1,6 @@
 package com.mi.pdftag.modules.template;
 
+import com.github.peacetrue.attachment.AttachmentVO;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -29,6 +30,8 @@ public class TemplateVO implements Serializable {
     private String content;
     /** 附件 */
     private Long attachmentId;
+    /** 附件 */
+    private AttachmentVO attachment;
     /** 备注 */
     private String remark;
     /** 创建者主键 */

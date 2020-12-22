@@ -61,7 +61,7 @@ export default () => {
                     <ListItem>
                         <ListItemText
                             primary='导入标签'
-                            secondary='在右侧下载 CSV 模版文件后，使用 Excel 打开，编辑文件中的内容，保存后通过导入数据功能导入。导入标签时，会去掉内容左右两边的空格；模版列，值为 1 表示 礼盒标签中文模版，值为 2 表示 礼盒标签英文模版。'
+                            secondary='导入支持 csv 和 xlsx 格式。在右侧下载 CSV 模版文件后，使用 Excel 打开，编辑文件中的内容，保存后通过导入数据功能导入。导入标签时，会去掉内容左右两边的空格；模版列，值为 1 表示 礼盒标签中文模版，值为 2 表示 礼盒标签英文模版。'
                         />
                         <ListItemSecondaryAction>
                             <IconButton edge="end" aria-label="download" onClick={e => {
@@ -84,7 +84,6 @@ export default () => {
                             primary='保存草稿'
                             secondary='保存草稿时，字段（除标签种类）都为选填；创建标签时，根据中英文样式会要求输入不同的必填字段，具体规则视页面情况而定。'
                         />
-
                     </ListItem>
                 </List>
                 <Typography variant="h6" color={'textPrimary'}> 配置： </Typography>
@@ -104,12 +103,12 @@ export default () => {
                             secondary='当页面存在多项操作，但每项操作要求的必填项不同，此时只能预先得知它们共同的必填项，其他项是否必填需要实际操作时才能得知'
                         />
                     </ListItem>
-                    <ListItem>
+                    {/*<ListItem>
                         <ListItemText
                             primary='问题反馈'
                             secondary='如有使用不便，欢迎随时反馈问题，会不断优化更新，保证让您用得省时省力省心'
                         />
-                    </ListItem>
+                    </ListItem>*/}
                 </List>
                 <Typography variant="h6" color={'textPrimary'}> 待优化项： </Typography>
                 <List dense={false}>
@@ -125,24 +124,12 @@ export default () => {
                             secondary='预览界面较小，导致内容看不清晰，目前自动缩放 150%，但不是居中缩放，仍需要手动滚动到中间'
                         />
                     </ListItem>
-                    <ListItem>
-                        <ListItemText
-                            primary='同步修改预览页的提示文字'
-                            secondary='待明确'
-                        />
-                    </ListItem>
-                    <ListItem>
-                        <ListItemText
-                            primary='自动保存草稿'
-                            secondary='新建标签页或编辑标签页，通过点击左侧菜单等操作改变页面，默认做“保存草稿”处理'
-                        />
-                    </ListItem>
-                    <ListItem>
+                    {/*<ListItem>
                         <ListItemText
                             primary='支持 Excel'
                             secondary='表格名称应为“产品名称+样式名称+序号（或时间戳），需保证标签中含有上述字段的情况下，可按上述规则'
                         />
-                    </ListItem>
+                    </ListItem>*/}
                 </List>
             </CardContent>
         </Card>

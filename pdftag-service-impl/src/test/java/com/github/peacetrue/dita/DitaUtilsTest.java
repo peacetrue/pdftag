@@ -30,7 +30,7 @@ class DitaUtilsTest {
                 "-Dargs.input.dir=/Users/xiayx/Documents/Projects/pdftag/02-output/2020/11/28/Mi_giftBox_label_Cn",
                 "-Dcustomization.dir=/Users/xiayx/Documents/Projects/learn-dita-ot/src/test/resources/watermark"
         )
-                .publishOn(Schedulers.fromExecutorService(Executors.newFixedThreadPool(10)))
+                .subscribeOn(Schedulers.fromExecutorService(Executors.newFixedThreadPool(10)))
                 .subscribe(value -> System.out.println("-----------" + value));
 
     }

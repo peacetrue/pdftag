@@ -16,8 +16,8 @@ const Filters = (props) => (
     <Filter {...props}>
         <TextInput label={'编号'} source="code" resettable allowEmpty alwaysOn/>
         <TextInput label={'名称'} source="name" resettable allowEmpty alwaysOn/>
-        <DateInput label={'创建时间起始值'} source="createdTime.lowerBound" allowEmpty alwaysOn/>
-        <DateInput label={'创建时间结束值'} source="createdTime.upperBound" allowEmpty alwaysOn/>
+        <DateInput label={'创建时间起始值'} source="createdTime.lowerBound" allowEmpty/>
+        <DateInput label={'创建时间结束值'} source="createdTime.upperBound" allowEmpty/>
     </Filter>
 );
 
@@ -34,7 +34,7 @@ export const TemplateList = props => {
                 </ReferenceField>
                 <TextField label={'编号'} source="code"/>
                 <TextField label={'名称'} source="name"/>
-                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={false}>
+                <ReferenceField label={'创建者'} reference="users" source="creatorId" link={'show'}>
                     <TextField source="username"/>
                 </ReferenceField>
                 <DateField label={'创建时间'} source="createdTime" showTime/>

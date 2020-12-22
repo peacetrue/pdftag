@@ -45,7 +45,7 @@ public class TagListener {
         }
 
         phoneTagService.modifyPdfPath(Operators.setOperator(payload, params))
-                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                 .subscribe();
     }
 }

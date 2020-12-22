@@ -4,6 +4,9 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import {useFormState} from "react-final-form";
 import {exporterBuilder} from "../../exporter";
 
+export const leftPad = (value) => {
+    return String(value).padStart(2, '0');
+}
 export const ExportDetailButton = (props) => {
     let {
         label = '导出数据',
@@ -11,7 +14,11 @@ export const ExportDetailButton = (props) => {
         headers
     } = props;
     let {values} = useFormState();
-    let exporter = exporterBuilder(resource, headers);
+    let exporter = exporterBuilder(resource, headers, (entity) => {
+        let date = new Date()
+        let name = entity.templateId === 1 ? '礼盒标签中文模版' : '礼盒标签英文模版';
+        return `${entity.productName}${name}-${leftPad(date.getHours())}${leftPad(date.getMinutes())}${leftPad(date.getSeconds())}`;
+    });
     let download = e => {
         e.stopPropagation();
         exporter([values]);

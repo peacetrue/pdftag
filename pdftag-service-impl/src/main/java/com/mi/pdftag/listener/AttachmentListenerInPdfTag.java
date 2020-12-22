@@ -56,7 +56,7 @@ public class AttachmentListenerInPdfTag {
         String folderPath = source.getPath().substring(0, source.getPath().length() - ZIP_EXTENSION_LENGTH);
         log.info("删除附件[{}]后，删除本地解压缩目录[{}]", source.getId(), folderPath);
         fileService.delete(Operators.setOperator(event.getPayload(), new FileDelete(folderPath)))
-                .publishOn(Schedulers.elastic())
+                .subscribeOn(Schedulers.elastic())
                 .subscribe(result -> {
                     if (result > 0) log.info("文件[{}]删除成功", source.getPath());
                     else log.warn("文件[{}]删除失败", source.getPath());
