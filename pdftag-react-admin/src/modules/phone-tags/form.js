@@ -58,6 +58,7 @@ export const PhoneTagForm = props => {
         <FormWithRedirect
             {...props}
             warnWhenUnsavedChanges={true}
+            initialValues={{templateId: 1}}
             render={(formProps) => {
                 console.info("formProps:", formProps);
                 return (

@@ -56,6 +56,7 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                 CriteriaUtils.nullableCriteria(CriteriaUtils.smartIn("id"), params::getId),
                 CriteriaUtils.nullableCriteria(Criteria.where("styleCode")::is, params::getStyleCode),
                 CriteriaUtils.nullableCriteria(Criteria.where("templateId")::is, params::getTemplateId),
+                CriteriaUtils.nullableCriteria(Criteria.where("productName")::like, value -> "%" + value + "%", params::getProductName),
                 CriteriaUtils.nullableCriteria(Criteria.where("goodsName")::like, value -> "%" + value + "%", params::getGoodsName),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),

@@ -17,7 +17,7 @@ export const ExportDetailButton = (props) => {
     let exporter = exporterBuilder(resource, headers, (entity) => {
         let date = new Date()
         let name = entity.templateId === 1 ? '礼盒标签中文模版' : '礼盒标签英文模版';
-        return `${entity.productName}${name}-${leftPad(date.getHours())}${leftPad(date.getMinutes())}${leftPad(date.getSeconds())}`;
+        return `${entity.productName || '未定义'}${name}-${leftPad(date.getHours())}${leftPad(date.getMinutes())}${leftPad(date.getSeconds())}`;
     });
     let download = e => {
         e.stopPropagation();
