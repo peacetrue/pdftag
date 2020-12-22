@@ -23,7 +23,7 @@ import PublishIcon from '@material-ui/icons/Publish';
 import Headers from "./headers";
 import DraftsIcon from '@material-ui/icons/Drafts';
 import ExportDetailButton from "./ExportDetailButton";
-import parserBuilder from "../files/parser";
+import parserBuilder, {matrixToObject} from "../files/parser";
 // import PrintIcon from '@material-ui/icons/Print';
 
 const stateIds = {
@@ -178,12 +178,15 @@ export const PhoneTagForm = props => {
                                     icon={<PublishIcon/>}
                                     accept={['.csv', '.xlsx']}
                                     onChange={files => {
+                                        if (!(files && files.length > 0)) return;
                                         let file = files[0];
                                         parserBuilder(file)(file)
                                             .then(records => {
-                                                if (records.length === 0) {
+                                                if (records.length < 2) {
                                                     return notify('至少需要 2 行，第 1 行为标题，第 2 行为数据！', 'error', false, null);
                                                 }
+                                                let header = records.shift();
+                                                records = matrixToObject(records, header);
                                                 Object.entries(records[0]).forEach(([key, value]) => {
                                                     let index = Headers.name.indexOf(key.trim());
                                                     let code = Headers.code[index];

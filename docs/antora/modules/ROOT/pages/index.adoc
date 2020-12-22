@@ -6,6 +6,9 @@ PDF 标签项目，根据标签信息采用 https://www.dita-ot.org/[dita] 技�
 
 image::demo.jpeg[]
 
+* https://www.papaparse.com/docs[csv 解析^]
+* https://github.com/SheetJS/sheetjs[xlsx 解析^]
+
 === 演示地址
 
 http://101.200.133.86/index.html

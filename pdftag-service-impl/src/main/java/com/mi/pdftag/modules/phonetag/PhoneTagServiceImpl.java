@@ -58,13 +58,13 @@ public class PhoneTagServiceImpl implements PhoneTagService {
                 CriteriaUtils.nullableCriteria(Criteria.where("templateId")::is, params::getTemplateId),
                 CriteriaUtils.nullableCriteria(Criteria.where("productName")::like, value -> "%" + value + "%", params::getProductName),
                 CriteriaUtils.nullableCriteria(Criteria.where("goodsName")::like, value -> "%" + value + "%", params::getGoodsName),
+                CriteriaUtils.nullableCriteria(Criteria.where("stateId")::is, params::getStateId),
                 CriteriaUtils.nullableCriteria(Criteria.where("creatorId")::is, params::getCreatorId),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::greaterThanOrEquals, params.getCreatedTime()::getLowerBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("createdTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getCreatedTime()::getUpperBound),
                 CriteriaUtils.nullableCriteria(Criteria.where("modifierId")::is, params::getModifierId),
                 CriteriaUtils.nullableCriteria(Criteria.where("modifiedTime")::greaterThanOrEquals, params.getModifiedTime()::getLowerBound),
-                CriteriaUtils.nullableCriteria(Criteria.where("modifiedTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getModifiedTime()::getUpperBound),
-                CriteriaUtils.nullableCriteria(Criteria.where("stateId")::is, params::getStateId)
+                CriteriaUtils.nullableCriteria(Criteria.where("modifiedTime")::lessThan, DateUtils.DATE_CELL_EXCLUDE, params.getModifiedTime()::getUpperBound)
         );
     }
 

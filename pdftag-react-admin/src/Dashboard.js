@@ -7,9 +7,6 @@ import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import IconButton from '@material-ui/core/IconButton';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import {buildUrl} from "./modules/files/utils";
 import {makeStyles} from '@material-ui/core/styles';
 
@@ -61,28 +58,19 @@ export default () => {
                     <ListItem>
                         <ListItemText
                             primary='导入标签'
-                            secondary='导入支持 csv 和 xlsx 格式。在右侧下载 CSV 模版文件后，使用 Excel 打开，编辑文件中的内容，保存后通过导入数据功能导入。导入标签时，会去掉内容左右两边的空格；模版列，值为 1 表示 礼盒标签中文模版，值为 2 表示 礼盒标签英文模版。'
+                            secondary={<p>导入支持 csv 和 xlsx 格式的文件。点击下载 &nbsp;
+                                <a href={buildUrl('template-test-column.csv')}>csv</a>&nbsp;和&nbsp;
+                                <a href={buildUrl('template-test-column.xlsx')}>xlsx</a>&nbsp;模版文件，
+                                使用 Excel 打开，编辑文件中的内容，保存后通过导入数据功能导入。
+                                导入标签时，会去掉内容左右两边的空格；
+                                标签种类列，值为 1 表示 礼盒标签中文模版，值为 2 表示礼盒标签英文模版。
+                            </p>}
                         />
-                        <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="download" onClick={e => {
-                                e.stopPropagation();
-                                window.open(buildUrl('template-test.csv'));
-                            }}>
-                                <GetAppIcon/>
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                        {/*
-                    <ListItemSecondaryAction>
-                        <IconButton edge="end" aria-label="delete">
-                            <DownloadTemplateButton/>
-                        </IconButton>
-                    </ListItemSecondaryAction>
-*/}
                     </ListItem>
                     <ListItem>
                         <ListItemText
                             primary='保存草稿'
-                            secondary='保存草稿时，字段（除标签种类）都为选填；创建标签时，根据中英文样式会要求输入不同的必填字段，具体规则视页面情况而定。'
+                            secondary='保存草稿时，字段（除标签种类和产品名称）都为选填；创建模版时，根据中英文样式会要求输入不同的必填字段，具体规则视页面情况而定。'
                         />
                     </ListItem>
                 </List>
