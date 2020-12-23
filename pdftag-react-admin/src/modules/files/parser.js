@@ -32,7 +32,7 @@ export const xlsxParser = (file, options) => {
             let records = workbook.SheetNames.map((sheetName) => {
                 return XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1, raw: false});
             }).reduce((left, right) => left.concat(right), []);
-            records.forEach((record) => record.forEach((item, index) => record[index] = item.trim()));
+            records.forEach((record) => record.forEach((item, index) => record[index] = item.trim ? item.trim() : item));
             console.info("records: ", records);
             console.info("pivotMatrix records: ", pivotMatrix(records));
             resolve(pivotMatrix(records));

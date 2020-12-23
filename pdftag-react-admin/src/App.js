@@ -27,6 +27,7 @@ const App = () => (
            i18nProvider={i18nProvider}
            customRoutes={customRoutes}
            appLayout={CustomLayout}
+           disableTelemetry
     >
         {permissions => {
             let resources;

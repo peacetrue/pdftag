@@ -52,7 +52,8 @@ const styleStateRequiredBuilder = (source) => {
 export const PhoneTagForm = props => {
     console.info("PhoneTagForm.props:", props);
     let pdfPath = props.record[stateIds[props.record.stateId]] || 'preview.pdf';//'#zoom=160%'
-    let [url, setUrl] = useState(buildPreviewUrl(pdfPath, 'preview.pdf' === pdfPath ? undefined : '#zoom=160%'));
+    let previewUrl = buildPreviewUrl(pdfPath, 'preview.pdf' === pdfPath ? undefined : '#zoom=160%');
+    let [url, setUrl] = useState(previewUrl);
     let notify = useNotify();
     return (
         <FormWithRedirect
@@ -166,6 +167,13 @@ export const PhoneTagForm = props => {
                                             display="initial"
                                             position="relative"
                                             scrolling={'yes'}
+                                            onLoad={(e) => {
+                                                try {
+                                                    e.currentTarget.contentWindow.scrollTo(240, 0);
+                                                } catch (e) {
+                                                    console.warn(e);
+                                                }
+                                            }}
                                     />
                                 </Box>
                             </Box>

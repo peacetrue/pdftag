@@ -58,13 +58,13 @@ export default () => {
                     <ListItem>
                         <ListItemText
                             primary='导入标签'
-                            secondary={<p>导入支持 csv 和 xlsx 格式的文件。点击下载 &nbsp;
+                            secondary={<span>导入支持 csv 和 xlsx 格式的文件。点击下载 &nbsp;
                                 <a href={buildUrl('template-test-column.csv')}>csv</a>&nbsp;和&nbsp;
                                 <a href={buildUrl('template-test-column.xlsx')}>xlsx</a>&nbsp;模版文件，
                                 使用 Excel 打开，编辑文件中的内容，保存后通过导入数据功能导入。
                                 导入标签时，会去掉内容左右两边的空格；
                                 标签种类列，值为 1 表示 礼盒标签中文模版，值为 2 表示礼盒标签英文模版。
-                            </p>}
+                            </span>}
                         />
                     </ListItem>
                     <ListItem>
@@ -103,7 +103,7 @@ export default () => {
                     <ListItem>
                         <ListItemText
                             primary='标签生成较慢'
-                            secondary='标签生成较慢，耗时较长，约为 10 秒钟，请耐心等候。'
+                            secondary='标签生成较慢，耗时较长，约为 8 秒钟，请耐心等候。'
                         />
                     </ListItem>
                     <ListItem>
